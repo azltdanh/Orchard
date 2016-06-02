@@ -1,0 +1,39 @@
+﻿@model RealEstate.ViewModels.CustomerRevisionsViewModel
+@{
+    var item = Model.Customer;
+}
+    <fieldset>
+        <table class="items fixed-table">
+            <thead>
+                <tr>
+                    <th scope="col">@T("Tình trạng")</th>
+                    <th scope="col">@T("Tên khách hàng")</th>
+                    <th scope="col">@T("Điện thoại")</th>
+                    <th scope="col">@T("Địa chỉ")</th>
+                    <th scope="col">@T("Email")</th>
+                    <th scope="col">@T("Sửa bởi")</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="@item.Status.CssClass">@item.Status.Name</td>
+                    <td>@item.ContactName</td>
+                    <td>@item.ContactPhone</td>
+                    <td>@item.ContactAddress</td>
+                    <td>@item.ContactEmail</td>
+                    <td>@item.LastUpdatedUser.UserName (@Html.DisplayFor(m => item.LastUpdatedDate, "ShortDate"))</td>
+                </tr>
+            @foreach (var entry in Model.Revisions)
+            {
+                <tr>
+                    <td>@entry.StatusName</td>
+                    <td>@entry.ContactName</td>
+                    <td>@entry.ContactPhone</td>
+                    <td>@entry.ContactAddress</td>
+                    <td>@entry.ContactEmail</td>
+                    <td>@entry.CreatedUser.UserName (@Html.DisplayFor(m => entry.CreatedDate, "ShortDate"))</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </fieldset>

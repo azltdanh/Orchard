@@ -1,0 +1,98 @@
+@model RealEstate.ViewModels.PropertyTypeConstructionsIndexViewModel
+@using RealEstate.Models;
+@using RealEstate.ViewModels;
+
+@{
+    Script.Require("Common");
+    Layout.Title = T("Property Construction Types").ToString();
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{ 
+    @Html.ValidationSummary()
+    <div class="manage">@Html.ActionLink(T("Add new Type").ToString(), "Create", new { }, new { @class = "button primaryAction" })</div>
+
+    <fieldset class="bulk-actions">
+        <label for="publishActions">@T("Actions:")</label>
+        <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+            @Html.SelectOption(Model.Options.BulkAction, PropertyTypeConstructionsBulkAction.None, T("Choose action...").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, PropertyTypeConstructionsBulkAction.Enable, T("Enable").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, PropertyTypeConstructionsBulkAction.Disable, T("Disable").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, PropertyTypeConstructionsBulkAction.Delete, T("Delete").ToString())
+        </select>
+        <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+    </fieldset>
+    <fieldset class="bulk-actions">
+        <label for="filterSearch">@T("Name:")</label>
+        @Html.TextBoxFor(m => m.Options.Search, new { @class = "text" })        
+        <label for="filterGroups">@T("Group:")</label>
+        @Html.DropDownListFor(m => m.Options.PropertyGroupId,
+            Model.Options.PropertyGroups.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.Options.PropertyGroupId,
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }),
+            T("All").ToString())
+        <label for="filterResults">@T("Filter:")</label>
+        <select id="filterResults" name="@Html.NameOf(m => m.Options.Filter)">
+            @Html.SelectOption(Model.Options.Filter, PropertyTypeConstructionsFilter.All, T("All").ToString())
+        </select>
+        <label for="filterResults">@T("Sort by:")</label>
+        <select id="filterResults1" name="@Html.NameOf(m => m.Options.Order)">
+            @Html.SelectOption(Model.Options.Order, PropertyTypeConstructionsOrder.Name, T("Name").ToString())
+            @Html.SelectOption(Model.Options.Order, PropertyTypeConstructionsOrder.SeqOrder, T("SeqOrder").ToString())
+        </select>
+
+        <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+    </fieldset>
+    <fieldset>
+        <table class="items">
+            <thead>
+                <tr>
+                    <th scope="col"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.PropertyTypeConstructions)" /></th>
+                    <th scope="col">@T("Type")</th>
+                    <th scope="col">@T("Name")</th>
+                    <th scope="col">@T("Default")</th>
+                    <th scope="col">@T("SeqOrder")</th>
+                    <th scope="col">@T("UnitPrice")</th>
+                    <th scope="col">@T("Actions")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.PropertyTypeConstructions)
+            { 
+            <tr>
+                <td>
+                    <input type="hidden" value="@Model.PropertyTypeConstructions[index].PropertyTypeConstruction.Id" name="@Html.NameOf(m => m.PropertyTypeConstructions[index].PropertyTypeConstruction.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.PropertyTypeConstructions[index].IsChecked)"/>
+                </td>
+                <td>
+                    @entry.PropertyTypeConstruction.PropertyType.Name 
+                </td>
+                <td>
+                    @Html.ActionLink(entry.PropertyTypeConstruction.Name, "Edit", new { entry.PropertyTypeConstruction.Id }) 
+                </td>
+                <td>
+                    @if (entry.PropertyTypeConstruction.IsDefaultInFloorsRange == true)
+                    {<span class="ui-icon icon-check"></span> }
+                </td>
+                <td>
+                    @entry.PropertyTypeConstruction.SeqOrder 
+                </td>
+                <td>
+                    @Html.DisplayFor(model => entry.PropertyTypeConstruction.UnitPrice, "Double") VND 
+                </td>
+                <td>
+                    @Html.ActionLink(T("Edit").ToString(), "Edit", new { entry.PropertyTypeConstruction.Id }) |
+                    @Html.ActionLink(T("Delete").ToString(), "Delete", new { entry.PropertyTypeConstruction.Id }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                </td>
+            </tr>
+                    index++;
+            }
+        </table>
+
+    @Display(Model.Pager)
+
+    </fieldset>
+} 

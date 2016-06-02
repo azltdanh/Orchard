@@ -1,0 +1,29 @@
+﻿@using Orchard.Users.Models;
+@{
+    Layout.Title = T("Danh sách user").ToString();
+}
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Post))
+{
+    @Html.ValidationSummary()
+    <fieldset>
+        <div class="control-group">
+            <div class="controls">
+                <label class="control-label" for="UserFrom">User cần thay đổi</label>
+            </div>
+        </div>
+        <div class="control-group">
+            <input type="text" name="UserFrom" id="UserFrom" placeholder="Nhập UserId" />
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <label class="control-label" for="UserTo">User thay đổi</label>
+            </div>
+        </div>
+        <div class="control-group">
+            <input type="text" name="UserTo" id="UserTo" placeholder="Nhập UserId" />
+        </div>
+        <div class="control-group">
+            <input type="submit" class="primaryAction" value="Submit" />
+        </div>
+    </fieldset>
+}

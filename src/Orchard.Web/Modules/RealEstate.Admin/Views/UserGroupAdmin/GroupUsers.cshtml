@@ -1,0 +1,117 @@
+﻿@model RealEstate.ViewModels.UserGroupEditViewModel
+@using RealEstate.Models;
+@using RealEstate.Services;
+@using Orchard.Users.Models;
+@{
+    Script.Require("Floatheader");
+}
+ 
+<div class="spacer"></div>
+
+<div class="form-editor">
+
+    Mã số @Html.TextBoxFor(m => m.ToAddUserId, new { Class = "text number-box" })
+
+    Thành viên 
+    @Html.ListBoxFor(m => m.ToAddUserIds,
+    new MultiSelectList(Model.UsersAvailable.Select(a => new { a.UserName, a.Id }).ToList(), "Id", "UserName")
+    , new { Class = "select-box multiselect", placeholder = "-- Vui lòng chọn --" })
+    
+    <button type="submit" id="submit_BulkUpdateGroupUsers" name="submit.BulkUpdateGroupUsers" value="@T("Add Users")">@T("Apply")</button>
+
+    Hoạt động từ 
+    @Html.TextBoxFor(m => m.DateFrom, new { Class = "text date-box" })
+    đến
+    @Html.TextBoxFor(m => m.DateTo, new { Class = "text date-box" })
+
+    <button type="submit" id="submit_ShowUserPoints" name="submit.ShowUserPoints" value="@T("Show User Points")">@T("Xem")</button>
+</div>
+
+<div class="spacer"></div>
+
+@{int index = 0; var excludeRoles = new List<string> { "Anonymous", "Authenticated", "Author", "Contributor" };}
+
+<table id="tblGroupUsers" class="items fixed-table float-header">
+    <thead>
+        <tr>
+            <th scope="col" class="w36"></th>
+            <th scope="col" class="w20"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.GroupUsers)" /></th>
+            <th scope="col" class="w80">@T("Name")</th>
+            <th scope="col" class="w40">@T("Points")</th>
+            @*<th scope="col" class="">@T("Email")</th>*@
+            @foreach(var role in Model.Roles)
+            {
+                if (!excludeRoles.Contains(role.Name))
+                {
+                <th scope="col" class="w46" title="@role.Name">@role.Name</th>
+                }
+            }
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var entry in Model.GroupUsers)
+    {
+        UserInGroupRecord record = entry.UserInGroupRecord;
+        var item = record.UserPartRecord;
+        <tr>
+            <td>
+                @Html.ActionLink(T("Remove").ToString(), "Remove", new { record.Id }, new { Class = "ui-icon icon-delete", id = record.Id })
+                @Html.ActionLink(T("Edit").ToString(), "Activities", "Users", new { item.Id }, new { Class = "ui-icon icon-edit" })
+            </td>
+            <td>
+                <input type="hidden" value="@Model.GroupUsers[index].UserInGroupRecord.UserPartRecord.Id" name="@Html.NameOf(m => m.GroupUsers[index].UserInGroupRecord.UserPartRecord.Id)"/>
+                <input type="checkbox" value="true" name="@Html.NameOf(m => m.GroupUsers[index].IsChecked)" />
+            </td>
+            <td>@Html.ActionLink(item.UserName, "Activities", "Users", new { item.Id, ReturnUrl = Request.Url }, new { Class = "" })</td>
+            <td>@Html.ActionLink(String.Format("{0:#,0.#}", entry.Points), "Activities", "Users", new { item.Id, ReturnUrl = Request.Url }, new { Class = "" })</td>
+            @foreach(var role in Model.Roles)
+            {
+                if (!excludeRoles.Contains(role.Name))
+                {
+                <td class="align-center">@Html.Raw(entry.Roles.Contains(role.Name) ? "<span class='ui-icon icon-check'></span>" : "")</td>
+                }
+            }
+        </tr>
+        index++;
+    }
+    </tbody>
+</table>
+
+@Display(Model.Pager)
+
+<div class="spacer"></div>
+
+<script type="text/javascript">
+    $(function () {
+
+        // Delete requirement
+        $("#tblGroupUsers .icon-delete").click(function () {
+            var tr = $(this).closest('tr');
+
+            if (confirm('Bạn muốn xóa thông tin này?\n' + $(this).parent().siblings().eq(3).text())) {
+                $.ajax({
+                    type: "post",
+                    dataType: "",
+                    url: "/RealEstate.Admin/Home/AjaxDeleteUserInGroup",
+                    data: {
+                        id: $(this).attr("id"),
+                        __RequestVerificationToken: antiForgeryToken
+                    },
+                    success: function (results) {
+                        if (results.success) {
+                            $(tr).fadeOut('medium', function () {
+                                $(tr).remove();
+                            });
+                        }
+                        else
+                            alert(results.message);
+                    },
+                    error: function (request, status, error) {
+                    }
+                });
+            }
+            return false;
+        });
+
+    });
+</script>

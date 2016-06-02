@@ -1,0 +1,135 @@
+﻿@model List<RealEstate.ViewModels.CustomerRequirementEntry>
+@using RealEstate.Models;
+           
+@{
+    var groupIds = Model.Select(a => a.Requirement.GroupId).Distinct().ToList();
+}
+
+<table id="tblRequirements" class="items fixed-table">
+    <tbody>
+@foreach (int groupId in groupIds)
+{
+    IEnumerable<CustomerRequirementRecord> requirements = Model.Where(a => a.Requirement.GroupId == groupId).Select(a => a.Requirement).ToList();
+    <tr>
+        <td class="w36">
+            @Html.ActionLink(T("Edit").ToString(), "Edit", new { groupId }, new { Class = "ui-icon icon-edit", groupId = groupId })
+            @Html.ActionLink(T("Delete").ToString(), "Delete", new { groupId }, new { Class = "ui-icon icon-delete", groupId = groupId })
+        </td>
+        <td class="w20">
+            @Html.CheckBoxFor(m => requirements.First().IsEnabled, new { groupId = groupId })
+        </td>
+        <td>
+            @Html.Partial("ViewCustomerRequirements", requirements)
+        </td>
+    </tr>
+}
+    </tbody>
+</table>
+
+<script type="text/javascript">
+
+    $("#tblRequirements input:checkbox").change(function () {
+        $.ajax({
+            type: "post",
+            dataType: "",
+            url: $(this).is(':checked') ? "/RealEstate.Admin/Home/AjaxEnabledGroupRequirements" : "/RealEstate.Admin/Home/AjaxDisabledGroupRequirements",
+            data: {
+                groupId: $(this).attr("groupId"),
+                __RequestVerificationToken: antiForgeryToken
+            },
+            success: function (results) {
+                if (results.success) {
+                    //alert(results.isEnabled);
+                }
+                else
+                    alert(results.message);
+            },
+            error: function (request, status, error) {
+            }
+        });
+    });
+
+    $(function () {
+        // Delete requirement
+        $("#tblRequirements .icon-delete").click(function () {
+            if (confirm('Bạn muốn xóa thông tin này?\n' + $(this).parent().siblings(':last').text())) {
+                $.ajax({
+                    type: "post",
+                    dataType: "",
+                    url: "/RealEstate.Admin/Home/AjaxDeleteGroupRequirements",
+                    data: {
+                        groupId: $(this).attr("groupId"),
+                        __RequestVerificationToken: antiForgeryToken
+                    },
+                    success: function (response) {
+                        $("a[groupId=" + response.groupId + "]").closest('tr').fadeOut();
+                    },
+                    error: function (request, status, error) {
+                    }
+                });
+            }
+            return false;
+        });
+
+        // Edit requirement
+        $("#tblRequirements .icon-edit").click(function () {
+            $.ajax({
+                type: "post",
+                dataType: "",
+                url: "/RealEstate.Admin/Home/AjaxEditGroupRequirements",
+                data: {
+                    groupId: $(this).attr("groupId"),
+                    __RequestVerificationToken: antiForgeryToken
+                },
+                success: function (response) {
+                    if (response.success) {
+                        $("#GroupId").val(response.groupId);
+
+                        $("#AdsTypeId").val(response.adsTypeId);
+                        $("#PropertyTypeGroupId").val(response.propertyTypeGroupId);
+                        $('#PropertyTypeGroupId').change();
+
+                        selectedDistrictIds = response.districtIds;
+                        $("#ProvinceId").val(response.provinceId).combobox("refresh").change();
+                        selectedWardIds = response.wardIds;
+                        selectedStreetIds = response.streetIds;
+                        $("#DistrictIds").val(response.districtIds).change();
+                        //$("#selectedWardId").val(response.wardIds).change();
+                        //$("#selectedStreetId").val(response.streetIds).change();
+                        $("#DirectionIds").val(response.directionIds).change();
+
+                        $("#MinArea").val(response.minArea);
+                        $("#MaxArea").val(response.maxArea);
+                        $("#MinWidth").val(response.minWidth);
+                        $("#MaxWidth").val(response.maxWidth);
+                        $("#MinLength").val(response.minLength);
+                        $("#MaxLength").val(response.maxLength);
+
+                        $("#LocationId").val(response.locationId).change();
+                        $("#MinAlleyWidth").val(response.minAlleyWidth);
+                        $("#MaxAlleyWidth").val(response.maxAlleyWidth);
+                        $("#MaxAlleyTurns").val(response.maxAlleyTurns);
+                        $("#MaxDistanceToStreet").val(response.maxDistanceToStreet);
+
+                        $("#MinFloors").val(response.minFloors);
+                        $("#MaxFloors").val(response.maxFloors);
+                        //alert(response.minFloors + ' - ' + response.maxFloors);
+                        $("#MinPrice").val(response.minPrice);
+                        $("#MaxPrice").val(response.maxPrice);
+                        $("#PaymentMethodId").val(response.paymentMethodId);
+
+                        $("#btnAddRequirement").hide();
+                        $("#btnSaveRequirement").show();
+                        $("#btnCancelRequirement").show();
+                    }
+                    else
+                        alert(response.message);
+                },
+                error: function (request, status, error) {
+                }
+            });
+            return false;
+        });
+
+    });
+</script>

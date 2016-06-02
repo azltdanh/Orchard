@@ -1,0 +1,139 @@
+@model RealEstate.ViewModels.LocationStreetSegmentsIndexViewModel
+@using RealEstate.Models;
+@using RealEstate.ViewModels;
+
+@{
+    Script.Require("Common");
+    Style.Require("jQueryUI_Orchard");
+    Script.Require("Combobox");
+    Layout.Title = T("Location StreetSegments").ToString();
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{ 
+    @Html.ValidationSummary()
+    <div class="manage">@Html.ActionLink(T("Add new StreetSegment").ToString(), "Create", new { }, new { @class = "button primaryAction" })</div>
+
+    <fieldset class="bulk-actions">
+        <label for="publishActions">@T("Actions:")</label>
+        <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+            @Html.SelectOption(Model.Options.BulkAction, LocationStreetSegmentsBulkAction.None, T("Choose action...").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, LocationStreetSegmentsBulkAction.Enable, T("Enable").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, LocationStreetSegmentsBulkAction.Disable, T("Disable").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, LocationStreetSegmentsBulkAction.Delete, T("Delete").ToString())
+        </select>
+        <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+    </fieldset>
+    <div>
+    <fieldset class="bulk-actions">
+
+        @Html.LabelFor(m => m.Options.Search, @T("Name:"))
+        @Html.TextBoxFor(m => m.Options.Search, new { @class = "text" })
+                
+        @Html.LabelFor(m => m.Options.ProvinceId, @T("Province:"))
+        @Html.DropDownListFor(m => m.Options.ProvinceId,
+            Model.Options.Provinces.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.Options.ProvinceId,
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }),
+            T("All").ToString())
+
+        @Html.LabelFor(m => m.Options.DistrictId, @T("District:"))
+        @Html.DropDownListFor(m => m.Options.DistrictId,
+            Model.Options.Districts.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.Options.DistrictId,
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }),
+            T("All").ToString())
+            
+        @Html.LabelFor(m => m.Options.StreetId, @T("Street:"))
+        @Html.DropDownListFor(m => m.Options.StreetId,
+            Model.Options.Streets.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.Options.StreetId,
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }),
+            T("All").ToString())
+
+        <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+    </fieldset>
+    </div>
+    <fieldset>
+    @ViewBag.RCount
+        <table class="items">
+            <thead>
+                <tr>
+                    <th scope="col"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.LocationStreetSegments)" /></th>
+                    <th scope="col">@T("Province")</th>
+                    <th scope="col">@T("District")</th>
+                    <th scope="col">@T("Street")</th>
+                    <th scope="col">@T("FromNumber")</th>
+                    <th scope="col">@T("ToNumber")</th>
+                    <th scope="col">@T("Width")</th>
+                    <th scope="col">@T("H1 Max")</th>
+                    <th scope="col">@T("H1 Min")</th>
+                    <th scope="col">@T("Hn Max")</th>
+                    <th scope="col">@T("Hn Min")</th>
+                    <th scope="col">@T("Hn Equal")</th>
+                    <th scope="col">@T("Actions")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.LocationStreetSegments)
+            { 
+            <tr>
+                <td>
+                    <input type="hidden" value="@Model.LocationStreetSegments[index].LocationStreetSegment.Id" name="@Html.NameOf(m => m.LocationStreetSegments[index].LocationStreetSegment.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.LocationStreetSegments[index].IsChecked)"/>
+                </td>
+                <td>
+                    @entry.LocationStreetSegment.Street.District.Province.ShortName
+                </td>
+                <td>
+                    @entry.LocationStreetSegment.Street.District.ShortName
+                </td>
+                <td>
+                    @Html.ActionLink(entry.LocationStreetSegment.Street.Name, "Edit", new { entry.LocationStreetSegment.Id }) 
+                </td>
+                <td>
+                    @entry.LocationStreetSegment.FromNumber
+                </td>
+                <td>
+                    @entry.LocationStreetSegment.ToNumber
+                </td>
+                <td class="col-r">
+                    @Html.DisplayFor(model => entry.LocationStreetSegment.StreetWidth, "m")
+                </td>
+                <td>
+                    @Html.DisplayFor(model => entry.LocationStreetSegment.CoefficientAlley1Max, "Double")
+                </td>
+                <td>
+                    @Html.DisplayFor(model => entry.LocationStreetSegment.CoefficientAlley1Min, "Double")
+                </td>
+                <td>
+                    @Html.DisplayFor(model => entry.LocationStreetSegment.CoefficientAlleyMax, "Double")
+                </td>
+                <td>
+                    @Html.DisplayFor(model => entry.LocationStreetSegment.CoefficientAlleyMin, "Double")
+                </td>
+                <td>
+                    @Html.DisplayFor(model => entry.LocationStreetSegment.CoefficientAlleyEqual, "Double")
+                </td>
+                <td>
+                    @Html.ActionLink(T("Edit").ToString(), "Edit", new { entry.LocationStreetSegment.Id }) |
+                    @Html.ActionLink(T("Delete").ToString(), "Delete", new { entry.LocationStreetSegment.Id }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                </td>
+            </tr>
+                index++;
+            }
+        </table>
+
+    @Display(Model.Pager)
+
+    </fieldset>
+} 

@@ -1,0 +1,39 @@
+﻿.tab1
+{
+    background-color: #ccc;
+    color: #fff;
+    font-weight: bold;
+    margin: 10px 0px 0px 0px;
+    padding: 0 0 0 0;
+}
+
+.tab1 a
+{
+    color: #fff;
+    text-decoration: none;
+}
+
+.tab1 .selected span
+{
+    background-color: #ffffff;
+    color: #000;
+}
+
+.tab1 .tab_item span
+{    
+    width: 225px;
+    float: left;
+    padding: 10px 0px;
+    text-align: center;
+}
+.tab1
+{
+    border-top: 1px solid #9ca3a8;
+    border-left: 1px solid #9ca3a8;
+    border-right: 1px solid #9ca3a8;
+}
+.tab1 .tab_item a:hover span
+{
+    background-color: #fff;
+    color: #000;
+}

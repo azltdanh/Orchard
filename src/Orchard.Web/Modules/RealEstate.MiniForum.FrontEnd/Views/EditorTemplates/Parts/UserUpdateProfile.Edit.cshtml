@@ -1,0 +1,49 @@
+﻿@using Orchard.Environment.Descriptor.Models
+@{
+    var userCurrent = WorkContext.CurrentUser.Id;
+}
+@using (Script.Foot())
+{
+    Script.Require("jQueryUI_DatePicker");
+    Script.Require("realEstate.MiniForum.FrontEnd");
+
+    <script type="text/javascript">
+        $(function () {
+            $(".edit-item-secondary").hide();
+            $(".secondary").hide();
+
+            //var _putCount = new PutCountClass();
+            //_putCount.PutCount();
+
+            $('#li-profile-info').click(function () {
+                if ($('#profile-view').find('.overlay-content-property').length > 0)
+                    $('#profile-view').load($(this).attr("data-url"), function () { });
+                $('.box-info-edit').hide();
+                $('#save-profile').hide();
+            });
+            $('#li-profile-edit').click(function () {
+                $('.box-info-edit').show();
+                $('#save-profile').show();
+            });
+        });
+    </script>
+}
+
+<div class="form-group row">
+    <div class="col-lg-12 col-xs-12 col-md-12 col-sm-12">
+        <ul class="nav nav-tabs">
+            <li id="li-profile-edit" class="active"><a href="#profile-edit" data-toggle="tab" id="edit-profile-current" style="cursor:pointer;">Cập nhật thông tin</a></li>
+            <li><a id="li-profile-info" href="#profile-view" data-toggle="tab" data-url="@Url.Action("ViewProfile", "UserUpdateProfile", new { area = "RealEstate.MiniForum.FrontEnd", id = userCurrent })">Xem thông tin</a></li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div class="tab-pane active" id="profile-edit"></div>
+            <div class="tab-pane" id="profile-view">
+                <div class="overlay-content-property">
+                    <img src="@Url.Content("~/Themes/Bootstrap/Styles/images/bigrotation2.gif")" class="img-load" alt="loading..." />
+                    <p>Đang tải...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

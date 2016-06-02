@@ -1,0 +1,94 @@
+﻿@model RealEstate.ViewModels.PropertyDisplayEntry
+@{
+    var item = Model.Property;    
+}
+
+<a href="@Url.Action("ResultFilter", "PropertySearch", 
+             new { area = "RealEstate.FrontEnd"})?AdsTypeId=@item.AdsType.Id&TypeId=@item.Type.Id&LocationId=@item.Location.Id&ProvinceId=@item.Province.Id">
+    @if(item.Location != null)
+    {
+        if(item.AdsType != null) { @item.AdsType.ShortName}<span> </span>
+        if(item.Type != null) {@item.Type.ShortName }<span> </span>
+        @item.Location.Name<br />
+    }
+</a>
+
+<a href="@Url.Action("ResultFilter", "PropertySearch", 
+             new { area = "RealEstate.FrontEnd"})?AdsTypeId=@item.AdsType.Id&TypeId=@item.Type.Id&StreetId=@item.Street.Id">
+    @if (item.Street != null) 
+    {
+        if(item.AdsType != null) { @item.AdsType.ShortName}<span> </span>
+        if(item.Type != null) {@item.Type.ShortName }<span> </span>
+        @item.Street.Name <br />
+    }
+</a>
+
+<a href="@Url.Action("ResultFilter", "PropertySearch", 
+             new { area = "RealEstate.FrontEnd"})?AdsTypeId=@item.AdsType.Id&TypeId=@item.Type.Id&WardId=@item.Ward.Id">
+    @if (item.Ward != null)
+    {
+        if(item.AdsType != null) { @item.AdsType.ShortName}<span> </span>
+        if(item.Type != null) {@item.Type.ShortName }<span> </span>
+        @item.Ward.Name <span> </span>if (item.District != null){@item.District.Name}<br />
+    }
+</a>
+
+<a href="@Url.Action("ResultFilter", "PropertySearch", 
+             new { area = "RealEstate.FrontEnd"})?AdsTypeId=@item.AdsType.Id&TypeId=@item.Type.Id&DistrictId=@item.District.Id">
+    @if (item.District != null)
+    {
+        if(item.AdsType != null) { @item.AdsType.ShortName}<span> </span>
+        if(item.Type != null) {@item.Type.ShortName }<span> </span>
+        @item.District.Name <br />
+    }
+</a>
+
+<a href="@Url.Action("ResultFilter", "PropertySearch", 
+             new { area = "RealEstate.FrontEnd"})?AdsTypeId=@item.AdsType.Id&TypeId=@item.Type.Id&ProvinceId=@item.Province.Id">
+    @if (item.Province != null)
+    {
+        if(item.AdsType != null) { @item.AdsType.ShortName}<span> </span>
+        if(item.Type != null) {@item.Type.ShortName }<span> </span>
+        @item.Province.ShortName <br />
+    }
+</a>
+
+<a href="@Url.Action("ResultFilter", "PropertySearch", 
+             new { area = "RealEstate.FrontEnd"})?AdsTypeId=@item.AdsType.Id&TypeId=@item.Type.Id&AdsGoodDeal=true&ProvinceId=@item.Province.Id">
+    @if (item.AdsGoodDeal == true)
+    {
+        if(item.AdsType != null) { @item.AdsType.ShortName}<span> </span>
+        if(item.Type != null) {@item.Type.ShortName }<span> </span>
+        <span>giá rẻ</span><br />
+    }
+</a>
+
+<a href="@Url.Action("ResultFilter", "PropertySearch", 
+             new { area = "RealEstate.FrontEnd"})?AdsTypeId=@item.AdsType.Id&TypeId=@item.Type.Id&AdsVIP=true&ProvinceId=@item.Province.Id">
+    @if (item.AdsVIP == true)
+    {
+        if(item.AdsType != null) { @item.AdsType.ShortName}<span> </span>
+        if(item.Type != null) {@item.Type.ShortName }<span> </span>
+        <span>gấp</span><br />
+    }
+</a>
+
+<a href="@Url.Action("ResultFilter", "PropertySearch", 
+             new { area = "RealEstate.FrontEnd"})?AdsTypeId=@item.AdsType.Id&TypeId=@item.Type.Id&IsOwner=true&ProvinceId=@item.Province.Id">
+    @if (item.IsOwner == true)
+    {
+        if(item.AdsType != null) { @item.AdsType.ShortName}<span> </span>
+        if(item.Type != null) {@item.Type.ShortName }<span> </span>
+        <span>chính chủ</span><br />
+    }
+</a>
+
+<a href="@Url.Action("ResultFilter", "PropertySearch", 
+             new { area = "RealEstate.FrontEnd"})?AdsTypeId=@item.AdsType.Id&TypeId=@item.Type.Id&IsAuction=true&ProvinceId=@item.Province.Id">
+    @if (item.IsAuction == true)
+    {
+        if(item.AdsType != null) { @item.AdsType.ShortName}<span> </span>
+        if(item.Type != null) {@item.Type.ShortName }<span> </span>
+        <span>phát mãi</span><br />
+    }
+</a>

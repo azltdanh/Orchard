@@ -1,0 +1,17 @@
+﻿@{ Layout.Title = T("Đăng tin").ToString(); }
+
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Post, new { enctype = "multipart/form-data", Class = "formvalidate" }))
+{ 
+    @Html.ValidationSummary() 
+    // Model is a Shape, calling Display() so that it is rendered using the most specific template for its Shape type
+    @Display(Model)
+    
+    <button value="submit.Create" name="submit.Create" type="submit" id="submit.Create" class="btn btn-warning">Đăng tin</button>
+
+}
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        $(".edit-item-secondary .group").hide();
+    </script>
+}

@@ -1,0 +1,57 @@
+﻿@model RealEstate.ViewModels.PropertyDisplayIndexViewModel
+@{
+    if (!string.IsNullOrEmpty(Model.Options.MetaTitle))
+    {
+        Layout.Title = Html.Raw(Model.Options.MetaTitle);
+        SetMeta("description", Model.Options.MetaDescription);
+        SetMeta("keywords", Model.Options.MetaKeywords);
+    }
+}
+<!-- BĐS mới đang -->
+<article class="content-item block_filter">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left">
+                    <div class="header-title-triangle"></div>
+                </div>
+                <h2 class="header-title-text">@Model.Options.TitleArticle <span class="text-danger">(@Model.TotalCount)</span></h2>
+                <div class="header-title-right"></div>
+            </div>
+            <div class="header-msg text-ellipsis">
+            </div>
+        </div>
+    </header>
+    @if (Model.Properties.Count() > 0)
+    {
+        <article class="content-filter">
+            <div id="ViewResultFilter" class="lst-result-filter">
+                <div class="pager-top">
+                </div>
+                <div>
+                    @Html.Partial("ListPropertiesDeal", Model.Properties)
+                </div>
+                <div class="pager-bottom">
+                    @Display(Model.Pager)
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </article>
+    }
+    else
+    {
+        @Html.Partial("NoResult")
+    }
+</article>
+@using (Script.Foot())
+{
+    if (!string.IsNullOrEmpty(Model.Options.MetaTitle))
+    {
+        <script>
+            $(document).ready(function() {
+                $('.marquee-title').replaceWith('<h2 class="marquee-title page-title text-ellipsis  pull-left col-lg-7 col-sm-7 col-md-7 col-xs-7">' + "@(Model.Options.MetaTitle)" + '</h2>');
+                //scroll
+            });
+        </script>
+    }
+}

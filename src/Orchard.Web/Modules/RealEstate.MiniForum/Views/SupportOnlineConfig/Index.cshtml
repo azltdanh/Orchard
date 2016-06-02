@@ -1,0 +1,70 @@
+@model RealEstateForum.Service.ViewModels.SupportOnlineIndexConfigViewModel
+
+@{
+   // Script.Require("Common");
+    Layout.Title = T("Support online config").ToString();
+}
+
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Get))
+{      
+    @Html.ValidationSummary()
+
+    <fieldset class="bulk-actions left">
+
+        <label for="filterResults">@T("Search text: ")</label>
+        @Html.TextBoxFor(m => m.Options.Search, new { @class = "text" })        
+        
+        <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+
+    </fieldset>
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{ 
+    @Html.ValidationSummary()
+
+    <fieldset class="bulk-actions right">
+        <div class="manage">@Html.ActionLink(T("Add SupportOnline").ToString(), "Create", new { returnUrl = HttpContext.Current.Request.Url }, new { @class = "button primaryAction" })</div>
+    </fieldset>
+    
+    <fieldset>
+        <table class="items">
+            <thead>
+                <tr>
+                    <th scope="col"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.Supportss)" /></th>
+                    <th scope="col">@T("Number Phone")</th>
+                    <th scope="col">@T("Skype Nick")</th>
+                    <th scope="col">@T("Yahoo Nick")</th>
+                    <th scope="col">@T("Actions")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.Supportss)
+            { 
+            <tr>
+                <td>
+                    <input type="hidden" value="@Model.Supportss[index].Supports.Id" name="@Html.NameOf(m => m.Supportss[index].Supports.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.Supportss[index].IsChecked)"/>
+                </td>
+                <td>
+                    @Html.Raw(entry.Supports.NumberPhone)
+                </td>
+                <td>
+                    @entry.Supports.SkypeNick
+                </td>
+                <td>
+                    @entry.Supports.YahooNick
+                </td>
+                <td>
+                    @Html.ActionLink(T("Edit").ToString(), "Edit", new { entry.Supports.Id, returnUrl = HttpContext.Current.Request.Url }) |
+                    @Html.ActionLink(T("Delete").ToString(), "Delete", new { entry.Supports.Id, returnUrl = HttpContext.Current.Request.Url }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                </td>
+            </tr>
+                index++;
+            }
+        </table>
+
+        @Display(Model.Pager)
+
+    </fieldset>
+} 

@@ -1,0 +1,27 @@
+﻿@using RealEstate.FrontEnd.ViewModels;
+@using RealEstate.Models;
+
+@{
+    var CountLeasing = (int)Model.CountLeasing;
+}
+<div class="header-msg text-right">
+    <a rel="nofollow" class="text-success text-underline" href="@Url.Action("Create", "Home", new { AdsGoodDealRequest = true })"><i class="icon_silk_layout_add"></i>Đăng tin rao</a>
+</div>
+<div class="row padding-top-5 padding-bottom-5">
+    <div class="padding-left-8 padding-right-9">
+        <div class="col-md-12 no-padding">
+            <div class="ViewResultFilterPropertiesDeal">
+                <div id="ViewGoodDeal-ad-leasing" class="ajax-content ajax-paging" data-url="@Url.Action("AjaxProperties", "PropertySearch", new { area = "RealEstate.FrontEnd", FlagAds = "new-leasing", AdsTypeCssClass = "ad-leasing" })">
+                    @Html.Partial("Loading")
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>
+@using (Script.Foot())
+{
+    <script>
+        $('.widget-property-leasing-new-widget .header-title-text').append(' (' + @CountLeasing + ')');
+    </script>
+}

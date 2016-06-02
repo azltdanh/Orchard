@@ -1,0 +1,87 @@
+﻿@model RealEstate.ViewModels.LocationStreetSegmentCreateViewModel
+@{
+    Style.Require("jQueryUI_Orchard");
+    Script.Require("Combobox");
+}
+
+<fieldset>
+    @Html.LabelFor(m => m.ProvinceId, T("Province"))
+    @Html.DropDownListFor(m => m.ProvinceId,
+    Model.Provinces.Select(s => new SelectListItem
+    {
+        Selected = s.Id == Model.ProvinceId,
+        Text = s.Name,
+        Value = s.Id.ToString()
+    }),
+    "-- Select --")
+    @Html.ValidationMessageFor(m => m.ProvinceId, "*")
+</fieldset>   
+<fieldset>
+    @Html.LabelFor(m => m.DistrictId, T("District"))
+    @Html.DropDownListFor(m => m.DistrictId,
+    Model.Districts.Select(s => new SelectListItem
+    {
+        Selected = s.Id == Model.DistrictId,
+        Text = s.Name,
+        Value = s.Id.ToString()
+    }),
+    "-- Select --")
+    @Html.ValidationMessageFor(m => m.DistrictId, "*")
+</fieldset>   
+<fieldset>
+    @Html.LabelFor(m => m.StreetId, T("StreetId"))
+    @Html.DropDownListFor(m => m.StreetId,
+    Model.Streets.Select(s => new SelectListItem
+    {
+        Selected = s.Id == Model.StreetId,
+        Text = s.Name,
+        Value = s.Id.ToString()
+    }),
+    "-- Select --")
+    @Html.ValidationMessageFor(m => m.StreetId, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.FromNumber, T("FromNumber"))
+    @Html.TextBoxFor(m => m.FromNumber, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.FromNumber, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.ToNumber, T("ToNumber"))
+    @Html.TextBoxFor(m => m.ToNumber, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.ToNumber, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.IsEnabled, T("IsEnabled"))
+    @Html.EditorFor(m => m.IsEnabled)
+    @Html.ValidationMessageFor(m => m.IsEnabled, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.StreetWidth, T("StreetWidth"))
+    @Html.TextBoxFor(m => m.StreetWidth, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.StreetWidth, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.CoefficientAlley1Max, T("CoefficientAlley1Max"))
+    @Html.TextBoxFor(m => m.CoefficientAlley1Max, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.CoefficientAlley1Max, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.CoefficientAlley1Min, T("CoefficientAlley1Min"))
+    @Html.TextBoxFor(m => m.CoefficientAlley1Min, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.CoefficientAlley1Min, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.CoefficientAlleyMax, T("CoefficientAlleyMax"))
+    @Html.TextBoxFor(m => m.CoefficientAlleyMax, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.CoefficientAlleyMax, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.CoefficientAlleyMin, T("CoefficientAlleyMin"))
+    @Html.TextBoxFor(m => m.CoefficientAlleyMin, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.CoefficientAlleyMin, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.CoefficientAlleyEqual, T("CoefficientAlleyEqual"))
+    @Html.TextBoxFor(m => m.CoefficientAlleyEqual, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.CoefficientAlleyEqual, "*")
+</fieldset>

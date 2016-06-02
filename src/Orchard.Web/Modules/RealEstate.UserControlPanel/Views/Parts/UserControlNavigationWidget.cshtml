@@ -1,0 +1,22 @@
+﻿@using RealEstate.UserControlPanel.Models;
+@using RealEstate.UserControlPanel.ViewModels;
+
+@using (Html.BeginFormAntiForgeryPost())
+{
+<div class="layout-right-container">
+    <div class="right_main">
+    <div class="sidebar-content">
+        <div class="items">@Html.ActionLink("Thông tin cá nhân", "EditProfile", new RouteValueDictionary {
+                            {"area", "RealEstateForum.FrontEnd"},
+                            {"controller", "UserProfile"},
+                            {"action", "EditProfile"}
+                        })</div>
+        <div class="items">@Html.ActionLink("Thay đổi mật khẩu", "ChangePassword", new RouteValueDictionary {
+                            {"area", "Orchard.Users"},
+                            {"controller", "Account"},
+                            {"action", "ChangePassword"}
+                        })</div>
+    </div>
+    </div>
+</div>
+}

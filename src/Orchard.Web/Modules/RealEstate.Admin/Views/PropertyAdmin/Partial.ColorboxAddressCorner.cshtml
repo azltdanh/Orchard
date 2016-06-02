@@ -1,0 +1,15 @@
+﻿<div style="display: none">
+    <div style="padding: 10px; background: #fff;" id="colorbox_addresscorner">
+        <div class="text-center"><img alt="Hướng dẫn ghi số nhà" src="/Themes/Bootstrap/Styles/images/huong-dan-ghi-so-nha.png" /></div>
+    </div>
+</div>
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        $(function () {
+            $('.inline-addresscorner').click(function () {
+                $(this).colorbox({ inline: true, width: "50%" });
+            });
+        });
+    </script>
+}

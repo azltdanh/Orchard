@@ -1,0 +1,95 @@
+@model RealEstate.ViewModels.LocationProvincesIndexViewModel
+@using RealEstate.Models;
+@using RealEstate.ViewModels;
+
+@{
+    Script.Require("Common");
+    Layout.Title = T("Location Provinces").ToString();
+}
+
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Get))
+{      
+    @Html.ValidationSummary()
+
+    <fieldset class="bulk-actions left">
+
+        <label for="filterResults">@T("Province Name:")</label>
+        @Html.TextBoxFor(m => m.Options.Search, new { @class = "text" })        
+        
+        <label for="filterResults">@T("Filter:")</label>
+        <select id="filterResults" name="@Html.NameOf(m => m.Options.Filter)">
+            @Html.SelectOption(Model.Options.Filter, LocationProvincesFilter.All, T("All").ToString())
+        </select>
+
+        <label for="filterResults">@T("Sort by:")</label>
+        <select id="filterResults1" name="@Html.NameOf(m => m.Options.Order)">
+            @Html.SelectOption(Model.Options.Order, LocationProvincesOrder.Name, T("Name").ToString())
+            @Html.SelectOption(Model.Options.Order, LocationProvincesOrder.SeqOrder, T("SeqOrder").ToString())
+        </select>
+
+        <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+
+    </fieldset>
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{ 
+    @Html.ValidationSummary()
+
+    <fieldset class="bulk-actions right">
+        <label for="publishActions">@T("Actions:")</label>
+        <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+            @Html.SelectOption(Model.Options.BulkAction, LocationProvincesBulkAction.None, T("Choose action...").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, LocationProvincesBulkAction.Enable, T("Enable").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, LocationProvincesBulkAction.Disable, T("Disable").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, LocationProvincesBulkAction.Delete, T("Delete").ToString())
+        </select>
+        <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+    <div class="manage">@Html.ActionLink(T("Add new Province").ToString(), "Create", new { returnUrl = HttpContext.Current.Request.Url }, new { @class = "button primaryAction" })</div>
+    </fieldset>
+    
+    <fieldset>
+        <table class="items">
+            <thead>
+                <tr>
+                    <th scope="col"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.LocationProvinces)" /></th>
+                    <th scope="col">@T("Name")</th>
+                    <th scope="col">@T("ShortName")</th>
+                    <th scope="col">@T("SeqOrder")</th>
+                    <th scope="col">@T("IsEnabled")</th>
+                    <th scope="col">@T("Actions")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.LocationProvinces)
+            { 
+            <tr>
+                <td>
+                    <input type="hidden" value="@Model.LocationProvinces[index].LocationProvince.Id" name="@Html.NameOf(m => m.LocationProvinces[index].LocationProvince.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.LocationProvinces[index].IsChecked)"/>
+                </td>
+                <td>
+                    @Html.ActionLink(entry.LocationProvince.Name, "Edit", new { entry.LocationProvince.Id, returnUrl = HttpContext.Current.Request.Url }) 
+                </td>
+                <td>
+                    @entry.LocationProvince.ShortName 
+                </td>
+                <td>
+                    @entry.LocationProvince.SeqOrder 
+                </td>
+                <td>
+                    @entry.LocationProvince.IsEnabled 
+                </td>
+                <td>
+                    @Html.ActionLink(T("Edit").ToString(), "Edit", new { entry.LocationProvince.Id, returnUrl = HttpContext.Current.Request.Url }) |
+                    @Html.ActionLink(T("Delete").ToString(), "Delete", new { entry.LocationProvince.Id, returnUrl = HttpContext.Current.Request.Url }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                </td>
+            </tr>
+                index++;
+            }
+        </table>
+
+        @Display(Model.Pager)
+
+    </fieldset>
+} 

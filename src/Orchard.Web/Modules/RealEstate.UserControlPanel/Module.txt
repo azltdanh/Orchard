@@ -1,0 +1,10 @@
+﻿Name: RealEstate.UserControlPanel
+AntiForgery: enabled
+Author: The Orchard Team
+Website: http://orchardproject.net
+Version: 1.7
+OrchardVersion: 1.7
+Description: Description for the module
+Features:
+    RealEstate.UserControlPanel:
+        Description: Description for feature RealEstate.UserControlPanel.

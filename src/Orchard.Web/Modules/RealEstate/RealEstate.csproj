@@ -1,0 +1,479 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{5B06CE37-DC39-487C-AB1B-ED8890E92CD9}</ProjectGuid>
+    <ProjectTypeGuids>{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RealEstate</RootNamespace>
+    <AssemblyName>RealEstate</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>4.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>default</LangVersion>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Contrib.OnlineUsers">
+      <HintPath>..\Contrib.OnlineUsers\bin\Contrib.OnlineUsers.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Facebook">
+      <HintPath>..\..\bin\Facebook.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Google.GData.Client, Version=2.2.0.0, Culture=neutral, PublicKeyToken=04a59ca9b0273830, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Google.GData.Client.DLL</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Google.GData.Extensions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=0b4c5df2ebf20876, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Google.GData.Extensions.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Google.GData.YouTube">
+      <HintPath>..\..\bin\Google.GData.YouTube.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="GoogleMapsApi">
+      <HintPath>..\..\bin\GoogleMapsApi.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ImageResizer">
+      <HintPath>..\..\bin\ImageResizer.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\bin\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Orchard.Roles">
+      <HintPath>..\Orchard.Roles\bin\Orchard.Roles.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Orchard.Tags">
+      <HintPath>..\Orchard.Tags\bin\Orchard.Tags.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Orchard.Users">
+      <HintPath>..\Orchard.Users\bin\Orchard.Users.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Piedone.Facebook.Suite">
+      <HintPath>..\Piedone.Facebook.Suite\bin\Piedone.Facebook.Suite.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Piedone.Facebook.Suite.Connect">
+      <HintPath>..\Piedone.Facebook.Suite.Connect\bin\Piedone.Facebook.Suite.Connect.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.ComponentModel.DataAnnotations">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\System.Net.Http.Formatting.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\System.Web.Helpers.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\System.Web.Mvc.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\System.Web.Razor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Vandelay.Industries">
+      <HintPath>..\Vandelay.Industries\bin\Vandelay.Industries.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Web.config" />
+    <Content Include="Placement.info">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Module.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Orchard.Core">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Orchard.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Orchard.Framework">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Orchard.Framework.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Drivers\ApartmentBlockInfoPartDriver.cs" />
+    <Compile Include="Drivers\ExchangeTypePartDriver.cs" />
+    <Compile Include="Drivers\GroupInApartmentBlockPartDriver.cs" />
+    <Compile Include="Drivers\LocationApartmentBlockPartDriver.cs" />
+    <Compile Include="Drivers\NewsVideoPartDriver.cs" />
+    <Compile Include="Drivers\PropertyGroupPartDriver.cs" />
+    <Compile Include="Drivers\ContactPartDriver.cs" />
+    <Compile Include="Drivers\CoefficientLengthPartDriver.cs" />
+    <Compile Include="Drivers\CoefficientAlleyPartDriver.cs" />
+    <Compile Include="Drivers\CoefficientAlleyDistancePartDriver.cs" />
+    <Compile Include="Drivers\AdsTypePartDriver.cs" />
+    <Compile Include="Drivers\CoefficientApartmentFloorsPartDriver.cs" />
+    <Compile Include="Drivers\CoefficientApartmentFloorThPartDriver.cs" />
+    <Compile Include="Drivers\HostNamePartDriver.cs" />
+    <Compile Include="Drivers\LocationApartmentRelationPartDriver.cs" />
+    <Compile Include="Drivers\LocationApartmentPartDriver.cs" />
+    <Compile Include="Drivers\AdsPaymentConfigPartDriver.cs" />
+    <Compile Include="Drivers\AdsPaymentHistoryPartDriver.cs" />
+    <Compile Include="Drivers\PropertyTypeConstructionPartDriver.cs" />
+    <Compile Include="Drivers\UserGroupPartDriver.cs" />
+    <Compile Include="Drivers\PropertyAdvantagePartDriver.cs" />
+    <Compile Include="Drivers\UserActionPartDriver.cs" />
+    <Compile Include="Drivers\CustomerFeedbackPartDriver.cs" />
+    <Compile Include="Drivers\CustomerPurposePartDriver.cs" />
+    <Compile Include="Drivers\CustomerPartDriver.cs" />
+    <Compile Include="Drivers\RevisionPartDriver.cs" />
+    <Compile Include="Drivers\CustomerStatusPartDriver.cs" />
+    <Compile Include="Drivers\PropertyFilePartDriver.cs" />
+    <Compile Include="Drivers\PropertySettingPartDriver.cs" />
+    <Compile Include="Drivers\PropertyPartDriver.cs" />
+    <Compile Include="Drivers\PropertyTypeGroupPartDriver.cs" />
+    <Compile Include="Drivers\PropertyTypePartDriver.cs" />
+    <Compile Include="Drivers\VideoManagePartDriver.cs" />
+    <Compile Include="Drivers\VideoTypePartDriver.cs" />
+    <Compile Include="Extensions\Validation.cs" />
+    <Compile Include="Filters\HostNameFilter.cs" />
+    <Compile Include="Handlers\ApartmentBlockInfoPartHandler.cs" />
+    <Compile Include="Handlers\CoefficientLengthPartHandler.cs" />
+    <Compile Include="Handlers\CoefficientAlleyPartHandler.cs" />
+    <Compile Include="Handlers\CoefficientAlleyDistancePartHandler.cs" />
+    <Compile Include="Handlers\AdsTypePartHandler.cs" />
+    <Compile Include="Handlers\CoefficientApartmentFloorsPartHandler.cs" />
+    <Compile Include="Handlers\CoefficientApartmentFloorThPartHandler.cs" />
+    <Compile Include="Handlers\ExchangeTypePartHandler.cs" />
+    <Compile Include="Handlers\GroupInApartmentBlockPartHandler.cs" />
+    <Compile Include="Handlers\HostNamePartHandler.cs" />
+    <Compile Include="Handlers\LocationApartmentBlockPartHandler.cs" />
+    <Compile Include="Handlers\LocationApartmentRelationPartHandler.cs" />
+    <Compile Include="Handlers\LocationApartmentPartHandler.cs" />
+    <Compile Include="Handlers\AdsPaymentConfigPartHandler.cs" />
+    <Compile Include="Handlers\AdsPaymentHistoryPartHandler.cs" />
+    <Compile Include="Handlers\NewsVideoPartHandler.cs" />
+    <Compile Include="Handlers\PropertyGroupPartHandler.cs" />
+    <Compile Include="Handlers\PropertyTypeConstructionPartHandler.cs" />
+    <Compile Include="Handlers\UserGroupPartHandler.cs" />
+    <Compile Include="Handlers\PropertyAdvantagePartHandler.cs" />
+    <Compile Include="Handlers\UserActionPartHandler.cs" />
+    <Compile Include="Handlers\CustomerFeedbackPartHandler.cs" />
+    <Compile Include="Handlers\CustomerPurposePartHandler.cs" />
+    <Compile Include="Handlers\CustomerPartHandler.cs" />
+    <Compile Include="Handlers\RevisionPartHandler.cs" />
+    <Compile Include="Handlers\CustomerStatusPartHandler.cs" />
+    <Compile Include="Handlers\PropertyFilePartHandler.cs" />
+    <Compile Include="Handlers\PropertySettingPartHandler.cs" />
+    <Compile Include="Handlers\PropertyPartHandler.cs" />
+    <Compile Include="Handlers\PropertyTypeGroupPartHandler.cs" />
+    <Compile Include="Handlers\PropertyTypePartHandler.cs" />
+    <Compile Include="Handlers\VideoManagePartHandler.cs" />
+    <Compile Include="Handlers\VideoTypePartHandler.cs" />
+    <Compile Include="Helpers\CsvSplit.cs" />
+    <Compile Include="Helpers\FileHelper.cs" />
+    <Compile Include="Helpers\FilterIPAttribute.cs" />
+    <Compile Include="Helpers\HtmlHelpers.cs" />
+    <Compile Include="Helpers\IPList.cs" />
+    <Compile Include="Migrations.cs" />
+    <Compile Include="Models\ApartmentBlockInfoPart.cs" />
+    <Compile Include="Models\ContactPart.cs" />
+    <Compile Include="Handlers\DirectionPartHandler.cs" />
+    <Compile Include="Drivers\DirectionPartDriver.cs" />
+    <Compile Include="Models\CoefficientLengthPart.cs" />
+    <Compile Include="Models\CoefficientAlleyPart.cs" />
+    <Compile Include="Models\CoefficientAlleyDistancePart.cs" />
+    <Compile Include="Models\AdsTypePart.cs" />
+    <Compile Include="Models\CoefficientApartmentFloorsPart.cs" />
+    <Compile Include="Models\CoefficientApartmentFloorThPart.cs" />
+    <Compile Include="Models\AdsPaymentConfigPart.cs" />
+    <Compile Include="Models\AdsPaymentHistoryPart.cs" />
+    <Compile Include="Models\ExchangeTypePart.cs" />
+    <Compile Include="Models\GroupInApartmentBlockPart.cs" />
+    <Compile Include="Models\LocationApartmentBlockPart.cs" />
+    <Compile Include="Models\NewsVideoPart.cs" />
+    <Compile Include="Models\PropertyGroupPart.cs" />
+    <Compile Include="Models\HostNamePart.cs" />
+    <Compile Include="Models\LocationStreetResults.cs" />
+    <Compile Include="Models\PropertyExchangeRecord.cs" />
+    <Compile Include="Models\UserGroupContactRecord.cs" />
+    <Compile Include="Models\LocationApartmentRelationPart.cs" />
+    <Compile Include="Models\LocationApartmentAdvantagePartRecordContent.cs" />
+    <Compile Include="Models\LocationApartmentPart.cs" />
+    <Compile Include="Models\PlanningMapRecord.cs" />
+    <Compile Include="Models\PropertyTypePart.cs" />
+    <Compile Include="Models\UnEstimatedLocationRecord.cs" />
+    <Compile Include="Models\UserGroupSharedLocationRecord.cs" />
+    <Compile Include="Models\UserLocationRecord.cs" />
+    <Compile Include="Models\UserGroupLocationRecord.cs" />
+    <Compile Include="Models\UserInGroupPart.cs" />
+    <Compile Include="Models\UserGroupPart.cs" />
+    <Compile Include="Models\PropertyAdvantagePart.cs" />
+    <Compile Include="Models\PropertyAdvantagePartRecordContent.cs" />
+    <Compile Include="Models\UserActivityPart.cs" />
+    <Compile Include="Models\UserActionPart.cs" />
+    <Compile Include="Models\CustomerPropertyUserRecord.cs" />
+    <Compile Include="Models\CustomerPropertyRecord.cs" />
+    <Compile Include="Models\CustomerRequirementRecord.cs" />
+    <Compile Include="Models\CustomerFeedbackPart.cs" />
+    <Compile Include="Models\CustomerPurposePartRecordContent.cs" />
+    <Compile Include="Models\CustomerPurposePart.cs" />
+    <Compile Include="Models\CustomerStatusPart.cs" />
+    <Compile Include="Models\CustomerPart.cs" />
+    <Compile Include="Models\RevisionPart.cs" />
+    <Compile Include="Models\DiskFileStore.cs" />
+    <Compile Include="Models\IFileStore.cs" />
+    <Compile Include="Models\PropertyFilePart.cs" />
+    <Compile Include="Models\PropertySettingPart.cs" />
+    <Compile Include="Models\PropertyTypeGroupPart.cs" />
+    <Compile Include="Models\PropertyTypeConstructionPart.cs" />
+    <Compile Include="Models\PropertyPart.cs" />
+    <Compile Include="Models\DirectionPart.cs" />
+    <Compile Include="Handlers\PaymentUnitPartHandler.cs" />
+    <Compile Include="Drivers\PaymentUnitPartDriver.cs" />
+    <Compile Include="Models\PaymentUnitPart.cs" />
+    <Compile Include="Handlers\PaymentMethodPartHandler.cs" />
+    <Compile Include="Drivers\PaymentMethodPartDriver.cs" />
+    <Compile Include="Models\PaymentMethodPart.cs" />
+    <Compile Include="Handlers\PropertyStatusPartHandler.cs" />
+    <Compile Include="Drivers\PropertyStatusPartDriver.cs" />
+    <Compile Include="Models\PropertyStatusPart.cs" />
+    <Compile Include="Handlers\PropertyLegalStatusPartHandler.cs" />
+    <Compile Include="Drivers\PropertyLegalStatusPartDriver.cs" />
+    <Compile Include="Models\PropertyLegalStatusPart.cs" />
+    <Compile Include="Handlers\PropertyFlagPartHandler.cs" />
+    <Compile Include="Drivers\PropertyFlagPartDriver.cs" />
+    <Compile Include="Models\PropertyFlagPart.cs" />
+    <Compile Include="Handlers\PropertyLocationPartHandler.cs" />
+    <Compile Include="Drivers\PropertyLocationPartDriver.cs" />
+    <Compile Include="Models\PropertyLocationPart.cs" />
+    <Compile Include="Handlers\PropertyInteriorPartHandler.cs" />
+    <Compile Include="Drivers\PropertyInteriorPartDriver.cs" />
+    <Compile Include="Models\PropertyInteriorPart.cs" />
+    <Compile Include="Handlers\PaymentExchangePartHandler.cs" />
+    <Compile Include="Drivers\PaymentExchangePartDriver.cs" />
+    <Compile Include="Models\PaymentExchangePart.cs" />
+    <Compile Include="Handlers\LocationProvincePartHandler.cs" />
+    <Compile Include="Drivers\LocationProvincePartDriver.cs" />
+    <Compile Include="Models\LocationProvincePart.cs" />
+    <Compile Include="Handlers\LocationDistrictPartHandler.cs" />
+    <Compile Include="Drivers\LocationDistrictPartDriver.cs" />
+    <Compile Include="Models\LocationDistrictPart.cs" />
+    <Compile Include="Handlers\LocationWardPartHandler.cs" />
+    <Compile Include="Drivers\LocationWardPartDriver.cs" />
+    <Compile Include="Models\LocationWardPart.cs" />
+    <Compile Include="Handlers\LocationStreetPartHandler.cs" />
+    <Compile Include="Drivers\LocationStreetPartDriver.cs" />
+    <Compile Include="Models\LocationStreetPart.cs" />
+    <Compile Include="Handlers\AddressPartHandler.cs" />
+    <Compile Include="Drivers\AddressPartDriver.cs" />
+    <Compile Include="Models\AddressPart.cs" />
+    <Compile Include="Handlers\StreetRelationPartHandler.cs" />
+    <Compile Include="Drivers\StreetRelationPartDriver.cs" />
+    <Compile Include="Models\StreetRelationPart.cs" />
+    <Compile Include="Handlers\ContactPartHandler.cs" />
+    <Compile Include="Models\PropertyUserPartRecordContent.cs" />
+    <Compile Include="Models\VideoManagePart.cs" />
+    <Compile Include="Models\VideoTypePart.cs" />
+    <Compile Include="Permissions.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Services\AddressService.cs" />
+    <Compile Include="Services\AdsPaymentHistoryService.cs" />
+    <Compile Include="Services\CoefficientLengthService.cs" />
+    <Compile Include="Services\CoefficientAlleyDistanceService.cs" />
+    <Compile Include="Services\CoefficientAlleyService.cs" />
+    <Compile Include="Services\AdsTypeService.cs" />
+    <Compile Include="Services\CoefficientApartmentFloorsService.cs" />
+    <Compile Include="Services\CoefficientApartmentFloorThService.cs" />
+    <Compile Include="Services\CustomerPurposeService.cs" />
+    <Compile Include="Services\CustomerFeedbackService.cs" />
+    <Compile Include="Services\HostNameService.cs" />
+    <Compile Include="Services\FacebookAPIService.cs" />
+    <Compile Include="Services\LocationApartmentRelationService.cs" />
+    <Compile Include="Services\LocationApartmentService.cs" />
+    <Compile Include="Services\GoogleAPIService.cs" />
+    <Compile Include="Services\PropertyTypeConstructionService.cs" />
+    <Compile Include="Services\PropertyExchangeService.cs" />
+    <Compile Include="Services\UserGroupService.cs" />
+    <Compile Include="Services\PropertyAdvantageService.cs" />
+    <Compile Include="Services\UserActionService.cs" />
+    <Compile Include="Services\RevisionService.cs" />
+    <Compile Include="Services\CustomerService.cs" />
+    <Compile Include="Services\CustomerStatusService.cs" />
+    <Compile Include="Services\PropertyFileService.cs" />
+    <Compile Include="Services\PropertySettingService.cs" />
+    <Compile Include="Services\PropertyService.cs" />
+    <Compile Include="Services\PropertyTypeGroupService.cs" />
+    <Compile Include="Services\PropertyTypeService.cs" />
+    <Compile Include="Services\StreetRelationService.cs" />
+    <Compile Include="Services\LocationStreetService.cs" />
+    <Compile Include="Services\LocationWardService.cs" />
+    <Compile Include="Services\LocationDistrictService.cs" />
+    <Compile Include="Services\PaymentExchangeService.cs" />
+    <Compile Include="Services\PaymentUnitService.cs" />
+    <Compile Include="Services\PaymentMethodService.cs" />
+    <Compile Include="Services\PropertyLegalStatusService.cs" />
+    <Compile Include="Services\PropertyInteriorService.cs" />
+    <Compile Include="Services\PropertyLocationService.cs" />
+    <Compile Include="Services\PropertyFlagService.cs" />
+    <Compile Include="Services\PropertyStatusService.cs" />
+    <Compile Include="Services\DirectionService.cs" />
+    <Compile Include="Services\LocationProvinceService.cs" />
+    <Compile Include="Services\UserPersonalService.cs" />
+    <Compile Include="Services\VideoManageService.cs" />
+    <Compile Include="ViewModels\AdsPaymentViewModel.cs" />
+    <Compile Include="ViewModels\CoefficientLengthViewModel.cs" />
+    <Compile Include="ViewModels\CoefficientAlleyViewModel.cs" />
+    <Compile Include="ViewModels\CoefficientAlleyDistanceViewModel.cs" />
+    <Compile Include="ViewModels\AdsTypeViewModel.cs" />
+    <Compile Include="ViewModels\CoefficientApartmentFloorsViewModel.cs" />
+    <Compile Include="ViewModels\CoefficientApartmentFloorThViewModel.cs" />
+    <Compile Include="ViewModels\CustomerPurposeViewModel.cs" />
+    <Compile Include="ViewModels\CustomerFeedbackViewModel.cs" />
+    <Compile Include="ViewModels\LocationApartmentBlockViewModel.cs" />
+    <Compile Include="ViewModels\LocationApartmentRelationViewModel.cs" />
+    <Compile Include="ViewModels\LocationApartmentViewModel.cs" />
+    <Compile Include="ViewModels\GoogleAPIViewModel.cs" />
+    <Compile Include="ViewModels\NewsVideoViewModel.cs" />
+    <Compile Include="ViewModels\PlanningMapViewModel.cs" />
+    <Compile Include="ViewModels\PropertyDisplayEntryViewModel.cs" />
+    <Compile Include="ViewModels\PropertyTypeConstructionViewModel.cs" />
+    <Compile Include="ViewModels\PropertyExchangeViewModel.cs" />
+    <Compile Include="ViewModels\UnEstimatedLocationViewModel.cs" />
+    <Compile Include="ViewModels\UserInGroupViewModel.cs" />
+    <Compile Include="ViewModels\UserGroupViewModel.cs" />
+    <Compile Include="ViewModels\PropertyAdvantageViewModel.cs" />
+    <Compile Include="ViewModels\UserActionViewModel.cs" />
+    <Compile Include="ViewModels\CustomerRequirementViewModel.cs" />
+    <Compile Include="ViewModels\CustomerViewModel.cs" />
+    <Compile Include="ViewModels\RevisionViewModel.cs" />
+    <Compile Include="ViewModels\CustomerStatusViewModel.cs" />
+    <Compile Include="ViewModels\PropertyFileViewModel.cs" />
+    <Compile Include="ViewModels\PropertySettingViewModel.cs" />
+    <Compile Include="ViewModels\PropertyViewModel.cs" />
+    <Compile Include="ViewModels\PropertyTypeGroupViewModel.cs" />
+    <Compile Include="ViewModels\PropertyTypeViewModel.cs" />
+    <Compile Include="ViewModels\StreetRelationViewModel.cs" />
+    <Compile Include="ViewModels\LocationStreetViewModel.cs" />
+    <Compile Include="ViewModels\LocationWardViewModel.cs" />
+    <Compile Include="ViewModels\LocationDistrictViewModel.cs" />
+    <Compile Include="ViewModels\DirectionViewModel.cs" />
+    <Compile Include="ViewModels\LocationProvinceViewModel.cs" />
+    <Compile Include="ViewModels\PaymentExchangeViewModel.cs" />
+    <Compile Include="ViewModels\PaymentMethodViewModel.cs" />
+    <Compile Include="ViewModels\PaymentUnitViewModel.cs" />
+    <Compile Include="ViewModels\PropertyFlagViewModel.cs" />
+    <Compile Include="ViewModels\PropertyInteriorViewModel.cs" />
+    <Compile Include="ViewModels\PropertyLegalStatusViewModel.cs" />
+    <Compile Include="ViewModels\PropertyLocationViewModel.cs" />
+    <Compile Include="ViewModels\PropertyStatusViewModel.cs" />
+    <Compile Include="ViewModels\VideoManageViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target> -->
+  <Target Name="AfterBuild" DependsOnTargets="AfterBuildCompiler">
+    <PropertyGroup>
+      <AreasManifestDir>$(ProjectDir)\..\Manifests</AreasManifestDir>
+    </PropertyGroup>
+    <!-- If this is an area child project, uncomment the following line:
+    <CreateAreaManifest AreaName="$(AssemblyName)" AreaType="Child" AreaPath="$(ProjectDir)" ManifestPath="$(AreasManifestDir)" ContentFiles="@(Content)" />
+    -->
+    <!-- If this is an area parent project, uncomment the following lines:
+    <CreateAreaManifest AreaName="$(AssemblyName)" AreaType="Parent" AreaPath="$(ProjectDir)" ManifestPath="$(AreasManifestDir)" ContentFiles="@(Content)" />
+    <CopyAreaManifests ManifestPath="$(AreasManifestDir)" CrossCopy="false" RenameViews="true" />
+    -->
+  </Target>
+  <Target Name="AfterBuildCompiler" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(ProjectDir)\..\$(ProjectName)" />
+  </Target>
+  <ProjectExtensions />
+</Project>

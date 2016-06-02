@@ -1,0 +1,12 @@
+﻿<div id="ViewPropertyTags"></div>
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        $(document).ready(function() {
+            if (!isNaN($("#property_id").text()) && $("#property_id").text() != "") {
+                var url = '@Url.Action("AjaxPropertyTags", "PropertySearch", new {area = "RealEstate.FrontEnd"})?propertyId=' + $("#property_id").text();
+                $('#ViewNew-ad-leasing').load(url, function() {});
+            }
+        });
+    </script>
+}

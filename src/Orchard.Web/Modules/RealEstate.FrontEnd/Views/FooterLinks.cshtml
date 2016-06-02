@@ -1,0 +1,89 @@
+﻿@model PropertyDisplayIndexOptions
+@using RealEstate.ViewModels;
+@using RealEstate.Models;
+
+@foreach (var adsType in Model.AdsTypes)
+{
+    if (adsType.CssClass == "ad-selling" || adsType.CssClass == "ad-leasing")
+    {
+        foreach (var typeGroup in Model.TypeGroups)
+        {
+        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6 @adsType.CssClass @typeGroup.CssClass">
+            <h5 class="text-danger text-ellipsis"><strong>@adsType.ShortName @typeGroup.ShortName</strong></h5>
+            <ul class="list-unstyled footer-expand">
+            @if (Model.ProvinceId > 0)
+            {
+                if (Model.DistrictIds != null && Model.DistrictIds.Count() == 1)
+                {
+                    int j = 0;
+                    foreach (var ward in Model.Wards)
+                    {
+                        <li class="text-ellipsis @(j > 9 ? "collapse" : "")">
+                            <a href="@Url.Action("ResultFilter", "PropertySearch",
+                                         new { area = "RealEstate.FrontEnd", AdsTypeCssClass = adsType.CssClass, TypeGroupCssClass = typeGroup.CssClass, ProvinceId = Model.ProvinceId, DistrictIds = ward.District.Id, WardIds = ward.Id })"
+                               title="@adsType.ShortName @typeGroup.ShortName @ward.Name" target="_self">
+                                @adsType.ShortName @typeGroup.ShortName @ward.Name
+                            </a>
+                        </li>
+                        j++;
+                    }
+                    if (j > 9)
+                    {
+                        <li class="footerlink-expend">
+                            <a href="javascript:;"><i class="glyphicon glyphicon-chevron-down"></i> Xem tiếp</a>
+                        </li>
+                    }
+                }
+                else
+                {
+                    int j = 0;
+                    foreach (var district in Model.Districts)
+                    {
+                        <li class="text-ellipsis @(j > 9 ? "collapse" : "")">
+                            <a href="@Url.Action("ResultFilter", "PropertySearch",
+                                         new { area = "RealEstate.FrontEnd", AdsTypeCssClass = adsType.CssClass, TypeGroupCssClass = typeGroup.CssClass, ProvinceId = Model.ProvinceId, DistrictIds = district.Id })"
+                               title="@adsType.ShortName @typeGroup.ShortName @district.Name" target="_self">
+                                @adsType.ShortName @typeGroup.ShortName @district.Name
+                            </a>
+                        </li>
+                        j++;
+                    }
+                    if (j > 9)
+                    {
+                        <li class="footerlink-expend">
+                            <a href="javascript:;"><i class="glyphicon glyphicon-chevron-down"></i> Xem tiếp</a>
+                        </li>
+                    }
+                }
+            }
+            else
+            {
+                foreach (var province in Model.Provinces)
+                {
+                    if (province.Name == "TP. Hồ Chí Minh")
+                    {
+                        <li class="text-ellipsis">
+                            <a href="@Url.Action("ResultFilter", "PropertySearch",
+                                         new { area = "RealEstate.FrontEnd", AdsTypeCssClass = adsType.CssClass, TypeGroupCssClass = typeGroup.CssClass, ProvinceId = province.Id })"
+                               title="@adsType.ShortName @typeGroup.ShortName @province.ShortName" target="_self">
+                                @adsType.ShortName @typeGroup.ShortName @province.ShortName
+                            </a>
+                        </li>
+                    }
+                    if (province.Name == "Hà Nội" || province.Name == "Đà Nẵng" || province.Name == "Khánh Hòa" || province.Name == "Cần Thơ" || province.Name == "Bình Dương")
+                    {
+                        <li class="text-ellipsis">
+                            <a href="@Url.Action("ResultFilter", "PropertySearch",
+                                         new { area = "RealEstate.FrontEnd", AdsTypeCssClass = adsType.CssClass, TypeGroupCssClass = typeGroup.CssClass, ProvinceId = province.Id })"
+                               title="@adsType.ShortName @typeGroup.ShortName @province.Name" target="_self">
+                                @adsType.ShortName @typeGroup.ShortName @province.Name
+                            </a>
+                        </li>
+                    }
+                }
+            }
+            </ul>
+        </div>
+        }
+    }
+}

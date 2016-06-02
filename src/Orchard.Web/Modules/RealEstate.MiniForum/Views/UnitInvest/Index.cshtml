@@ -1,0 +1,91 @@
+﻿@using RealEstateForum.Service.ViewModels;
+@model UnitInvestIndexViewModel
+
+@{
+    Script.Require("Common");
+    Layout.Title = T("Quản lý Đơn vị tài trợ").ToString();
+}
+@if (Model.Options != null)
+{
+    @Html.Partial("Filter", Model.Options)
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{
+    if (Model.Options != null)
+    {
+        <div class="left">@Html.Raw(String.Format("Tìm được <strong>{0:#,0}</strong> kết quả", Model.TotalCount))</div>
+        <div class="right">
+                <fieldset class="bulk-actions">
+                    <label for="publishActions" class="filter-label">@T("Tác vụ:")</label>
+                    <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+                        @Html.SelectOption(Model.Options.BulkAction, UnitInvestBulkAction.Delete, T("Xóa đơn vị tài trợ").ToString())
+                        @Html.SelectOption(Model.Options.BulkAction, UnitInvestBulkAction.Enable, T("Enable đơn vị tài trợ").ToString())
+                        @Html.SelectOption(Model.Options.BulkAction, UnitInvestBulkAction.Disable, T("Disable đơn vị tài trợ").ToString())
+                    </select>
+                    <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+                    @Html.Hidden("ReturnUrl")
+                </fieldset>
+            <div class="manage">@Html.ActionLink(T("Thêm mới đơn vị tài trợ").ToString(), "Create", new { returnUrl = HttpContext.Current.Request.Url }, new { @class = "button primaryAction" })</div>
+        </div>
+    }
+    <fieldset>
+        <table class="items fixed-table float-header">
+            <thead>
+                <tr>
+                    <th scope="col" class="w20 align-center"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.UnitInvests)" /></th>
+                    <th scope="col" class="w130">@T("Tên nhà tài trợ")</th>
+                    <th scope="col" class="w50">@T("Avatar")</th>
+                    <th scope="col" class="w130">@T("Website")</th>
+                    <th scope="col" class="w240">@("Mô tả")</th>
+                    <th scope="col" class="w50">@T("IsEnabled")</th>
+                    <th scope="col" class="w50">@T("SeqOrder")</th>
+                    <th scope="col" class="w130">@T("Action")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.UnitInvests)
+            {
+                var item = entry.UnitInvestPartPart;
+                <tr>
+                    <td>
+                        <input type="hidden" value="@Model.UnitInvests[index].UnitInvestPartPart.Id" name="@Html.NameOf(m => m.UnitInvests[index].UnitInvestPartPart.Id)" />
+                        <input type="checkbox" value="true" name="@Html.NameOf(m => m.UnitInvests[index].IsChecked)" />
+                    </td>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.Avatar
+                    </td>
+                    <td>
+                        @item.Website
+                    </td>
+                    <td>
+                        @item.Content
+                    </td>
+                    <td>
+                        @item.IsEnabled
+                    </td>
+                    <td>
+                        @item.SeqOrder
+                    </td>
+
+                    <td>
+                        @Html.ActionLink(T("Edit").ToString(), "Edit", new { item.Id }) |
+                        @Html.ActionLink(T("Delete").ToString(), "Delete", new { item.Id }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                    </td>
+                </tr>
+                index++;
+            }
+        </table>
+
+        @Display(Model.Pager)
+
+    </fieldset>
+}
+<style>
+    td {
+        vertical-align: middle;
+    }
+</style>

@@ -1,0 +1,43 @@
+﻿@using RealEstateForum.Service.ViewModels
+@model SupportOnlineWidgetViewModel
+
+@if (Model.SupportOnlineModel != null){
+    
+<div class="text-center">@Html.Raw(Model.SupportOnlineModel.NumberPhone)</div>
+<div class="text-center">
+    <div class="spacer"></div>
+
+    @if (!String.IsNullOrWhiteSpace(Model.SupportOnlineModel.SkypeNick))
+    {
+    string[] listSkype = Model.SupportOnlineModel.SkypeNick.Split(',');
+    <div class="form-group">
+        <strong>Chat bằng Skype</strong><br /> 
+        @for (int i = 0; i < listSkype.Count(); i++)
+        {
+            <a href="skype:@listSkype[i]?chat" title="Liên hệ hổ trợ với @(listSkype[i])">
+                <img alt="dinhgianhadatvn" src="http://mystatus.skype.com/bigclassic/@(listSkype[i])" />
+            </a>
+            <div class="spacer"></div>
+        }
+    </div>
+    }
+    
+    @if (!String.IsNullOrWhiteSpace(Model.SupportOnlineModel.YahooNick))
+    {
+    string[] listYahoo = Model.SupportOnlineModel.YahooNick.Split(',');
+    <div class="form-group">
+        <strong>Chat bằng Yahoo</strong><br /><br />
+        @for (int i = 0; i < listYahoo.Count(); i++)
+        {
+            if (!String.IsNullOrEmpty(listYahoo[i]))
+            {
+            <a rel="nofollow" href="ymsgr:sendim?@listYahoo[i]&amp;m=Xin chào!" title="Liên hệ hổ trợ với @(listYahoo[i])">
+                <img alt="dinhgianhadatvn" src="http://opi.yahoo.com/online?u=@(listYahoo[i])&amp;m=g&amp;t=2" />
+            </a>
+            <div class="spacer"></div>
+            }
+        }
+    </div>
+    }
+</div>
+}

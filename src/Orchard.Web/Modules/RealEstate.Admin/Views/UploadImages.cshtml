@@ -1,0 +1,87 @@
+﻿@model dynamic
+@{
+    //Style.Require("Uploadify");
+    //Script.Require("Uploadify");
+
+    Style.Require("UploadiFive");
+    Script.Require("UploadiFive");
+    var uploadUrl = !String.IsNullOrWhiteSpace(Model) ? Model : Url.Action("Upload", "Home", new { area = "RealEstate.Admin", contentItemId = Url.RequestContext.RouteData.Values["id"], userId = (WorkContext.CurrentUser != null ? WorkContext.CurrentUser.Id : 0), isPublished = false });
+    //var uploadUrl = Model ?? Url.Action("Upload", "Home", new { area = "RealEstate.Admin", contentItemId = Url.RequestContext.RouteData.Values["id"], userId = (WorkContext.CurrentUser != null ? WorkContext.CurrentUser.Id : 0), isPublished = false });
+
+}
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+    //<![CDATA[
+    //]]>
+    </script>
+    <script type="text/javascript">
+    var auth = '@(HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName] == null ? string.Empty : HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName].Value)';
+
+    @*var upl_handling = function() {
+        $("#file_upload").uploadify({
+            swf: '/Modules/RealEstate.Admin/Scripts/uploadify-v3.2/uploadify.swf',
+            uploader: '@Url.Action("Upload", "Home", new { area = "RealEstate.Admin", contentItemId = Url.RequestContext.RouteData.Values["id"], userId = (WorkContext.CurrentUser != null ? WorkContext.CurrentUser.Id : 0), isPublished = false })',
+            cancelImg: '/Modules/RealEstate.Admin/Scripts/uploadify-v3.2/uploadify-cancel.png',
+            buttonText: 'Chọn hình',
+            buttonClass: 'button primaryAction',
+            button_image_url: '/Modules/RealEstate.Admin/Scripts/uploadify-v3.2/lightbox-blank.gif',
+            width: 85,
+            height: 21,
+            fileObjName: 'file',
+            fileSizeLimit: '5MB',
+            fileTypeDesc: 'Image Files',
+            fileTypeExts: '*.jpg;*.jpeg;*.gif;*.png',
+            formData: { token: auth, __RequestVerificationToken: antiForgeryToken, contentItemId: @Url.RequestContext.RouteData.Values["id"], userId: @(WorkContext.CurrentUser != null ? WorkContext.CurrentUser.Id : 0), isPublished: false },
+            onUploadSuccess: function (file, data, response) { if (onUploadSuccessHandler) onUploadSuccessHandler(file, data, response); },
+            debug: false
+        });
+    }
+    //$(function () {
+    setTimeout('upl_handling()', 300);
+    //});*@
+
+    $(function () {
+        $("#file_upload").uploadifive({
+            'auto'             : true,
+            'uploadScript': '@uploadUrl',
+            //'checkScript': 'UploadifiveUpload.ashx?check=1',
+            'formData': {
+                'timestamp': '@(DateTime.Now.Ticks)',
+                'token'     : auth,
+                '__RequestVerificationToken': antiForgeryToken,
+                'contentItemId': '@(Url.RequestContext.RouteData.Values["id"])',
+                'userId': '@(WorkContext.CurrentUser != null ? WorkContext.CurrentUser.Id : 0)',
+                'isPublished': false
+            },
+            //'queueID'          : 'queue',
+            'onUploadComplete': function (file, data, response) {
+                if (onUploadSuccessHandler) onUploadSuccessHandler(file, data, response);
+                if (data.search(/^error/i) > 0) {
+                    alert(data);
+                } else if (data.search(/error/i) > 0) {
+                    alert('An unknown error has occurred.  See browser console log for details.');
+                    console.log(data);
+                }
+            },
+            'onQueueComplete': function (uploads) {
+                //$('#btnTest').click();
+            },
+            'onAddQueueItem': function (file) {
+                // perform client side check AND server side check
+                if (!file.name.match(/^[0-9a-zA-Z_\-\.:\\ ]+\.(jpg|JPG|gif|GIF|png|PNG)$/i)) {
+                    var p = jQuery('<p/>').text('.jpg or .gif or .png files only, alphanumeric filenames only: ' + file.name);
+                    $('#errors').append(p);
+                    p.delay(5000).fadeOut('slow', function () { $(this).remove(); });
+                    $("#file_upload").uploadifive('cancel', file);
+                }
+            } // close uploadifive param
+        }); // close uploadifive function
+    }); // close $(window).load
+    </script>
+}
+<input type="file" multiple="true" name="file_upload" id="file_upload" data-url="@uploadUrl" />
+<div id="errors"></div>
+<div id="queue">
+    <div style="position: absolute; bottom:0; left:0; width:100%; text-align:center;">+ drop files here +</div>
+</div>

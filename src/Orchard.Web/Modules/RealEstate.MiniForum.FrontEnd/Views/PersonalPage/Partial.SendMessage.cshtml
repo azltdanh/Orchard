@@ -1,0 +1,65 @@
+﻿
+@if (WorkContext.CurrentUser != null)
+{
+        
+    <!-- Modal -->
+    <div class="modal fade" id="messagePartialModal" tabindex="-1" role="dialog" aria-labelledby="messagePartialModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                @using (Html.BeginFormAntiForgeryPost(null, FormMethod.Post, new { @class = "FormMessageUserPartial", id = "FormMessageUserPartial" }))
+                {
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Gửi tin nhắn cho <span id="partial-username"></span></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-xs-3">@T("Nội dung:")</label>
+                                <div class="col-md-9 col-xs-9">
+                                    <textarea name="Content" id="Content" class="form-control" required="required"></textarea>
+                                    <input type="hidden" id="UserIdMessage" name="UserIdMessage" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="margin-top:0">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Đóng lại</button>
+                        <button type="submit" class="btn btn-primary Gui">Gửi</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <script>
+    $('#FormMessageUserPartial').submit(function (event) {
+        // Stop form from submitting normally
+        event.preventDefault();
+        //
+        var $form = $(this);
+        $.ajax({
+            type: "post",
+            dataType: "",
+            url: "/ajax/realestatenewletter/AjaxSendMessageUser",
+            data:
+                $form.serialize(),
+            __RequestVerificationToken: antiForgeryToken
+            ,
+            success: function (response) {
+                if (response.status) {
+                    $('#messagePartialModal').modal('hide');
+                    $('#messagePartialModal').find('#UserIdMessage').val(0);
+                    $('#messagePartialModal').find('#partial-username').val('');
+
+                    alert('Tin nhắn đã được gửi thành công!');
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function (request, status, error) {
+                console.log(error);
+            }
+        });
+    });
+    </script>
+}

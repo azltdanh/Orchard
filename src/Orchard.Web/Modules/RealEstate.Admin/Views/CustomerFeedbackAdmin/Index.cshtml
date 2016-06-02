@@ -1,0 +1,87 @@
+@model RealEstate.ViewModels.CustomerFeedbackIndexViewModel
+@using RealEstate.Models;
+@using RealEstate.ViewModels;
+@{
+    Script.Require("Common");
+    Layout.Title = T("Customer Feedback").ToString();
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{ 
+    @Html.ValidationSummary()
+    <div class="manage">@Html.ActionLink(T("Add new Customer Feedback").ToString(), "Create", new { }, new { @class = "button primaryAction" })</div>
+
+    <fieldset class="bulk-actions">
+        <label for="publishActions">@T("Actions:")</label>
+        <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+            @Html.SelectOption(Model.Options.BulkAction, CustomerFeedbackBulkAction.None, T("Choose action...").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, CustomerFeedbackBulkAction.Enable, T("Enable").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, CustomerFeedbackBulkAction.Disable, T("Disable").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, CustomerFeedbackBulkAction.Delete, T("Delete").ToString())
+        </select>
+        <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+    </fieldset>
+    <fieldset class="bulk-actions">
+        @Html.TextBoxFor(m => m.Options.Search, new { @class = "text" })        
+        <label for="filterResults">@T("Filter:")</label>
+        <select id="filterResults" name="@Html.NameOf(m => m.Options.Filter)">
+            @Html.SelectOption(Model.Options.Filter, CustomerFeedbackFilter.All, T("All").ToString())
+        </select>
+        <label for="filterResults">@T("Sort by:")</label>
+        <select id="filterResults1" name="@Html.NameOf(m => m.Options.Order)">
+            @Html.SelectOption(Model.Options.Order, CustomerFeedbackOrder.Name, T("Name").ToString())
+            @Html.SelectOption(Model.Options.Order, CustomerFeedbackOrder.SeqOrder, T("SeqOrder").ToString())
+        </select>
+
+        <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+    </fieldset>
+    <fieldset>
+        <table class="items">
+            <thead>
+                <tr>
+                    <th scope="col"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.Feedbacks)" /></th>
+                    <th scope="col">@T("Name")</th>
+                    <th scope="col">@T("ShortName")</th>
+                    <th scope="col">@T("CssClass")</th>
+                    <th scope="col">@T("SeqOrder")</th>
+                    <th scope="col">@T("IsEnabled")</th>
+                    <th scope="col">@T("Actions")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.Feedbacks)
+            {
+                var item = entry.Feedback;
+            <tr>
+                <td>
+                    <input type="hidden" value="@Model.Feedbacks[index].Feedback.Id" name="@Html.NameOf(m => m.Feedbacks[index].Feedback.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.Feedbacks[index].IsChecked)"/>
+                </td>
+                <td>
+                    @Html.ActionLink(item.Name, "Edit", new { item.Id }) 
+                </td>
+                <td>
+                    @item.ShortName 
+                </td>
+                <td>
+                    @item.CssClass 
+                </td>
+                <td>
+                    @item.SeqOrder 
+                </td>
+                <td>
+                    @item.IsEnabled 
+                </td>
+                <td>
+                    @Html.ActionLink(T("Edit").ToString(), "Edit", new { item.Id }) |
+                    @Html.ActionLink(T("Delete").ToString(), "Delete", new { item.Id }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                </td>
+            </tr>
+                index++;
+            }
+        </table>
+
+    @Display(Model.Pager)
+
+    </fieldset>
+} 

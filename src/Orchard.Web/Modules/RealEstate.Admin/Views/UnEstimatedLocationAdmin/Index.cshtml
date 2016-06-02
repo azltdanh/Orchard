@@ -1,0 +1,131 @@
+﻿@model RealEstate.ViewModels.UnEstimatedLocationsIndexViewModel
+@using RealEstate.Models;
+@using RealEstate.ViewModels;
+
+@{
+    Script.Require("BootstrapCombobox");
+    Script.Require("Common");
+    Layout.Title = T("BĐS chưa định giá được").ToString();
+}
+
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Get))
+{      
+    @Html.ValidationSummary()
+
+    <fieldset class="bulk-actions left">
+        
+        @Html.DropDownListFor(m => m.Options.ProvinceId,
+            Model.Options.Provinces.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.Options.ProvinceId,
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }), T("All").ToString(), new { Class = "combobox" })
+
+        @Html.DropDownListFor(m => m.Options.DistrictId,
+            Model.Options.Districts.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.Options.DistrictId,
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }), T("All").ToString(), new { Class = "combobox" })
+            
+        @Html.DropDownListFor(m => m.Options.WardId,
+             Model.Options.Wards.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.Options.WardId,
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }), T("All").ToString(), new { Class = "combobox" })
+            
+        @Html.DropDownListFor(m => m.Options.StreetId,
+            Model.Options.Streets.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.Options.StreetId,
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }), T("All").ToString(), new { Class = "combobox" })
+            
+        @Html.LabelFor(m => m.Options.Search, @T("Number:"))
+        @Html.TextBoxFor(m => m.Options.Search, new { @class = "text text-box" })
+
+        @Html.LabelFor(m => m.Options.Order, @T("Order by:"))
+        <select id="orderActions" name="@Html.NameOf(m => m.Options.Order)">
+            @Html.SelectOption(Model.Options.Order, UnEstimatedLocationsOrder.CreatedDate, T("CreatedDate").ToString())
+            @Html.SelectOption(Model.Options.Order, UnEstimatedLocationsOrder.Address, T("Address").ToString())
+        </select>
+
+        <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+        
+    </fieldset>
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{ 
+    @Html.ValidationSummary()
+    
+    <fieldset class="bulk-actions right">
+        <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+            @Html.SelectOption(Model.Options.BulkAction, UnEstimatedLocationsBulkAction.None, T("Choose action...").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, UnEstimatedLocationsBulkAction.Delete, T("Delete").ToString())
+        </select>
+        <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+    </fieldset>
+    
+    <fieldset>
+
+        <table class="items">
+            <thead>
+                <tr>
+                    <th scope="col"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.UnEstimatedLocations)" /></th>
+                    <th scope="col">@T("Province")</th>
+                    <th scope="col">@T("District")</th>
+                    <th scope="col">@T("Ward")</th>
+                    <th scope="col">@T("Street")</th>
+                    <th scope="col">@T("AddressNumber")</th>
+                    <th scope="col">@T("AddressCorner")</th>
+                    <th scope="col">@T("CreatedDate")</th>
+                    <th scope="col">@T("Actions")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.UnEstimatedLocations)
+            { 
+            <tr>
+                <td>
+                    <input type="hidden" value="@Model.UnEstimatedLocations[index].UnEstimatedLocation.Id" name="@Html.NameOf(m => m.UnEstimatedLocations[index].UnEstimatedLocation.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.UnEstimatedLocations[index].IsChecked)"/>
+                </td>
+                <td>
+                    @entry.UnEstimatedLocation.LocationProvincePartRecord.Name
+                </td>
+                <td>
+                    @entry.UnEstimatedLocation.LocationDistrictPartRecord.Name
+                </td>
+                <td>
+                    @entry.UnEstimatedLocation.LocationWardPartRecord.Name
+                </td>
+                <td>
+                    @entry.UnEstimatedLocation.LocationStreetPartRecord.Name
+                </td>
+                <td>
+                    @entry.UnEstimatedLocation.AddressNumber
+                </td>
+                <td>
+                    @entry.UnEstimatedLocation.AddressCorner
+                </td>
+                <td>
+                    @Html.DisplayFor(model => entry.UnEstimatedLocation.CreatedDate, "ShortDate")
+                </td>
+                <td>
+                    @Html.ActionLink(T("Delete").ToString(), "Delete", new { entry.UnEstimatedLocation.Id, returnUrl = HttpContext.Current.Request.Url }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                </td>
+            </tr>
+                index++;
+            }
+        </table>
+
+        @Display(Model.Pager)
+
+    </fieldset>
+} 

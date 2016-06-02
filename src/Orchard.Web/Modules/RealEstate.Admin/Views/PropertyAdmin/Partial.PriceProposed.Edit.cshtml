@@ -1,0 +1,152 @@
+﻿@model RealEstate.ViewModels.PropertyEditViewModel
+@using RealEstate.ViewModels;
+
+<!-- Giá rao -->
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-center header-bg-green">
+                <div class="header-left header-bg-green">
+                    <div class="header-left-triangle"></div>
+                </div>
+                <h1>Giá rao</h1>
+                <div class="header-right"></div>
+            </div>
+            <div class="header-msg">
+                <p class="text-success">Các mục có dấu (<span class="text-error">*</span>) là bắt buộc nhập</p>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="form-horizontal pull-left">
+
+            <!-- PriceEstimatedByStaff -->
+            <div class="control-group" style="display:none;">
+                <label class="control-label"><span class="text-error">*</span> @T("Định giá bởi nhân viên:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.PriceEstimatedByStaff, new { @class = "text number-box" })
+                    @Html.ValidationMessageFor(m => m.PriceEstimatedByStaff, "*")
+                    Quảng cáo BĐS giá rẻ cho những BĐS chưa định giá được
+                </div>
+            </div>
+            <!-- PriceNegotiable -->
+            <div class="control-group">
+                <label class="control-label"></label>
+                <div class="controls">
+                    <label>@Html.CheckBoxFor(m => m.PriceNegotiable) @T("Giá thương lượng")</label>
+                </div>
+            </div>
+            <!-- PriceProposed -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Giá rao:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.PriceProposed, new { @class = "text number-box" })
+                    @Html.DropDownListFor(m => m.PaymentMethodId,
+                    Model.PaymentMethods.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.PaymentMethodId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }),
+                    new { @class = "" })
+                    @Html.DropDownListFor(m => m.PaymentUnitId,
+                    Model.PaymentUnits.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.PaymentUnitId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }),
+                    new { @class = "" })
+                    @Html.ValidationMessageFor(m => m.PriceProposed, "*")
+
+                    <button value="submit.Estimate" name="submit.Estimate" type="submit" class="primaryAction">Định giá</button>
+
+                    <div>
+                        @T("Giá rao bằng chữ:")
+                        <span id="PriceInWords" style="font-weight:bold;color:#3F48D5;"></span>
+                    </div>
+
+                    <div class="@Model.FlagCssClass">
+                        @Html.Raw(String.Format("{0:Định giá BĐS: <strong>#,0.### Tỷ</strong>;;}", Model.PriceEstimatedInVND))
+                        @String.Format("{0:(+#,0.##\\%);(-#,0.##\\%);}", Model.DebugPriceChangedInPercent)
+                    </div>
+                    <div>@Html.Raw(String.Format("{0:Đơn giá MT Đường: #,0.### Tỷ / m<sup>2</sup>;;}", Model.DebugUnitPriceEstimate))</div>
+                    <div>@Html.Raw(Model.DebugEstimationMsg)</div>
+
+                    @if (AuthorizedFor(RealEstate.Permissions.ViewReferencedProperties))
+                    {
+                        // Quyền xem DebugLog định giá
+                        @Html.Partial("DebugPanel")
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </article>
+    <footer></footer>
+</article>
+
+<!-- Modal -->
+<div class="modal fade" id="dialogCopyPropertyToAdsType" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Copy sang @(Model.AdsTypeCssClass == "ad-selling" ? "Cho thuê" : "Rao bán")</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-horizontal">
+            <!-- AdsType -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Loại giao dịch:")</label>
+                <div class="controls">
+                    @Html.DropDownListFor(m => m.AdsTypeCssClassCopy,
+                    Model.AdsTypes.Select(s => new SelectListItem
+                    {
+                        Selected = s.CssClass == Model.AdsTypeCssClassCopy,
+                        Text = s.Name,
+                        Value = s.CssClass
+                    }), new { @class = "select-box", disabled = "disabled" })
+                    @Html.ValidationMessageFor(m => m.AdsTypeCssClassCopy, "*")
+                    
+                    <!-- Published -->
+                    <label class="w130">@Html.CheckBoxFor(m => m.PublishedCopy) @T("Published")</label>
+                    
+                </div>
+            </div>
+            <!-- PriceProposedCopy -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Giá rao:")</label>
+                <div class="controls">
+
+                    @Html.TextBoxFor(m => m.PriceProposedCopy, new { @class = "text number-box" })
+
+                    @Html.DropDownListFor(m => m.PaymentMethodIdCopy,
+                    Model.PaymentMethods.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.PaymentMethodIdCopy,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }), new { @class = "w90" })
+
+                    @Html.DropDownListFor(m => m.PaymentUnitIdCopy,
+                    Model.PaymentUnits.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.PaymentUnitIdCopy,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }), new { @class = "" })
+
+                    @Html.ValidationMessageFor(m => m.PriceProposedCopy, "*")
+
+                    <label class="text-error" for="@Html.FieldNameFor(m => m.PriceProposedCopy)"></label>
+                </div>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="primaryAction" value="submit.Save" name="submit.SaveCopyToAdsType">Copy sang @(Model.AdsTypeCssClass == "ad-selling" ? "Cho thuê" : "Rao bán")</button>
+      </div>
+    </div>
+  </div>
+</div>

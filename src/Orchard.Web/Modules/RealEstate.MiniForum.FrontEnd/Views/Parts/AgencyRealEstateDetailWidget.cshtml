@@ -1,0 +1,20 @@
+﻿@using RealEstate.ViewModels;
+@using RealEstate.Models;
+
+@{
+    PropertyDisplayEntry model = Model.ViewModel;
+}
+<ul class="list-agency">
+    @Html.Partial("AgencyRealEstateDetail", model)
+    <li class="more-agency">
+        <a class="more-agency" href="@Url.Action("ListUserAgencies", "UserUpdateProfile", new { area = "RealEstate.MiniForum.FrontEnd" })" rel="nofollow">
+            >> Xem thêm
+        </a>
+    </li>
+</ul>
+<div class="list-agency-contact">
+    <strong>
+        Đăng ký làm môi giới<br />
+        Liên hệ: <span class="organe">0912.14.16.17</span>
+    </strong>
+</div>

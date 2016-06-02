@@ -1,0 +1,123 @@
+﻿@using RealEstate.FrontEnd.ViewModels;
+@using RealEstate.Models;
+@{
+    RealEstate.FrontEnd.ViewModels.EstimateWidgetViewModel model = Model.ViewModel;
+    Style.Require("BootstrapCombobox");
+    Script.Require("BootstrapCombobox");
+    Script.Require("jqueryValidate");
+}
+<div class="header-msg hidden-xs">
+    <span class="text-success">Hiện chỉ hỗ trợ định giá tại một số quận trung tâm thuộc <strong>TP. HCM</strong></span>
+</div>
+<div class="block-real-estate-estimation">
+    <form action="@Url.Action("Create", "Estimate", new { area = "RealEstate.FrontEnd" })" method="get" class="formvalidate" id="frmEstimation">
+        <div class="form-horizontal">
+            <div class="form-group hidden-xs">
+                <div class="text-primary">
+                    <div class="marquee">
+                        <label class="text-bold text-ellipsis">
+                            Phần mềm sẽ <strong class="text-danger">tự động định giá</strong> và cho kết quả chính xác ngay khi nhập đủ thông tin theo yêu cầu.</label></div>
+                </div>
+            </div>
+            <div class="form-group hide">
+                <label class="control-label col-lg-8 col-md-8 col-sm-8">
+                    <span class="text-danger">*</span> Tỉnh / Thành Phố:</label>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    @Html.DropDownListFor(m => model.ProvinceId,
+                        model.Provinces.Select(r => new SelectListItem
+                        {
+                            Selected = r.Id == model.ProvinceId,
+                            Text = r.Name,
+                            Value = r.Id.ToString()
+                        }), new { Class = "form-control", Name = "provinceId", required = true, placeholder = "-- Tỉnh / Thành Phố --" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-lg-8 col-md-8 col-sm-8">
+                    <span class="text-danger">*</span> Quận / Huyện:</label>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    @Html.DropDownListFor(m => model.DistrictId,
+                        model.Districts.Select(r => new SelectListItem
+                        {
+                            Selected = r.Id == model.DistrictId,
+                            Text = r.Name,
+                            Value = r.Id.ToString()
+                        }), "-- Quận / Huyện --", new { Class = "form-control combobox", Name = "districtId", required = true, placeholder = "-- Quận / Huyện --" })
+                    <label for="autocompleteDistrictId" class="error">Vui lòng chọn Quận / Huyện</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-lg-8 col-md-8 col-sm-8">
+                    <span class="text-danger">*</span> Phường / Xã:</label>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    @Html.DropDownListFor(m => model.WardId,
+                        model.Wards.Select(r => new SelectListItem
+                        {
+                            Selected = r.Id == model.WardId,
+                            Text = r.Name,
+                            Value = r.Id.ToString()
+                        }), "-- Phường / Xã --", new { Class = "form-control combobox", Name = "wardId", required = true, placeholder = "-- Phường / Xã --" })
+                    <label for="autocompleteWardId" class="error">Vui lòng chọn Phường / Xã</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-lg-8 col-md-8 col-sm-8">
+                    <span class="text-danger">*</span> Đường / Phố:</label>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    @Html.DropDownListFor(m => model.StreetId,
+                        model.Streets.Select(r => new SelectListItem
+                        {
+                            Selected = r.Id == model.StreetId,
+                            Text = r.Name,
+                            Value = r.Id.ToString()
+                        }), "-- Đường / Phố --", new { Class = "form-control combobox", Name = "streetId", required = true, placeholder = "-- Đường / Phố --" })
+                    <label for="autocompleteStreetId" class="error">Vui lòng chọn Đường / Phố</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-lg-8 col-md-8 col-sm-8">
+                    <span class="text-danger">*</span> Số nhà:</label>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    @Html.TextBoxFor(m => model.AddressNumber, new { Class = "form-control", Name = "addressNumber", required = true, placeholder = "-- Số nhà --" })
+                    <label for="AddressNumber" class="error">Vui lòng nhập Số nhà</label>
+                </div>
+            </div>
+            <div class="form-group" style="display:none;">
+                <label class="control-label col-lg-8 col-md-8 col-sm-8">
+                    Ngõ / Ngách:</label>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    @Html.TextBoxFor(m => model.AddressCorner, new { Class = "form-control", Name = "addressCorner", placeholder = "-- Ngõ / Ngách --" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-lg-8 col-md-8 col-sm-8 hidden-xs">
+                </label>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <button type="submit" class="btn btn-warning" value="Định giá">
+                        Định giá</button>
+                    <span class="idchangecolor">
+                        <img src="/Themes/TheRealEstate/Styles/images/mien-phi.gif" alt="định giá nhà đất miễn phí" /></span>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        $(document).ready(function() {
+            if ($.fn.validate) {
+                var validator = $('#frmEstimation').validate({
+            
+                });
+                $('#frmEstimation').submit(function() {
+                    if ($(this).valid()) $('input[name^=autocomplete]').prop('disabled', true);
+                });
+            }
+            setInterval(function() {
+                $('#idchangecolor').css('color', '#f00');
+                setTimeout(function() { $('#idchangecolor').css('color', '#000000'); }, 2000);
+            }, 2000);
+        });
+    </script>
+}

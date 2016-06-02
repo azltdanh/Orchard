@@ -1,0 +1,138 @@
+﻿@model LocationApartmentDisplayEntry
+@using RealEstate.Helpers;
+@using RealEstate.ViewModels;
+@{
+    Style.Include("flexslider.css");
+    Script.Include("jquery.flexslider-min.js");
+    
+    Script.Require("ZoomAssets");
+    Style.Require("PrettyPhoto");
+    Script.Require("PrettyPhoto");
+    Script.Require("jqPrint");
+    var item = Model.LocationApartment;
+    var ImageList = Model.Files.Where(a => a.Published == true).OrderByDescending(a => a.IsAvatar).ToList();
+}
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        var smPos = 153;
+        var spPos = 153;
+        var sW;
+        var sH;
+        jQuery(function(f) {
+            f("a[rel^='prettyPhoto']").prettyPhoto({
+                changepicturecallback: function() { f("#fullResImage").z("destroy").z() },
+                callback: function() { f("#fullResImage").z("destroy") },
+                social_tools: false
+            });
+        });
+
+        $(window).load(function() {
+            // The slider being synced must be initialized first
+            $('#carousel').flexslider({
+                animation: "slide",
+                controlNav: false,
+                animationLoop: false,
+                slideshow: false,
+                prevText: '',
+                nextText: '',
+                itemWidth: 54,
+                itemMargin: 5,
+                asNavFor: '#slider'
+            });
+
+            $('#slider').flexslider({
+                animation: "slide",
+                controlNav: false,
+                animationLoop: true,
+                slideshow: false,
+                prevText: '',
+                nextText: '',
+                sync: "#carousel"
+            });
+        });
+    </script>
+}
+<div class="content-item-property-img">
+    
+@if (ImageList.Count > 1)
+{
+    <div id="slider" class="flexslider">
+      <ul class="slides">
+        @foreach (var pic in ImageList)
+        {
+        <li>
+          <a href="@pic.Path" target="_blank" rel="prettyPhoto[@item.Id]"><img alt="@item.Name.StripHtml()" src="@pic.Path" /></a>
+        </li>
+        }
+      </ul>
+    </div>
+    <div id="carousel" class="flexslider">
+      <ul class="slides">
+        @foreach (var pic in ImageList)
+        {
+        <li class="img-thumbnail img-thumbnail-small">
+            <div class="image-container">
+                <img alt="@item.Name.StripHtml()" src="@pic.Path?width=50" class="" />
+            </div>
+        </li>
+        }
+      </ul>
+    </div>
+    <!-- Carousel -->
+    <div id="myCarousel" class="carousel slide hide" data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+            <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+            <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+            <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+        </ol>
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner zoom_gallery">
+            <!-- Carousel items -->
+            @foreach (var pic in ImageList)
+            {
+                if (!string.IsNullOrEmpty(pic.Path))
+                {
+                <div class="item@(ImageList.IndexOf(pic) == 0 ? " active" : "")">
+                    <a href="@pic.Path" target="_blank" rel="1prettyPhoto[@item.Id]"><img alt="@item.Name.StripHtml()" src="@pic.Path?width=280" width="280" class="img-thumbnail"/></a>
+                </div>
+                }
+            }
+        </div>
+        <!-- Controls -->
+        <a class="carousel-control left" href="#myCarousel" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+        <a class="carousel-control right" href="#myCarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+    </div>
+    <div class="divCountPicture">Có tổng cộng <strong class="text-danger">@ImageList.Count</strong> hình</div>
+}
+else
+{
+    <div class="zoom_gallery">
+        <a href="@Model.DefaultImgUrl" target="_blank" rel="prettyPhoto[@item.Id]"><img alt="@item.Name.StripHtml()" src="@Model.DefaultImgUrl?width=280" width="280" class="img-thumbnail"/></a>
+    </div>
+}
+        
+
+    @*<div class="fb-like" data-send="true" data-width="400" data-show-faces="false" data-href="@("http://dinhgianhadat.vn" + Url.Action("LocationApartmentDetail", new { id = item.Id, title = item.Name.ToSlug() }))" data-layout="button_count"></div>
+    <!-- Place this tag where you want the share button to render. -->
+    <div class="g-plus" data-action="share" data-annotation="bubble"></div>
+    <!--annotation="inline"-->
+    <!-- Place this tag after the last +1 button tag. -->
+    <script type="text/javascript">
+        (function () {
+            var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+            po.src = 'https://apis.google.com/js/platform.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+        })();
+    </script>
+    <div id="fb-root"></div>
+    <script>
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/vi_VN/all.js#xfbml=1";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>*@
+</div>

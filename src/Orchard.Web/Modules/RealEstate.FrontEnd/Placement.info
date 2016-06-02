@@ -1,0 +1,24 @@
+﻿<Placement>
+  <Place Parts_FilterWidget="Content:0" />
+  <Place Parts_FilterPropertyWidgetSidebar="Content:0" />
+  <Place Parts_FilterHeader="Content:0" />
+  <Place Parts_OnlineSupportWidget="Content:0" />
+  <Place Parts_PropertyTagsWidget="Content:0" />
+  <Place Parts_FooterLinkWidget="Content:0" />
+  <Place Parts_AsideFirstLinkWidget="Content:0" />
+  <Place Parts_BreadcrumbWidget="Content:0"/>
+  <Place Parts_PropertyGoodDealWidget="Content:0"/>
+  <Place Parts_PropertyLeasingNewWidget="Content:0"/>
+  <Place Parts_PropertyVipWidget="Content:0"/>
+  <Place Parts_PropertyNewWidget="Content:0"/>
+  <Place Parts_PropertyHighlightsWidget="Content:0"/>
+  <Place Parts_PropertyListHighlightWidget="Content:0"/>
+  <Place Parts_EstimatePropertyWidget="Content:0"/>
+  <Place Parts_AliasesMetaWidget="Content:0"/>
+  <Place Parts_MapPlanningWidget="Content:0"/>
+  <Place Parts_FilterApartmentWidget="Content:0"/>
+  <Place Parts_ApartmentHighlightsWidget="Content:0"/>
+  <Place Parts_PropertyNewIsAuctionWidget="Content:0"/>
+  <Place Parts_PropertyGoodDealIsAuctionWidget="Content:0"/>
+  <Place Parts_PropertyListCompactWidget="Content:0"/>
+</Placement>

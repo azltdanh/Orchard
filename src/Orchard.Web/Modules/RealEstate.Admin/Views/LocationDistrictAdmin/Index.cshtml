@@ -1,0 +1,121 @@
+﻿@model RealEstate.ViewModels.LocationDistrictsIndexViewModel
+@using RealEstate.Models;
+@using RealEstate.ViewModels;
+
+@{
+    Script.Require("Common");
+    Layout.Title = T("Location Districts").ToString();
+}
+
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Get))
+{      
+    @Html.ValidationSummary()
+
+    <fieldset class="bulk-actions">
+        <table class="filter-table">
+            <thead>
+                <tr>
+                    <th>@Html.LabelFor(m => m.Options.ProvinceId, @T("Tỉnh / Thành phố:"))</th>
+                    <th>@Html.LabelFor(m => m.Options.Search, @T("Tên Quận / Huyện:"))</th>
+                    <th><label for="filterSortby">@T("Sort by:")</label></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        @Html.DropDownListFor(m => m.Options.ProvinceId,
+                        Model.Options.Provinces.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.Options.ProvinceId,
+                            Text = s.Name,
+                            Value = s.Id.ToString()
+                        }), "-- Tỉnh / Thành Phố --", new { Class = "select-box" })
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(m => m.Options.Search, new { @class = "text text-box" })
+                    </td>
+                    <td>
+                        <select id="filterSortby" name="@Html.NameOf(m => m.Options.Order)">
+                            @Html.SelectOption(Model.Options.Order, LocationDistrictsOrder.Name, T("Name").ToString())
+                            @Html.SelectOption(Model.Options.Order, LocationDistrictsOrder.SeqOrder, T("SeqOrder").ToString())
+                        </select>
+                    </td>
+                    <td>
+                        <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </fieldset>
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{ 
+    @Html.ValidationSummary()
+
+    <fieldset class="bulk-actions right">
+        @if (AuthorizedFor(RealEstate.Permissions.ManageAddressLocations))
+        {
+        <label for="publishActions">@T("Actions:")</label>
+        <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+            @Html.SelectOption(Model.Options.BulkAction, LocationDistrictsBulkAction.None, T("Choose action...").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, LocationDistrictsBulkAction.Enable, T("Enable").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, LocationDistrictsBulkAction.Disable, T("Disable").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, LocationDistrictsBulkAction.Delete, T("Delete").ToString())
+        </select>
+        <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+        }
+        @Html.ActionLink(T("Add new District").ToString(), "Create", new { returnUrl = HttpContext.Current.Request.Url }, new { @class = "button primaryAction" })
+    </fieldset>
+    
+    <fieldset>
+    
+        <table class="items">
+            <thead>
+                <tr>
+                    <th scope="col"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.LocationDistricts)" /></th>
+                    <th scope="col">@T("Tỉnh / Thành phố")</th>
+                    <th scope="col">@T("Quận / Huyện")</th>
+                    <th scope="col">@T("ShortName")</th>
+                    <th scope="col">@T("SeqOrder")</th>
+                    <th scope="col">@T("IsEnabled")</th>
+                    <th scope="col">@T("Actions")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.LocationDistricts)
+            { 
+            <tr>
+                <td>
+                    <input type="hidden" value="@Model.LocationDistricts[index].LocationDistrict.Id" name="@Html.NameOf(m => m.LocationDistricts[index].LocationDistrict.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.LocationDistricts[index].IsChecked)"/>
+                </td>
+                <td>
+                    @entry.LocationDistrict.Province.Name
+                </td>
+                <td>
+                    @Html.ActionLink(entry.LocationDistrict.Name, "Edit", new { entry.LocationDistrict.Id, returnUrl = HttpContext.Current.Request.Url }) 
+                </td>
+                <td>
+                    @entry.LocationDistrict.ShortName 
+                </td>
+                <td>
+                    @entry.LocationDistrict.SeqOrder 
+                </td>
+                <td>
+                    @entry.LocationDistrict.IsEnabled 
+                </td>
+                <td>
+                    @Html.ActionLink(T("Edit").ToString(), "Edit", new { entry.LocationDistrict.Id, returnUrl = HttpContext.Current.Request.Url }) |
+                    @Html.ActionLink(T("Delete").ToString(), "Delete", new { entry.LocationDistrict.Id, returnUrl = HttpContext.Current.Request.Url }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                </td>
+            </tr>
+                index++;
+            }
+        </table>
+
+        @Display(Model.Pager)
+
+    </fieldset>
+} 

@@ -1,0 +1,438 @@
+﻿@model RealEstate.ViewModels.PropertyViewModel
+@{ Layout.Title = T("View Property").ToString(); }
+
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Post, new { enctype = "multipart/form-data", Class = "form-serialize" }))
+{
+
+    @Html.Partial("Partial.Control", Model)
+
+    <div style="font-style:italic;">
+
+        <hr />
+
+        <!-- Staff Only -->
+        <!-- VisitedCount -->
+        <div>Đã có <strong>@Model.VisitedCount</strong> khách hàng đến xem BĐS này.</div>
+        <!-- LastUpdatedUser -->
+        <div><strong>Nguồn gần nhất:</strong> @Model.LastInfoFromUser.UserName - <strong>Sửa bởi:</strong> @Model.LastUpdatedUser.UserName <strong>ngày</strong> @String.Format("{0:dd/MM/yyyy}", Model.LastUpdatedDate)</div>
+        <!-- CreatedUser -->
+        <div><strong>Nguồn đầu tiên:</strong> @Model.FirstInfoFromUser.UserName - <strong>Tạo bởi:</strong> @Model.CreatedUser.UserName <strong>ngày</strong> @String.Format("{0:dd/MM/yyyy}", Model.CreatedDate)</div>
+
+        <hr />
+
+        <!-- IsAuthenticatedInfo -->
+        @if (Model.IsAuthenticatedInfo)
+        {
+            <div><span><span class='ui-icon icon-check'></span> BĐS đã xác thực</span></div>
+        }
+        <!-- Flag -->
+        @if (Model.Flag != null)
+        {
+            <div><strong>Đánh giá:</strong> <span class="@Model.Flag.CssClass">@Model.Flag.Name</span></div>
+        }
+        <!-- IsExcludeFromPriceEstimation -->
+        @if (Model.IsExcludeFromPriceEstimation)
+        {
+            <div><span><span class='ui-icon icon-check'></span> Loại khỏi định giá</span></div>
+        }
+        <!-- Status -->
+        @if (Model.Status != null)
+        {
+            <div><strong>Trạng thái:</strong> <span class="@Model.Status.CssClass">@Model.Status.Name</span></div>
+        }
+        <!-- Note -->
+        @if (!String.IsNullOrEmpty(Model.Note))
+        {
+            <div><strong>Ghi chú:</strong> <span>@Model.Note</span></div>
+        }
+        <!-- ContactPhoneToDisplay -->
+        @if (!String.IsNullOrEmpty(Model.ContactPhoneToDisplay))
+        {
+            <div><strong>ĐT hiển thị:</strong> <span>@Model.ContactPhoneToDisplay</span></div>
+        }
+
+        <hr />
+
+        <table>
+            <tr>
+                <td class="w250">
+                    <!-- AdsType -->
+                    @if (Model.AdsType != null)
+                    {
+                        <div><strong>Loại tin rao:</strong> <span class="@Model.AdsType.CssClass">@Model.AdsType.Name</span></div>
+                    }
+                    <!-- TypeGroup -->
+                    @if (Model.TypeGroup != null)
+                    {
+                        <div><strong>Nhóm BĐS:</strong> <span class="@Model.TypeGroup.CssClass">@Model.TypeGroup.Name</span></div>
+                    }
+                    <!-- Type -->
+                    @if (Model.Type != null)
+                    {
+                        <div><strong>Loại BĐS:</strong> <span class="@Model.Type.CssClass">@Model.Type.Name</span></div>
+                    }
+                </td>
+                <td>
+                    <!-- Published -->
+                    @if (Model.Published)
+                    {
+                        <div><span><span class='ui-icon icon-check'></span> Hiện trên trang chủ</span> @String.Format("{0:(đến n\\g\\à\\y dd/MM/yyyy)}", Model.AdsExpirationDate)</div>
+                    }
+                    else
+                    {
+                        <div><span><span class='ui-icon icon-cross'></span> Không hiện trên trang chủ</span></div>
+                    }
+                    <!-- AdsGoodDeal -->
+                    @if (Model.AdsGoodDeal)
+                    {
+                        <div><span><span class='ui-icon icon-check'></span> BĐS giá rẻ</span> @String.Format("{0:(đến n\\g\\à\\y dd/MM/yyyy)}", Model.AdsGoodDealExpirationDate)</div>
+                    }
+                    <!-- AdsVIP -->
+                    @if (Model.AdsVIP)
+                    {
+                        <div><span><span class='ui-icon icon-check'></span> BĐS giao dịch gấp</span> @String.Format("{0:(đến n\\g\\à\\y dd/MM/yyyy)}", Model.AdsVIPExpirationDate)</div>
+                    }
+                    <!-- AdsHighlight -->
+                    @if (Model.AdsHighlight)
+                    {
+                        <div><span><span class='ui-icon icon-check'></span> BĐS nổi bật</span> @String.Format("{0:(đến n\\g\\à\\y dd/MM/yyyy)}", Model.AdsHighlightExpirationDate)</div>
+                    }
+                </td>
+            </tr>
+        </table>
+
+        <hr />
+
+        <!-- Address -->
+        @if (!String.IsNullOrEmpty(Model.DisplayForAddress))
+        {
+            <div><strong>Địa chỉ:</strong> @Model.DisplayForAddress, @Model.Province.Name</div>
+        }
+        <!-- PublishAddress -->
+        @if (Model.PublishAddress)
+        {
+            <div><span><span class='ui-icon icon-check'></span> Cho phép hiện địa chỉ</span></div>
+        }
+        else
+        {
+            <div><span><span class='ui-icon icon-cross'></span> Không hiện địa chỉ</span></div>
+        }
+        <!-- LegalStatus -->
+        @if (Model.LegalStatus != null)
+        {
+            <div><strong>Tình trạng pháp lý:</strong> <span class="@Model.LegalStatus.CssClass">@Model.LegalStatus.Name</span></div>
+        }
+        <!-- Direction -->
+        @if (Model.Direction != null)
+        {
+            <div><strong>Hướng:</strong> <span class="@Model.Direction.CssClass">@Model.Direction.Name</span></div>
+        }
+        <!-- Location -->
+        @if (Model.Location != null)
+        {
+            <div><strong>Vị trí:</strong> <span class="@Model.Location.CssClass">@Model.Location.Name</span></div>
+            if (Model.Location.CssClass == "h-front")
+            {
+            <!-- StreetWidth -->
+                if (Model.StreetWidth > 0)
+                {
+                    <div><strong>Độ rộng đường trước nhà:</strong> @String.Format("{0:#,0.##m}", Model.StreetWidth)</div>
+                }
+            }
+            else
+            {
+            <!-- DisplayForAlley -->
+                if (!String.IsNullOrEmpty(Model.DisplayForAlley))
+                {
+                    <div><strong>Thông tin hẻm:</strong> @Html.Raw(Model.DisplayForAlley)</div>
+                }
+            <!-- DisplayForTurns -->
+                if (!String.IsNullOrEmpty(Model.DisplayForTurns))
+                {
+                    <div><strong>Thông tin độ rộng hẻm:</strong> @Html.Raw(Model.DisplayForTurns)</div>
+                }
+            }
+        }
+
+
+        @if (Model.TypeGroup != null && Model.TypeGroup.CssClass == "gp-apartment")
+        {
+            <hr />
+
+            <table>
+                <tr>
+                    <td class="w250">
+                        <!-- ApartmentFloors -->
+                        @if (Model.ApartmentFloors > 0)
+                        {
+                            <div><strong>Chung cư có:</strong> @String.Format("{0:#,0.##}", @Model.ApartmentFloors) tầng</div>
+                        }
+                        <!-- ApartmentElevators -->
+                        @if (Model.ApartmentElevators > 0)
+                        {
+                            <div><strong>Số lượng thang máy:</strong> @String.Format("{0:#,0.##}", @Model.ApartmentElevators)</div>
+                        }
+                        <!-- ApartmentBasements -->
+                        @if (Model.ApartmentBasements > 0)
+                        {
+                            <div><strong>Số tầng hầm:</strong> @String.Format("{0:#,0.##}", @Model.ApartmentBasements)</div>
+                        }
+                        <!-- ApartmentFloorTh -->
+                        @if (Model.ApartmentFloorTh > 0)
+                        {
+                            <div><strong>Căn hộ thuộc tầng:</strong> @String.Format("{0:#,0.##}", @Model.ApartmentFloorTh)</div>
+                        }
+                        <!-- ApartmentNumber -->
+                        @if (!String.IsNullOrEmpty(Model.ApartmentNumber))
+                        {
+                            <div><strong>Mã số căn hộ:</strong> @String.Format("{0:#,0.##}", @Model.ApartmentNumber)</div>
+                        }
+                    </td>
+                    <td>
+                        @foreach (var item in Model.ApartmentAdvantages)
+                        {
+                            <div><span><span class='ui-icon @(item.IsChecked ? "icon-check" : "icon-cross")'></span> @item.Advantage.Name @String.Format("({0:+0;-0;}%)", item.Advantage.AddedValue)</span></div>
+                        }
+                    </td>
+                </tr>
+            </table>
+        }
+
+        <hr />
+
+        <!-- AreaTotal -->
+        @if (!String.IsNullOrEmpty(Model.DisplayForAreaTotal))
+        {
+            <div><strong>Diện tích khuôn viên đất:</strong> @Html.Raw(Model.DisplayForAreaTotal)</div>
+        }
+        <!-- AreaLegal -->
+        @if (!String.IsNullOrEmpty(Model.DisplayForAreaLegal))
+        {
+            <div><strong>Diện tích phù hợp quy hoạch:</strong> @Html.Raw(Model.DisplayForAreaLegal)</div>
+        }
+        <!-- AreaIlegalRecognized -->
+        @if (Model.AreaIlegalRecognized > 0)
+        {
+            <div><strong>Diện tích đất vi phạm lộ giới (quy hoạch) nhưng được công nhận:</strong> @String.Format("{0:#,0.##}", @Model.AreaIlegalRecognized)m<sup>2</sup></div>
+        }
+        <!-- AreaIlegalRecognized -->
+        @if (Model.AreaResidential > 0)
+        {
+            <div><strong>Diện tích đất thổ cư:</strong> @String.Format("{0:#,0.##}", @Model.AreaResidential)m<sup>2</sup></div>
+        }
+
+        <hr />
+
+        <table>
+            <tr>
+                <td class="w300">
+                    <!-- AreaConstruction -->
+                    @if (Model.AreaConstruction > 0)
+                    {
+                        <div><strong>Diện tích đất xây dựng:</strong> @String.Format("{0:#,0.##}", @Model.AreaConstruction)m<sup>2</sup></div>
+                    }
+                    <!-- AreaConstructionFloor -->
+                    @if (Model.AreaConstructionFloor > 0)
+                    {
+                        <div><strong>Tổng diện tích sàn:</strong> @String.Format("{0:#,0.##}", @Model.AreaConstructionFloor)m<sup>2</sup></div>
+                    }
+                    <!-- AreaUsable -->
+                    @if (Model.AreaUsable > 0)
+                    {
+                        <div><strong>Tổng diện tích sử dụng:</strong> @String.Format("{0:#,0.##}", @Model.AreaUsable)m<sup>2</sup></div>
+                    }
+                    <!-- Floors -->
+                    @if (Model.Floors > 0)
+                    {
+                        <div><strong>Số lầu:</strong> @String.Format("{0:#,0.##}", @Model.Floors)</div>
+                    }
+                    <!-- Bedrooms -->
+                    @if (Model.Bedrooms > 0)
+                    {
+                        <div><strong>Số phòng ngủ:</strong> @String.Format("{0:#,0.##}", @Model.Bedrooms)</div>
+                    }
+                    <!-- Livingrooms -->
+                    @if (Model.Livingrooms > 0)
+                    {
+                        <div><strong>Số phòng khách:</strong> @String.Format("{0:#,0.##}", @Model.Livingrooms)</div>
+                    }
+                    <!-- Bathrooms -->
+                    @if (Model.Bathrooms > 0)
+                    {
+                        <div><strong>Số phòng vệ sinh:</strong> @String.Format("{0:#,0.##}", @Model.Bathrooms)</div>
+                    }
+                    <!-- Balconies -->
+                    @if (Model.Balconies > 0)
+                    {
+                        <div><strong>Số ban công:</strong> @String.Format("{0:#,0.##}", @Model.Balconies)</div>
+                    }
+                    <!-- TypeConstruction -->
+                    @if (Model.TypeConstruction != null)
+                    {
+                        <div><strong>Loại công trình xây dựng:</strong> <span class="@Model.TypeConstruction.CssClass">@Model.TypeConstruction.Name</span></div>
+                    }
+                    <!-- Interior -->
+                    @if (Model.Interior != null)
+                    {
+                        <div><strong>Mức độ đầu tư nội thất:</strong> <span class="@Model.Interior.CssClass">@Model.Interior.Name</span></div>
+                    }
+                    <!-- RemainingValue -->
+                    @if (Model.RemainingValue > 0)
+                    {
+                        <div><strong>Chất lượng nhà còn lại:</strong> @String.Format("{0:#,0.##}", @Model.RemainingValue)%</div>
+                    }
+                </td>
+                <td>
+                    <!-- HaveBasement -->
+                    @if (Model.HaveBasement)
+                    {
+                        <div><span><span class='ui-icon icon-check'></span> Có tầng hầm</span></div>
+                    }
+                    <!-- HaveMezzanine -->
+                    @if (Model.HaveMezzanine)
+                    {
+                        <div><span><span class='ui-icon icon-check'></span> Có lửng</span></div>
+                    }
+                    <!-- HaveTerrace -->
+                    @if (Model.HaveTerrace)
+                    {
+                        <div><span><span class='ui-icon icon-check'></span> Có sân thượng</span></div>
+                    }
+                    <!-- HaveGarage -->
+                    @if (Model.HaveGarage)
+                    {
+                        <div><span><span class='ui-icon icon-check'></span> Có gara ô tô</span></div>
+                    }
+                    <!-- HaveElevator -->
+                    @if (Model.HaveElevator)
+                    {
+                        <div><span><span class='ui-icon icon-check'></span> Có thang máy</span></div>
+                    }
+                    <!-- HaveSwimmingPool -->
+                    @if (Model.HaveSwimmingPool)
+                    {
+                        <div><span><span class='ui-icon icon-check'></span> Có hồ bơi</span></div>
+                    }
+                    <!-- HaveGarden -->
+                    @if (Model.HaveGarden)
+                    {
+                        <div><span><span class='ui-icon icon-check'></span> Có sân vườn</span></div>
+                    }
+                    <!-- HaveSkylight -->
+                    @if (Model.HaveSkylight)
+                    {
+                        <div><span><span class='ui-icon icon-check'></span> Có giếng trời</span></div>
+                    }
+
+
+                    <!-- ApartmentInteriorAdvantages -->
+                    @foreach (var item in Model.ApartmentInteriorAdvantages)
+                    {
+                        <div><span><span class='ui-icon @(item.IsChecked ? "icon-check" : "icon-cross")'></span> @item.Advantage.Name @String.Format("({0:+0;-0;}%)", item.Advantage.AddedValue)</span></div>
+                    }
+                </td>
+            </tr>
+        </table>
+
+        @if (Model.TypeGroup != null && Model.TypeGroup.CssClass != "gp-apartment")
+        {
+            <hr />
+
+            <table>
+                <tr>
+                    <td class="w300">
+                        @foreach (var item in Model.Advantages)
+                        {
+                            <div><span><span class='ui-icon @(item.IsChecked ? "icon-check" : "icon-cross")'></span> @item.Advantage.Name @String.Format("({0:+0;-0;}%)", item.Advantage.AddedValue)</span></div>
+                        }
+                    </td>
+                    <td>
+                        @foreach (var item in Model.DisAdvantages)
+                        {
+                            <div><span><span class='ui-icon @(item.IsChecked ? "icon-check" : "icon-cross")'></span> @item.Advantage.Name @String.Format("({0:+0;-0;}%)", item.Advantage.AddedValue)</span></div>
+                        }
+                    </td>
+                </tr>
+            </table>
+        }
+
+        <hr />
+        @if (Model.EnableViewContactPhone == true)
+        {
+            <!-- ContactName -->
+            if (!String.IsNullOrEmpty(Model.ContactName))
+            {
+                <div><strong>Tên liên hệ:</strong> @Html.Raw(Model.ContactName)</div>
+            }
+            <!-- ContactPhone -->
+            if (!String.IsNullOrEmpty(Model.ContactPhone))
+            {
+                <div><strong>Điện thoại liên hệ:</strong> @Html.Raw(Model.ContactPhone)</div>
+            }
+            <!-- ContactEmail -->
+            if (!String.IsNullOrEmpty(Model.ContactEmail))
+            {
+                <div><strong>Email liên hệ:</strong> @Html.Raw(Model.ContactEmail)</div>
+            }
+            <!-- ContactAddress -->
+            if (!String.IsNullOrEmpty(Model.ContactAddress))
+            {
+
+                <div><strong>Địa chỉ / ghi chú liên hệ:</strong> @Html.Raw(Model.ContactAddress)</div>
+            }
+        }
+        else
+        {
+            <div><strong>Thông tin liên hệ:</strong> ???</div>
+        }
+        <!-- PublishContact -->
+        @if (Model.PublishContact)
+        {
+            <div><span><span class='ui-icon icon-check'></span> Cho phép hiện Liên hệ</span></div>
+        }
+        else
+        {
+            <div><span><span class='ui-icon icon-cross'></span> Không hiện Liên hệ</span></div>
+        }
+        <!-- IsOwner -->
+        @if (Model.IsOwner)
+        {
+            <div><span><span class='ui-icon icon-check'></span> Tin chính chủ</span></div>
+        }
+        <!-- NoBroker -->
+        @if (Model.NoBroker)
+        {
+            <div><span><span class='ui-icon icon-check'></span> Miễn trung gian</span></div>
+        }
+        <!-- IsAuction -->
+        @if (Model.IsAuction)
+        {
+            <div><span><span class='ui-icon icon-check'></span> BĐS phát mãi</span></div>
+        }
+        <!-- IsHighlights -->
+        @*@if (Model.IsHighlights)
+            {
+                <div><span><span class='ui-icon icon-check'></span> BĐS nổi bật</span></div>
+            }*@
+        <hr />
+
+        @if (Model.PriceProposed > 0)
+        {
+            <div><strong>Giá rao:</strong> @String.Format("{0:#,0.##}", Model.PriceProposed) @Model.PaymentMethod.Name / @Model.PaymentUnit.Name</div>
+        }
+
+        <hr />
+
+        <!-- Title -->
+        @if (!String.IsNullOrEmpty(Model.Title))
+        {
+            <div><strong>Tiêu đề tin rao:</strong> @Html.Raw(Model.Title)</div>
+        }
+        <!-- Content -->
+        @if (!String.IsNullOrEmpty(Model.Content))
+        {
+            <div><strong>Nội dung tin rao:</strong> @Html.Raw(Model.Content)</div>
+        }
+    </div>
+
+}

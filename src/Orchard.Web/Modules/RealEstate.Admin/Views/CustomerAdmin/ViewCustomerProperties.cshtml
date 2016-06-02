@@ -1,0 +1,36 @@
+﻿@model IEnumerable<RealEstate.Models.CustomerPropertyRecord>
+@{ var Properties = Model.OrderByDescending(r => r.Id).ToList();}
+@foreach (var entry in Properties.Take(5).ToList())
+{
+    var item = entry.PropertyPartRecord;
+    if (item != null)
+    {
+    <div>-
+    @Html.Raw(string.Format("{0:0} {1:0}",
+                item.AddressNumber,
+                string.Join(", ", new string[]{
+                    (item.Street != null ? item.Street.Name : item.OtherStreetName) + " - <span class='" + entry.CustomerFeedbackPartRecord.CssClass + "'>" + entry.CustomerFeedbackPartRecord.Name + "</span>",
+                })))
+    </div>
+    }
+}
+@if (Properties.Count > 5)
+{
+    <div class="hidden">
+    @foreach (var entry in Properties.Skip(5).ToList())
+    {
+        var item = entry.PropertyPartRecord;
+        if (item != null)
+        {
+        <div>-
+        @Html.Raw(string.Format("{0:0} {1:0}",
+                    item.AddressNumber,
+                    string.Join(", ", new string[]{
+                        (item.Street != null ? item.Street.Name : item.OtherStreetName) + " - <span class='" + entry.CustomerFeedbackPartRecord.CssClass + "'>" + entry.CustomerFeedbackPartRecord.Name + "</span>",
+                    })))
+        </div>
+        }
+    }
+    </div>
+    <a href="#" onclick="$(this).prev('.hidden').removeClass('hidden'); $(this).remove(); return false;">xem thêm...</a>
+}

@@ -1,0 +1,87 @@
+@model RealEstate.ViewModels.PropertyFlagsIndexViewModel
+@using RealEstate.Models;
+@using RealEstate.ViewModels;
+
+@{
+    Script.Require("Common");
+    Layout.Title = T("Property Flags").ToString();
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{ 
+    @Html.ValidationSummary()
+    <div class="manage">@Html.ActionLink(T("Add new Property Flag").ToString(), "Create", new { }, new { @class = "button primaryAction" })</div>
+
+    <fieldset class="bulk-actions">
+        <label for="publishActions">@T("Actions:")</label>
+        <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+            @Html.SelectOption(Model.Options.BulkAction, PropertyFlagsBulkAction.None, T("Choose action...").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, PropertyFlagsBulkAction.Enable, T("Enable").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, PropertyFlagsBulkAction.Disable, T("Disable").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, PropertyFlagsBulkAction.Delete, T("Delete").ToString())
+        </select>
+        <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+    </fieldset>
+    <fieldset class="bulk-actions">
+        @Html.TextBoxFor(m => m.Options.Search, new { @class = "text" })        
+        <label for="filterResults">@T("Filter:")</label>
+        <select id="filterResults" name="@Html.NameOf(m => m.Options.Filter)">
+            @Html.SelectOption(Model.Options.Filter, PropertyFlagsFilter.All, T("All").ToString())
+        </select>
+        <label for="filterResults">@T("Sort by:")</label>
+        <select id="filterResults1" name="@Html.NameOf(m => m.Options.Order)">
+            @Html.SelectOption(Model.Options.Order, PropertyFlagsOrder.Name, T("Name").ToString())
+            @Html.SelectOption(Model.Options.Order, PropertyFlagsOrder.SeqOrder, T("SeqOrder").ToString())
+        </select>
+
+        <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+    </fieldset>
+    <fieldset>
+        <table class="items">
+            <thead>
+                <tr>
+                    <th scope="col"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.PropertyFlags)" /></th>
+                    <th scope="col">@T("Name")</th>
+                    <th scope="col">@T("Value")</th>
+                    <th scope="col">@T("CssClass")</th>
+                    <th scope="col">@T("SeqOrder")</th>
+                    <th scope="col">@T("IsEnabled")</th>
+                    <th scope="col">@T("Actions")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.PropertyFlags)
+            { 
+            <tr>
+                <td>
+                    <input type="hidden" value="@Model.PropertyFlags[index].PropertyFlag.Id" name="@Html.NameOf(m => m.PropertyFlags[index].PropertyFlag.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.PropertyFlags[index].IsChecked)"/>
+                </td>
+                <td>
+                    @Html.ActionLink(entry.PropertyFlag.Name, "Edit", new { entry.PropertyFlag.Id }) 
+                </td>
+                <td>
+                    @String.Format("{0:+0\\%;-0\\%; }", entry.PropertyFlag.Value)
+                </td>
+                <td>
+                    @entry.PropertyFlag.CssClass 
+                </td>
+                <td>
+                    @entry.PropertyFlag.SeqOrder 
+                </td>
+                <td>
+                    @entry.PropertyFlag.IsEnabled 
+                </td>
+                <td>
+                    @Html.ActionLink(T("Edit").ToString(), "Edit", new { entry.PropertyFlag.Id }) |
+                    @Html.ActionLink(T("Delete").ToString(), "Delete", new { entry.PropertyFlag.Id }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                </td>
+            </tr>
+                index++;
+            }
+        </table>
+
+    @Display(Model.Pager)
+
+    </fieldset>
+} 

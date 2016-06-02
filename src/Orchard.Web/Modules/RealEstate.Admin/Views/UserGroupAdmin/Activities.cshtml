@@ -1,0 +1,1106 @@
+﻿@model RealEstate.ViewModels.GroupActivitiesIndexViewModel
+@using RealEstate.Models;
+
+@{
+    Script.Require("jQueryUI_DatePicker");
+
+    Script.Require("selectboxes");
+    Script.Require("BootstrapCombobox");
+    Script.Require("BootstrapMultiselect");
+    Script.Require("Floatheader");
+    Style.Require("Select2");
+    Script.Require("Select2");
+    Script.Require("Common");
+    Layout.Title = T("Group Activities").ToString();
+}
+
+<script type="text/javascript">
+    $(function () {
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) { $.cookie($(this).closest('.nav-tabs').attr('id'), $(e.target).attr('href')); });
+        if (window.location.hash != '')
+            $('a[href = "' + window.location.hash + '"]').tab('show');
+        else {
+            //go to the latest tab, if it exists:
+            var lastTab = $.cookie($('.nav-tabs').attr('id'));
+            if (lastTab) $('a[href = "' + lastTab + '"]').tab('show');
+        }
+    });
+</script>
+
+<!-- Summary -->
+
+<div class="form-editor">
+    @Html.ActionLink("Back", "Index", new { Area = "RealEstate.Admin", Controller = "UserGroupAdmin" }, new { @class = "button" })
+    <span><strong>Group:</strong> @Model.Group.Name</span>
+    <span>
+        &nbsp;&nbsp;-&nbsp;&nbsp;<strong>GroupAdmin:</strong>
+        @if (AuthorizedFor(RealEstate.Permissions.ManageUsers))
+        {
+            <a href="@Url.Action("LoginAs", "Users", new { Model.Group.GroupAdminUser.Id })"><span class="ui-icon icon-user-go" title="Đăng nhập với @Model.Group.GroupAdminUser.UserName"></span></a>
+        }
+
+        @Html.ActionLink(Model.Group.GroupAdminUser.UserName, "Activities", new { Area = "RealEstate.Admin", Controller = "Users", Id = Model.Group.GroupAdminUser.Id })
+    </span>
+    <span>&nbsp;&nbsp;-&nbsp;&nbsp;<strong>ExecutionTime:</strong> @String.Format("{0:#,0.##} giây", Model.TotalExecutionTime)</span>
+    <div class="spacer"></div>
+</div>
+
+<!-- Navigation -->
+
+<ul class="nav nav-tabs" id="tabsGroupActivities">
+    <!-- Activities -->
+    <li class="active"><a href="#activities" data-toggle="tab">Activities</a></li>
+    <!-- Profile -->
+    @if (Model.EnableEditProfile)
+    {
+        <li><a href="#profile" data-toggle="tab">Profile</a></li>
+    }
+    <!-- Settings -->
+    @if (Model.EnableEditSettings)
+    {
+        <li><a href="#settings" data-toggle="tab">Settings</a></li>
+    }
+    <!-- Contacts -->
+    @if (Model.EnableEditContacts)
+    {
+        <li><a href="#contacts" data-toggle="tab">Contacts</a></li>
+    }
+    <!-- Locations -->
+    @if (Model.EnableEditLocations)
+    {
+        <li><a href="#locations" data-toggle="tab">Locations</a></li>
+    }
+    <!-- Shared Locations -->
+    @if (Model.EnableEditSharedLocations)
+    {
+        <li><a href="#sharedlocations" data-toggle="tab">Shared Locations</a></li>
+    }
+    <!-- Group AddUser Agencies -->
+    @if (Model.EnableGroupAddUserAgencies)
+    {
+        <li><a href="#addagencies" data-toggle="tab">AddUserAgencies</a></li>
+    }
+</ul>
+
+<div class="tab-content">
+    <!-- Activities -->
+    <div class="tab-pane active" id="activities">
+
+        <div class="form-editor">
+            @if (AuthorizedFor(RealEstate.Permissions.ManageUsers))
+            {
+                <div class="left">
+                    @using (Html.BeginFormAntiForgeryPost())
+                    {
+                        @Html.ValidationSummary()
+
+                        <span>User Name:</span>
+                        @Html.TextBoxFor(m => m.ToAddUserId, new { Class = "select2-user select2-user-available-group-member text-box-medium", group = Model.Group.Id })
+
+                        <button type="submit" id="submit_UpdateGroupUsers" name="submit.UpdateGroupUsers" value="@T("Add Users")">@T("Add Users")</button>
+                    }
+                </div>
+            }
+
+            <div class="left">
+                @using (Html.BeginFormAntiForgeryPost(null, FormMethod.Get))
+                {
+                    @Html.ValidationSummary()
+
+                    <span>&nbsp;&nbsp;&nbsp;Hoạt động từ:</span>
+                    @Html.TextBoxFor(m => m.Options.DateFrom, new { Class = "text date-box" })
+                    <span>đến</span>
+                    @Html.TextBoxFor(m => m.Options.DateTo, new { Class = "text date-box" })
+
+                    <button type="submit">@T("Xem")</button>
+                }
+            </div>
+
+            @Html.ActionLink(T("Tạo user mới").ToString(), "Create", "Users", new { }, new { Class = "button right" })
+        </div>
+
+        <div class="spacer"></div>
+
+        <fieldset>
+
+            @{int index = 0; var excludeRoles = new List<string> { "Anonymous", "Authenticated", "Author", "Contributor" };}
+
+            <table id="tblGroupUsers" class="items fixed-table float-header">
+                <thead>
+                    <tr>
+                        <th scope="col" class="w36"></th>
+                        @*<th scope="col" class="w20"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.GroupUsers)" /></th>*@
+                        <th scope="col" class="w180">@T("Name")</th>
+                        <th scope="col" class="w36">@T("Points")</th>
+                        @foreach (var role in Model.Roles)
+                        {
+                            if (!excludeRoles.Contains(role.Name))
+                            {
+                                <th scope="col" class="" title="@role.Name">@role.Name</th>
+                            }
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var entry in Model.GroupUsers)
+                    {
+                        UserInGroupRecord record = entry.UserInGroupRecord;
+                        var item = record.UserPartRecord;
+                        <tr>
+                            <td>
+                                @Html.ActionLink(T("Remove").ToString(), "Remove", new { record.Id }, new { Class = "ui-icon icon-delete", id = record.Id })
+                                @Html.ActionLink(T("Edit").ToString(), "Activities", "Users", new { item.Id }, new { Class = "ui-icon icon-edit" })
+                            </td>
+                            @*<td>
+                                    <input type="hidden" value="@Model.GroupUsers[index].UserInGroupRecord.UserPartRecord.Id" name="@Html.NameOf(m => m.GroupUsers[index].UserInGroupRecord.UserPartRecord.Id)"/>
+                                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.GroupUsers[index].IsChecked)" />
+                                </td>*@
+                            <td>
+                                @if (AuthorizedFor(RealEstate.Permissions.ManageUsers))
+                                {
+                                    <a href="@Url.Action("LoginAs", "Users", new { item.Id })"><span class="ui-icon icon-user-go" title="Đăng nhập với @item.UserName"></span></a>
+                                }
+
+                                @Html.ActionLink(item.UserName, "Activities", new { Area = "RealEstate.Admin", Controller = "Users", Id = item.Id, DateFrom = Model.Options.DateFrom, DateTo = Model.Options.DateTo })
+                            </td>
+                            <td>@Html.ActionLink(String.Format("{0:#,0.#}", entry.Points), "Activities", new { Area = "RealEstate.Admin", Controller = "Users", Id = item.Id, DateFrom = Model.Options.DateFrom, DateTo = Model.Options.DateTo })</td>
+                            @foreach (var role in Model.Roles)
+                            {
+                                if (!excludeRoles.Contains(role.Name))
+                                {
+                                    <td class="align-center">@Html.Raw(entry.Roles.Contains(role.Name) ? "<span class='ui-icon icon-check'></span>" : "")</td>
+                                }
+                            }
+                        </tr>
+                            index++;
+                    }
+                </tbody>
+            </table>
+        </fieldset>
+
+        @Display(Model.Pager)
+
+        <script type="text/javascript">
+            $(function () {
+                // Delete a GroupUser
+                $("#tblGroupUsers .icon-delete").click(function () {
+                    var tr = $(this).closest('tr');
+
+                    if (confirm('Bạn muốn xóa thông tin này?\n' + $(this).parent().siblings().eq(2).text())) {
+                        $.ajax({
+                            type: "post",
+                            dataType: "",
+                            url: "/RealEstate.Admin/Home/AjaxDeleteUserInGroup",
+                            data: {
+                                id: $(this).attr("id"),
+                                __RequestVerificationToken: antiForgeryToken
+                            },
+                            success: function (results) {
+                                if (results.success) {
+                                    $(tr).fadeOut('medium', function () {
+                                        $(tr).remove();
+                                    });
+                                }
+                                else
+                                    alert(results.message);
+                            },
+                            error: function (request, status, error) {
+                            }
+                        });
+                    }
+                    return false;
+                });
+
+            });
+        </script>
+
+    </div>
+    <!-- Profile -->
+    @if (Model.EnableEditProfile)
+    {
+        <div class="tab-pane" id="profile">
+            @Html.ActionLink("Thay đổi tiền miền cho Group", "HostName", new { Area = "RealEstate.Admin", Controller = "UserGroupAdmin", Id = Model.Group.Id }, new { @class = "button" })
+            @using (Html.BeginFormAntiForgeryPost())
+            {
+                <fieldset>
+                    @Html.LabelFor(m => m.Name, T("Name"))
+                    @Html.TextBoxFor(m => m.Name, new { @class = "text-box text-box-medium" })
+                    @Html.ValidationMessageFor(m => m.Name, "*")
+                </fieldset>
+                <fieldset>
+                    @Html.LabelFor(m => m.ShortName, T("ShortName"))
+                    @Html.TextBoxFor(m => m.ShortName, new { @class = "text-box text-box-medium" })
+                    @Html.ValidationMessageFor(m => m.ShortName, "*")
+                </fieldset>
+                <fieldset>
+                    @Html.LabelFor(m => m.SeqOrder, T("SeqOrder"))
+                    @Html.TextBoxFor(m => m.SeqOrder, new { @class = "text-box text-box-medium" })
+                    @Html.ValidationMessageFor(m => m.SeqOrder, "*")
+                </fieldset>
+                <fieldset>
+                    @Html.LabelFor(m => m.IsEnabled, T("IsEnabled"))
+                    @Html.EditorFor(m => m.IsEnabled)
+                    @Html.ValidationMessageFor(m => m.IsEnabled, "*")
+                </fieldset>
+                <fieldset>
+                    @Html.LabelFor(m => m.GroupAdminUserId, T("GroupAdminUser:"))
+                    @Html.TextBoxFor(m => m.GroupAdminUserId, new { @class = "select2-user select2-user-available-group-admin text-box-medium", group = Model.Group.Id })
+                    @Html.ValidationMessageFor(m => m.GroupAdminUserId, "*")
+                </fieldset>
+                <fieldset>
+                    @Html.LabelFor(m => m.ContactPhone, T("ContactPhone"))
+                    @Html.TextBoxFor(m => m.ContactPhone, new { @class = "text-box text-box-medium" })
+                    @Html.ValidationMessageFor(m => m.ContactPhone, "*")
+                </fieldset>
+                <fieldset>
+                    @Html.LabelFor(m => m.DefaultProvinceId, T("Tỉnh / Thành phố (mặc định):"))
+                    @Html.DropDownListFor(m => m.DefaultProvinceId, Model.Options.Provinces, "-- Tỉnh / Thành phố --", new { Class = "combobox" })
+                    @Html.ValidationMessageFor(m => m.DefaultProvinceId, "*")
+                </fieldset>
+                <fieldset>
+                    @Html.LabelFor(m => m.DefaultDistrictId, T("Quận / Huyện (mặc định):"))
+                    @Html.DropDownListFor(m => m.DefaultDistrictId, Model.Options.Districts, "-- Quận / Huyện --", new { Class = "combobox" })
+                    @Html.ValidationMessageFor(m => m.DefaultDistrictId, "*")
+                </fieldset>
+                <fieldset>
+                    @Html.LabelFor(m => m.DefaultPropertyStatusId, T("Trạng thái tin rao (mặc định):"))
+                    @Html.DropDownListFor(m => m.DefaultPropertyStatusId,
+            Model.PropertyStatus.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.DefaultPropertyStatusId,
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }), "-- Trạng thái tin rao --", new { @class = "select-box" })
+                    @Html.ValidationMessageFor(m => m.DefaultPropertyStatusId, "*")
+                </fieldset>
+                <fieldset>
+                    @Html.LabelFor(m => m.DefaultAdsTypeId, T("Loại tin rao (mặc định):"))
+                    @Html.DropDownListFor(m => m.DefaultAdsTypeId,
+            Model.AdsTypes.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.DefaultAdsTypeId,
+                Text = s.ShortName,
+                Value = s.Id.ToString()
+            }), "-- Loại tin rao --", new { @class = "select-box" })
+                    @Html.ValidationMessageFor(m => m.DefaultAdsTypeId, "*")
+                </fieldset>
+                <fieldset>
+                    @Html.LabelFor(m => m.DefaultTypeGroupId, T("Nhóm BĐS (mặc định):"))
+                    @Html.DropDownListFor(m => m.DefaultTypeGroupId,
+            Model.TypeGroups.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.DefaultTypeGroupId,
+                Text = s.ShortName,
+                Value = s.Id.ToString()
+            }), "-- Nhóm BĐS --", new { @class = "select-box" })
+                    @Html.ValidationMessageFor(m => m.DefaultTypeGroupId, "*")
+                </fieldset>
+                <fieldset>
+                    @Html.LabelFor(m => m.NumberOfAdsGoodDeal, T("Number Of AdsGoodDeal (-1 is unlimited)"))
+                    @Html.TextBoxFor(m => m.NumberOfAdsGoodDeal, new { @class = "text-box text-box-medium" })
+                    @Html.ValidationMessageFor(m => m.NumberOfAdsGoodDeal, "*")
+                </fieldset>
+                @*<fieldset>
+        @Html.LabelFor(m => m.NumberOfAdsVIP, T("Number Of AdsVIP (-1 is unlimited)"))
+        @Html.TextBoxFor(m => m.NumberOfAdsVIP, new { @class = "text-box text-box-medium" })
+        @Html.ValidationMessageFor(m => m.NumberOfAdsVIP, "*")
+    </fieldset>*@
+                <fieldset>
+                    @Html.LabelFor(m => m.NumberOfAdsHighlight, T("Number Of AdsHighlight (-1 is unlimited)"))
+                    @Html.TextBoxFor(m => m.NumberOfAdsHighlight, new { @class = "text-box text-box-medium" })
+                    @Html.ValidationMessageFor(m => m.NumberOfAdsHighlight, "*")
+                </fieldset>
+
+
+                <button type="submit" id="submit_UpdateGroupProfile" name="submit.UpdateGroupProfile" value="UpdateGroupProfile">@T("Save")</button>
+            }
+        </div>
+    }
+    <!-- Settings -->
+    @if (Model.EnableEditSettings)
+    {
+        <div class="tab-pane" id="settings">
+            <label>Current IP: @Model.CurrentUserIpAddress @Html.Raw(Model.CheckAllowedIPs ? "<span class='ui-icon icon-check'></span>" : "<span class='ui-icon icon-cross'></span>")</label>
+            @using (Html.BeginFormAntiForgeryPost())
+            {
+                <label>Allowed Admin Single IPs:<br /> <span class="disabled">format "IP,IP" example "10.2.0.0,10.3.0.0"</span></label>
+                @Html.TextBoxFor(m => m.AllowedAdminSingleIPs, new { @class = "text-box text-box-medium listbox" })
+
+                <label>Allowed Admin Masked IPs:<br /> <span class="disabled">format "IP;MASK,IP;MASK" example "10.2.0.0;255.255.0.0,10.3.0.0;255.255.0.0"</span></label>
+                @Html.TextBoxFor(m => m.AllowedAdminMaskedIPs, new { @class = "text-box text-box-medium listbox" })
+
+                <fieldset>
+                    @Html.LabelFor(m => m.ApproveAllGroup, T("Hiển thị tất cả BĐS từ group khác"))
+                    @Html.EditorFor(m => m.ApproveAllGroup)
+                    @Html.ValidationMessageFor(m => m.ApproveAllGroup, "*")
+                </fieldset>
+
+                <button type="submit" id="submit_UpdateGroupIPs" name="submit.UpdateGroupIPs" value="UpdateGroupIPs">@T("Save")</button>
+            }
+            <script type="text/javascript">
+
+                !function ($) {
+
+                    "use strict";
+
+                    /* LISTBOX PUBLIC CLASS DEFINITION
+                    * ================================ */
+
+                    var Listbox = function (element, options) {
+                        this.options = $.extend({}, $.fn.listbox.defaults, options);
+                        this.$source = $(element);
+                        this.$container = this.setup();
+                        this.$element = this.$container.find('input[type=text]');
+                        this.$btnadd = this.$container.find('.btn-add');
+                        this.$list = this.$container.find('select');
+                        this.$btnremove = this.$container.find('.btn-remove');
+                        this.$target = this.$container.find('input[type=hidden]');
+                        this.refresh();
+                        this.transferAttributes();
+                        this.listen();
+                    };
+
+                    Listbox.prototype = {
+
+                        constructor: Listbox
+
+                        , setup: function () {
+                            var listbox = $(this.options.template);
+                            this.$source.before(listbox);
+                            this.$source.hide();
+                            return listbox;
+                        }
+
+                        , parse: function () {
+                            var that = this
+                            , source = []
+                            , selectedValue = '';
+
+                            var values = $.trim(this.$source.val()).split(',');
+                            if (values.length > 0)
+                                for (var i = 0; i < values.length; i++) {
+                                    if ($.trim(values[i]) != '') this.$list.addOption(values[i], values[i]);
+                                }
+                            this.$list.find('option').removeAttr("selected");
+
+                            return source;
+                        }
+
+                        , transferAttributes: function () {
+                            this.options.placeholder = this.$source.attr('data-placeholder') || this.options.placeholder;
+                            this.$element.attr('placeholder', this.options.placeholder);
+                            this.$target.prop('name', this.$source.prop('name'));
+                            this.$target.val(this.$source.val());
+                            this.$element.attr('class', this.$source.attr('class'));
+                            this.$source.removeAttr('tabindex');
+                            this.$source.removeAttr('name');  // Remove from source otherwise form will pass parameter twice.
+                        }
+
+                        , refresh: function () {
+                            this.source = this.parse();
+                            this.options.items = this.source.length;
+                        }
+
+                        , listen: function () {
+                            this.$btnadd.on('click', $.proxy(this.add, this));
+                            this.$btnremove.on('click', $.proxy(this.remove, this));
+                        }
+                        , add: function () {
+                            this.value = this.$element.val();
+                            if (this.value !== '') {
+                                this.$list.addOption(this.$element.val(), this.$element.val());
+                                this.update();
+                            }
+                        }
+                        , remove: function () {
+                            this.$list.removeOption(this.$list.selectedValues());
+                            this.update();
+                        }
+                        , update: function () {
+                            this.$list.find('option').prop("selected", true);
+                            this.$target.val(this.$list.val());
+                            this.$list.find('option').prop("selected", false);
+                        }
+                    };
+
+                    /* LISTBOX PLUGIN DEFINITION
+                    * =========================== */
+
+                    $.fn.listbox = function (option) {
+                        return this.each(function () {
+                            var $this = $(this)
+                            , data = $this.data('listbox')
+                            , options = typeof option == 'object' && option;
+                            if (!data) { $this.data('listbox', (data = new Listbox(this, options))); }
+                            if (typeof option == 'string') { data[option](); }
+                        });
+                    };
+
+                    $.fn.listbox.defaults = {
+                        template: '<div class="listbox-container"> \
+                                    <input type="hidden" /> \
+                                    <fieldset> \
+                                        <input type="text" class="text-box" autocomplete="off" /> \
+                                        <button type="button" class="btn-add">Add</button> \
+                                    </fieldset> \
+                                    <fieldset> \
+                                        <select multiple="multiple" style="width:400px;height:auto;"></select> \
+                                        <button type="button" class="btn-remove">Remove</button> \
+                                    </fieldset> \
+                                </div>'
+                    };
+
+                    $.fn.listbox.Constructor = Listbox;
+
+                }(window.jQuery);
+
+                $(function () {
+                    $('.listbox').listbox();
+                });
+            </script>
+        </div>
+    }
+    <!-- Contacts -->
+    @if (Model.EnableEditContacts)
+    {
+        <div class="tab-pane" id="contacts">
+
+            <div class="spacer"></div>
+
+            @using (Html.BeginFormAntiForgeryPost())
+            {
+                @Html.ValidationSummary()
+
+                <fieldset class="bulk-actions">
+                    <table class="filter-table">
+                        <thead>
+                            <tr>
+                                <th>@Html.LabelFor(m => m.Options.ProvinceId, @T("Tỉnh / Thành phố:"))</th>
+                                <th>@Html.LabelFor(m => m.Options.DistrictId, @T("Quận / Huyện:"))</th>
+                                <th>@Html.LabelFor(m => m.Options.AdsTypeId, @T("Loại tin:"))</th>
+                                <th>@Html.LabelFor(m => m.Options.TypeGroupId, @T("Nhóm BĐS:"))</th>
+                                <th>@Html.LabelFor(m => m.Options.ContactPhone, @T("ContactPhone:"))</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    @Html.DropDownListFor(m => m.Options.ProvinceId, Model.Options.Provinces, "-- Tỉnh / Thành phố --", new { Class = "combobox" })
+                                </td>
+                                <td>
+                                    @Html.DropDownListFor(m => m.Options.DistrictId, Model.Options.Districts, "-- Quận / Huyện --", new { Class = "combobox" })
+                                </td>
+                                <td>
+                                    @Html.DropDownListFor(m => m.Options.AdsTypeId,
+                                    Model.Options.AdsTypes.Select(s => new SelectListItem
+                                    {
+                                        Selected = s.Id == Model.Options.AdsTypeId,
+                                        Text = s.Name,
+                                        Value = s.Id.ToString()
+                                    }), T("All").ToString(), new { Class = "" })
+                                </td>
+                                <td>
+                                    @Html.DropDownListFor(m => m.Options.TypeGroupId,
+                                    Model.Options.TypeGroups.Select(s => new SelectListItem
+                                    {
+                                        Selected = s.Id == Model.Options.TypeGroupId,
+                                        Text = s.Name,
+                                        Value = s.Id.ToString()
+                                    }), T("All").ToString(), new { Class = "" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.Options.ContactPhone, new { Class = "text-box" })
+                                </td>
+                                <td>
+                                    <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+                                    <button type="submit" name="submit.AddGroupContact" value="@T("AddGroupContact")">@T("Add")</button>
+                                    <button type="submit" name="submit.EditGroupContact" value="@T("EditGroupContact")" style="display:none;">@T("Save")</button>
+                                    <button type="reset" name="submit.ResetGroupContact" value="@T("Cancel")" style="display:none;">@T("Cancel")</button>
+                                    @Html.HiddenFor(m => m.Options.GroupContactEditId)
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </fieldset>
+            }
+
+            <div class="spacer"></div>
+
+            <table id="tblGroupContacts" class="items fixed-table float-header">
+                <thead>
+                    <tr>
+                        <th scope="col" class="w36"></th>
+                        <th scope="col" class="">@T("Tỉnh / Thành phố")</th>
+                        <th scope="col" class="">@T("Quận / Huyện")</th>
+                        <th scope="col" class="">@T("Loại tin")</th>
+                        <th scope="col" class="">@T("Nhóm BĐS")</th>
+                        <th scope="col" class="">@T("ContactPhone")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var entry in Model.GroupContacts)
+                    {
+                        <tr>
+                            <td>
+                                @Html.ActionLink(T("Remove").ToString(), "Remove", new { entry.Id }, new { Class = "ui-icon icon-delete", id = entry.Id })
+                                @Html.ActionLink(T("Edit").ToString(), "Edit", new { entry.Id }, new
+                   {
+                       Class = "ui-icon icon-edit",
+                       id = entry.Id,
+                       province = (entry.LocationProvincePartRecord != null ? entry.LocationProvincePartRecord.Id : 0),
+                       district = (entry.LocationDistrictPartRecord != null ? entry.LocationDistrictPartRecord.Id : 0),
+                       adstype = (entry.AdsTypePartRecord != null ? entry.AdsTypePartRecord.Id : 0),
+                       typegroup = (entry.PropertyTypeGroupPartRecord != null ? entry.PropertyTypeGroupPartRecord.Id : 0),
+                       phone = entry.ContactPhone
+                   })
+                            </td>
+                            <td abbr="LocationProvincePartRecord">@(entry.LocationProvincePartRecord != null ? entry.LocationProvincePartRecord.Name : "")</td>
+                            <td abbr="LocationDistrictPartRecord">@(entry.LocationDistrictPartRecord != null ? entry.LocationDistrictPartRecord.Name : "")</td>
+                            <td abbr="AdsTypePartRecord">@(entry.AdsTypePartRecord != null ? entry.AdsTypePartRecord.Name : "")</td>
+                            <td abbr="PropertyTypeGroupPartRecord">@(entry.PropertyTypeGroupPartRecord != null ? entry.PropertyTypeGroupPartRecord.Name : "")</td>
+                            <td abbr="ContactPhone">@entry.ContactPhone</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <script type="text/javascript">
+                $(function () {
+                    // Delete a GroupContact
+                    $("#tblGroupContacts .icon-delete").click(function () {
+                        var tr = $(this).closest('tr');
+
+                        if (confirm('Bạn muốn xóa thông tin này?')) {
+                            $.ajax({
+                                type: "post",
+                                dataType: "",
+                                url: "/RealEstate.Admin/Home/AjaxDeleteGroupContact",
+                                data: {
+                                    id: $(this).attr("id"),
+                                    __RequestVerificationToken: antiForgeryToken
+                                },
+                                success: function (results) {
+                                    if (results.success) {
+                                        $(tr).fadeOut('medium', function () {
+                                            $(tr).remove();
+                                        });
+                                    }
+                                    else
+                                        alert(results.message);
+                                },
+                                error: function (request, status, error) {
+                                }
+                            });
+                        }
+                        return false;
+                    });
+                    $("#tblGroupContacts .icon-edit").click(function () {
+                        var tr = $(this).closest('tr');
+                        selectedDistrictId = $(this).attr("district");
+                        $('#Options_GroupContactEditId').val($(this).attr("id"));
+                        $('#Options_ProvinceId').val($(this).attr("province")).combobox("refresh").change();
+                        $('#Options_DistrictId').val($(this).attr("district")).combobox("refresh").change();
+                        $('#Options_AdsTypeId').val($(this).attr("adstype"));
+                        $('#Options_TypeGroupId').val($(this).attr("typegroup"));
+                        $('#Options_ContactPhone').val($(this).attr("phone"));
+
+                        $('button[name="submit.AddGroupContact"]').hide();
+                        $('button[name="submit.EditGroupContact"]').show();
+                        $('button[name="submit.ResetGroupContact"]').show();
+                        return false;
+                    });
+                    $('button[name="submit.ResetGroupContact"]').click(function () {
+                        $('#Options_GroupContactEditId,#Options_ContactPhone').val('');
+                        $('#Options_AdsTypeId,#Options_TypeGroupId').children('option').removeAttr('selected');
+
+                        $('button[name="submit.AddGroupContact"]').show();
+                        $('button[name="submit.EditGroupContact"]').hide();
+                        $('button[name="submit.ResetGroupContact"]').hide();
+                    });
+                });
+            </script>
+
+        </div>
+    }
+    <!-- Locations -->
+    @if (Model.EnableEditLocations)
+    {
+        <div class="tab-pane" id="locations">
+
+            <div class="spacer"></div>
+
+            @using (Html.BeginFormAntiForgeryPost())
+            {
+                @Html.ValidationSummary()
+
+                <fieldset class="bulk-actions">
+                    <table class="filter-table">
+                        <thead>
+                            <tr>
+                                <th>@Html.LabelFor(m => m.Options.ProvinceId, @T("Province:"))</th>
+                                <th>@Html.LabelFor(m => m.Options.DistrictId, @T("District:"))</th>
+                                <th>@Html.LabelFor(m => m.Options.WardId, @T("Ward:"))</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    @Html.DropDownListFor(m => m.Options.ProvinceId, Model.Options.Provinces, "-- Tỉnh / Thành phố --", new { Class = "combobox" })
+                                </td>
+                                <td>
+                                    @Html.DropDownListFor(m => m.Options.DistrictId, Model.Options.Districts, "-- Quận / Huyện --", new { Class = "combobox" })
+                                </td>
+                                <td>
+                                    @Html.DropDownListFor(m => m.Options.WardId,
+                                    Model.Options.Wards.Select(s => new SelectListItem
+                                    {
+                                        Selected = s.Id == Model.Options.WardId,
+                                        Text = s.Name,
+                                        Value = s.Id.ToString()
+                                    }), T("All").ToString(), new { Class = "combobox" })
+                                </td>
+                                <td>
+                                    <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+                                    <button type="submit" name="submit.AddGroupLocation" value="@T("AddGroupLocation")">@T("Add new Location")</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </fieldset>
+            }
+
+            <div class="spacer"></div>
+
+            <table id="tblGroupLocations" class="items fixed-table float-header">
+                <thead>
+                    <tr>
+                        <th scope="col" class="w16"></th>
+                        <th scope="col" class="">@T("Province")</th>
+                        <th scope="col" class="">@T("District")</th>
+                        <th scope="col" class="">@T("Ward")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var entry in Model.GroupLocations)
+                    {
+                        <tr>
+                            <td>
+                                @Html.ActionLink(T("Remove").ToString(), "Remove", new { entry.Id }, new { Class = "ui-icon icon-delete", id = entry.Id })
+                            </td>
+                            <td>@(entry.LocationProvincePartRecord != null ? entry.LocationProvincePartRecord.Name : "")</td>
+                            <td>@(entry.LocationDistrictPartRecord != null ? entry.LocationDistrictPartRecord.Name : "")</td>
+                            <td>@(entry.LocationWardPartRecord != null ? entry.LocationWardPartRecord.Name : "")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <script type="text/javascript">
+                $(function () {
+                    // Delete a GroupLocation
+                    $("#tblGroupLocations .icon-delete").click(function () {
+                        var tr = $(this).closest('tr');
+
+                        if (confirm('Bạn muốn xóa thông tin này?')) {
+                            $.ajax({
+                                type: "post",
+                                dataType: "",
+                                url: "/RealEstate.Admin/Home/AjaxDeleteGroupLocation",
+                                data: {
+                                    id: $(this).attr("id"),
+                                    __RequestVerificationToken: antiForgeryToken
+                                },
+                                success: function (results) {
+                                    if (results.success) {
+                                        $(tr).fadeOut('medium', function () {
+                                            $(tr).remove();
+                                        });
+                                    }
+                                    else
+                                        alert(results.message);
+                                },
+                                error: function (request, status, error) {
+                                }
+                            });
+                        }
+                        return false;
+                    });
+                });
+            </script>
+
+        </div>
+    }
+    <!-- Shared Locations -->
+    @if (Model.EnableEditSharedLocations)
+    {
+        <div class="tab-pane" id="sharedlocations">
+
+            <div class="spacer"></div>
+
+            @using (Html.BeginFormAntiForgeryPost())
+            {
+                @Html.ValidationSummary()
+
+                <fieldset class="bulk-actions">
+                    <table class="filter-table">
+                        <thead>
+                            <tr>
+                                <th>@Html.LabelFor(m => m.Options.GroupId, @T("Group:"))</th>
+                                <th>@Html.LabelFor(m => m.Options.SharedProvinceId, @T("Province:"))</th>
+                                <th>@Html.LabelFor(m => m.Options.SharedDistrictId, @T("District:"))</th>
+                                <th>@Html.LabelFor(m => m.Options.SharedWardId, @T("Ward:"))</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    @Html.DropDownListFor(m => m.Options.GroupId,
+                                Model.Options.Groups.Select(s => new SelectListItem
+                                {
+                                    Selected = s.Id == Model.Options.GroupId,
+                                    Text = s.Name,
+                                    Value = s.Id.ToString()
+                                }), T("-- Vui lòng chọn --").ToString())
+                                </td>
+                                <td>
+                                    @Html.DropDownListFor(m => m.Options.SharedProvinceId, Model.Options.Provinces, "-- Tỉnh / Thành phố --", new { Class = "combobox" })
+                                </td>
+                                <td>
+                                    @Html.DropDownListFor(m => m.Options.SharedDistrictId, Model.Options.Districts, "-- Quận / Huyện --", new { Class = "combobox" })
+                                </td>
+                                <td>
+                                    @Html.DropDownListFor(m => m.Options.SharedWardId,
+                                Model.Options.Wards.Select(s => new SelectListItem
+                                {
+                                    Selected = s.Id == Model.Options.SharedWardId,
+                                    Text = s.Name,
+                                    Value = s.Id.ToString()
+                                }), T("All").ToString(), new { Class = "combobox" })
+                                </td>
+                                <td>
+                                    <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+                                    <button type="submit" name="submit.AddGroupSharedLocation" value="@T("AddGroupSharedLocation")">@T("Add new Location")</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </fieldset>
+            }
+
+            <div class="spacer"></div>
+
+            <table id="tblGroupSharedLocations" class="items fixed-table float-header">
+                <thead>
+                    <tr>
+                        <th scope="col" class="w16"></th>
+                        <th scope="col" class="">@T("Leecher")</th>
+                        <th scope="col" class="">@T("Province")</th>
+                        <th scope="col" class="">@T("District")</th>
+                        <th scope="col" class="">@T("Ward")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var entry in Model.GroupSharedLocations.Where(a => a.SeederUserGroupPartRecord.Id == Model.Group.Id))
+                    {
+                        <tr>
+                            <td>
+                                @Html.ActionLink(T("Remove").ToString(), "Remove", new { entry.Id }, new { Class = "ui-icon icon-delete", id = entry.Id })
+                            </td>
+                            <td>@(entry.LeecherUserGroupPartRecord != null ? entry.LeecherUserGroupPartRecord.Name : "")</td>
+                            <td>@(entry.LocationProvincePartRecord != null ? entry.LocationProvincePartRecord.Name : "")</td>
+                            <td>@(entry.LocationDistrictPartRecord != null ? entry.LocationDistrictPartRecord.Name : "")</td>
+                            <td>@(entry.LocationWardPartRecord != null ? entry.LocationWardPartRecord.Name : "")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="spacer"></div>
+            <h2>Shared from</h2>
+            <table class="items fixed-table float-header">
+                <thead>
+                    <tr>
+                        <th scope="col" class="w16"></th>
+                        <th scope="col" class="">@T("Seeder")</th>
+                        <th scope="col" class="">@T("Province")</th>
+                        <th scope="col" class="">@T("District")</th>
+                        <th scope="col" class="">@T("Ward")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var entry in Model.GroupSharedLocations.Where(a => a.LeecherUserGroupPartRecord.Id == Model.Group.Id))
+                    {
+                        <tr>
+                            <td>
+                                @Html.ActionLink(T("Remove").ToString(), "Remove", new { entry.Id }, new { Class = "ui-icon icon-delete", id = entry.Id })
+                            </td>
+                            <td>@(entry.SeederUserGroupPartRecord != null ? entry.SeederUserGroupPartRecord.Name : "")</td>
+                            <td>@(entry.LocationProvincePartRecord != null ? entry.LocationProvincePartRecord.Name : "")</td>
+                            <td>@(entry.LocationDistrictPartRecord != null ? entry.LocationDistrictPartRecord.Name : "")</td>
+                            <td>@(entry.LocationWardPartRecord != null ? entry.LocationWardPartRecord.Name : "")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <script type="text/javascript">
+                $(function () {
+                    // Delete a GroupLocation
+                    $("#tblGroupSharedLocations .icon-delete").click(function () {
+                        var tr = $(this).closest('tr');
+
+                        if (confirm('Bạn muốn xóa thông tin này?')) {
+                            $.ajax({
+                                type: "post",
+                                dataType: "",
+                                url: "/RealEstate.Admin/Home/AjaxDeleteGroupSharedLocation",
+                                data: {
+                                    id: $(this).attr("id"),
+                                    __RequestVerificationToken: antiForgeryToken
+                                },
+                                success: function (results) {
+                                    if (results.success) {
+                                        $(tr).fadeOut('medium', function () {
+                                            $(tr).remove();
+                                        });
+                                    }
+                                    else
+                                        alert(results.message);
+                                },
+                                error: function (request, status, error) {
+                                }
+                            });
+                        }
+                        return false;
+                    });
+                });
+            </script>
+
+        </div>
+    }
+    <!-- Add Agencies -->
+    @if (Model.EnableGroupAddUserAgencies)
+    {
+        <div class="tab-pane" id="addagencies">
+            <div class="spacer"></div>
+
+            @using (Html.BeginFormAntiForgeryPost())
+            {
+                @Html.ValidationSummary()
+
+                <fieldset class="bulk-actions">
+                    <table class="filter-table">
+                        <thead>
+                            <tr>
+                                <th>@Html.LabelFor(m => m.Options.UserId, @T("Users:"))</th>
+                                <th>@Html.LabelFor(m => m.Options.ProvinceId, @T("Province:"))</th>
+                                <th>@Html.LabelFor(m => m.Options.DistrictId, @T("District:"))</th>
+                                <th>@Html.LabelFor(m => m.Options.WardId, @T("Ward:"))</th>
+                                <th>@Html.LabelFor(m => m.Options.AreaAgencies, @T("Mô tả:"))</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    @Html.TextBoxFor(m => m.Options.UserId, new { @class = "select2-user text-box" })
+                                    @Html.ValidationMessageFor(m => m.Options.UserId, "*")
+                                </td>
+                                <td>
+                                    @Html.DropDownListFor(m => m.Options.ProvinceId, Model.Options.Provinces, "-- Tỉnh / Thành phố --", new { Class = "combobox" })
+                                </td>
+                                <td>
+                                    @Html.DropDownListFor(m => m.Options.DistrictId, Model.Options.Districts, "-- Quận / Huyện --", new { Class = "combobox" })
+                                </td>
+                                <td>
+                                    @Html.DropDownListFor(m => m.Options.WardId,
+                                Model.Options.Wards.Select(s => new SelectListItem
+                                {
+                                    Selected = s.Id == Model.Options.WardId,
+                                    Text = s.Name,
+                                    Value = s.Id.ToString()
+                                }), T("All").ToString(), new { Class = "combobox" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.Options.AreaAgencies, new { @class = "text-box" })
+                                </td>
+                                <td>
+                                    <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+                                    <button type="submit" name="submit.AddUserLocation" value="@T("AddUserLocation")">@T("Add new Location")</button>
+                                    <button type="submit" name="submit.EditUserLocation" value="@T("EditUserLocation")" style="display:none;">@T("Save")</button>
+                                    <button type="reset" name="submit.ResetUserLocation" value="@T("Cancel")" style="display:none;">@T("Cancel")</button>
+                                    @Html.HiddenFor(m => m.Options.UserLocationEditId)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">Ngày hết hạn môi giới: @Html.TextBoxFor(m => m.Options.EndDateAgencing, new { @class = "text-box date-box" })</td>
+                                <td>
+                                    <label>@Html.CheckBoxFor(m => m.Options.IsSelling)@T("Môi giới nhà bán")</label>
+                                </td>
+                                <td>
+                                    <label>@Html.CheckBoxFor(m => m.Options.IsLeasing)@T("Môi giới nhà thuê")</label>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </fieldset>
+            }
+
+            <div class="spacer"></div>
+            <input type="hidden" class="groupAgencyId" value="@Model.Group.Id" />
+            <table id="tblAddUserAgencies" class="items fixed-table float-header">
+                <thead>
+                    <tr>
+                        <th scope="col" class="w36"></th>
+                        <th scope="col" class="">@T("User")</th>
+                        <th scope="col" class="">@T("Province")</th>
+                        <th scope="col" class="">@T("District")</th>
+                        <th scope="col" class="">@T("Ward")</th>
+                        <th scope="col" class="">@T("NV Môi giới")</th>
+                        <th scope="col" class="">@T("Mô tả")</th>
+                        <th scope="col" class="">@T("Môi giới nhà bán")</th>
+                        <th scope="col" class="">@T("Môi giới nhà thuê")</th>
+                        <th scope="col" class="">@T("Ngày hết hạn MG")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var entry in Model.UserLocations)
+                    {
+                        <tr>
+                            <td>
+                                @Html.ActionLink(T("Remove").ToString(), "Remove", new { entry.Id }, new { Class = "ui-icon icon-delete", id = entry.Id, provinceId = entry.LocationProvincePartRecord.Id })
+                                @Html.ActionLink(T("Edit").ToString(), "Edit", new { entry.Id }, new
+                   {
+                       Class = "ui-icon icon-edit",
+                       id = entry.Id,
+                       province = (entry.LocationProvincePartRecord != null ? entry.LocationProvincePartRecord.Id : 0),
+                       district = (entry.LocationDistrictPartRecord != null ? entry.LocationDistrictPartRecord.Id : 0),
+                       ward = (entry.LocationWardPartRecord != null ? entry.LocationWardPartRecord.Id : 0),
+                       agency = (entry.EnableIsAgencies == true ? "true" : "false"),
+                       area = (entry.AreaAgencies),
+                       enddate = String.Format("{0: dd/MM/yyyy}", entry.EndDateAgencing),
+                       isselling = (entry.IsSelling == true ? "true" : "false"),
+                       isleasing = (entry.IsSelling == true ? "true" : "false"),
+                       user = (entry.UserPartRecord != null ? entry.UserPartRecord.Id : 0),
+                   })
+                            </td>
+                            <td>@(entry.UserPartRecord != null ? entry.UserPartRecord.UserName : "")</td>
+                            <td>@(entry.LocationProvincePartRecord != null ? entry.LocationProvincePartRecord.Name : "")</td>
+                            <td>@(entry.LocationDistrictPartRecord != null ? entry.LocationDistrictPartRecord.Name : "")</td>
+                            <td>@(entry.LocationWardPartRecord != null ? entry.LocationWardPartRecord.Name : "")</td>
+                            <td>@Html.Raw(entry.EnableIsAgencies ? "<span title=\"Là nhân viên môi giới\" class=\"ui-icon icon-check\"></span>" : "")</td>
+                            <td>@(entry.AreaAgencies != null ? entry.AreaAgencies : "")</td>
+                            <td>@Html.Raw(entry.IsSelling ? "<span title=\"Môi giới nhà bán\" class=\"ui-icon icon-check\"></span>" : "")</td>
+                            <td>@Html.Raw(entry.IsLeasing ? "<span title=\"Môi giới nhà thuê\" class=\"ui-icon icon-check\"></span>" : "")</td>
+                            <td>@String.Format("{0: dd/MM/yyyy}", entry.EndDateAgencing)</td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+            @Display(Model.PagerSecond)
+            <script type="text/javascript">
+                $(function () {
+                    //lay thong tin moi gioi theo user
+                    $('select[id$=UserId]').change(function () {
+                        $.ajax({
+                            type: "get",
+                            dataType: "",
+                            url: "/RealEstate.Admin/Home/GetInfoAgenciesForJson",
+                            data: {
+                                userId: $(this).val(),
+                                groupId: $(".groupAgencyId").val()
+                            },
+                            success: function (response) {
+                                if (response.part == "null") {
+                                    $('#Options_IsSelling').attr('checked', true).change();
+                                    $('#Options_IsLeasing').attr('checked', true).change();
+                                }
+                                else {
+                                    $('#Options_EnableIsAgencies').prop("checked", response.part.EnableIsAgencies == true).change();
+                                    $('#Options_IsSelling').prop("checked", response.part.IsSelling == true).change();
+                                    $('#Options_IsLeasing').prop("checked", response.part.IsLeasing == true).change();
+                                    $('#Options_AreaAgencies').val(response.part.AreaAgencies);
+                                    $('#Options_EndDateAgencing').val(response.part.EndDateAgencing);
+                                }
+                            },
+                            error: function (request, status, error) {
+
+                            }
+                        });
+                    });
+
+                    // Delete a UserLocation
+                    $("#tblAddUserAgencies .icon-delete").click(function () {
+                        var tr = $(this).closest('tr');
+
+                        if (confirm('Bạn muốn xóa thông tin này?')) {
+                            $.ajax({
+                                type: "post",
+                                dataType: "",
+                                url: "/RealEstate.Admin/Home/AjaxDeleteUserLocation",
+                                data: {
+                                    id: $(this).attr("id"),
+                                    provinceId: $(this).attr("provinceId"),
+                                    __RequestVerificationToken: antiForgeryToken
+                                },
+                                success: function (results) {
+                                    if (results.success) {
+                                        $(tr).fadeOut('medium', function () {
+                                            $(tr).remove();
+                                        });
+                                    }
+                                    else
+                                        alert(results.message);
+                                },
+                                error: function (request, status, error) {
+                                }
+                            });
+                        }
+                        return false;
+                    });
+                    $("#tblAddUserAgencies .icon-edit").click(function () {
+                        var tr = $(this).closest('tr');
+                        selectedProvinceId = $(this).attr("province");
+                        selectedDistrictId = $(this).attr("district");
+                        selectedWardId = $(this).attr("ward");
+                        user = $(this).attr("user");
+
+                        $('#Options_UserLocationEditId').val($(this).attr("id"));
+                        $('#Options_UserId').val(user).combobox("refresh").change();
+                        $('#addagencies #Options_ProvinceId').val(selectedProvinceId).combobox("refresh").change();
+                        $('#Options_DistrictId').val(selectedDistrictId).combobox("refresh").change();
+                        $('#Options_WardId').val($(this).attr("ward")).combobox("refresh").change();
+                        $('#Options_EnableIsAgencies').prop("checked", $(this).attr("agency") == 'true').change();
+                        $('#Options_IsSelling').prop("checked", $(this).attr("isselling") == 'true').change();
+                        $('#Options_IsLeasing').prop("checked", $(this).attr("isleasing") == 'true').change();
+                        $('#Options_AreaAgencies').val($(this).attr("area"));
+                        $('#Options_EndDateAgencing').val($(this).attr("enddate"));
+
+                        $('button[name="submit.AddUserLocation"]').hide();
+                        $('button[name="submit.EditUserLocation"]').show();
+                        $('button[name="submit.ResetUserLocation"]').show();
+                        return false;
+                    });
+                    $('button[name="submit.ResetGroupContact"]').click(function () {
+                        $('#Options_UserLocationEditId').val('');
+                        $('#Options_EnableAccessProperties').prop("checked", false).change();
+                        $('#Options_EnableAccessProperties').prop("checked", false).change();
+                        $('#Options_EnableIsAgencies').prop("checked", false).change();
+                        $('#Options_IsSelling').prop("checked", false).change();
+                        $('#Options_IsLeasing').prop("checked", false).change();
+                        $('#Options_AreaAgencies').val('');
+                        $('#Options_EndDateAgencing').val('');
+
+                        $('button[name="submit.AddUserLocation"]').show();
+                        $('button[name="submit.EditUserLocation"]').hide();
+                        $('button[name="submit.ResetUserLocation"]').hide();
+                    });
+                });
+            </script>
+        </div>
+    }
+</div>

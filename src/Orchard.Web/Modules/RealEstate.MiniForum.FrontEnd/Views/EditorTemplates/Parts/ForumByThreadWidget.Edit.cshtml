@@ -1,0 +1,12 @@
+﻿@model RealEstate.MiniForum.FrontEnd.Models.ForumByThreadWidgetPart
+           
+
+<fieldset>
+    <legend>@T("Chọn chuyên mục")</legend>
+    
+    <div>
+            <div>@Html.LabelFor(r => r.ThreadName, @T("Chuyên mục"))</div>
+
+            <div>@Html.DropDownListFor(o => o.SelectedCategory, Model.AvailableThreads)</div>
+     </div>
+</fieldset>

@@ -1,0 +1,160 @@
+﻿@model RealEstate.ViewModels.StreetRelationEditViewModel
+@using Orchard.ContentManagement;
+@{
+    Script.Require("BootstrapCombobox");
+    Script.Require("Common");
+}
+
+<span id="Id" style="display:none;">@Model.Id</span>
+
+<table class="filter-table">
+    <tr>
+        <td></td>
+        <td>UnitPrice</td>
+        <td>
+            @Html.DropDownListFor(m => m.CoefficientAlleyId,
+            Model.CoefficientAlleys.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.CoefficientAlleyId,
+                Text = s.StreetUnitPrice.ToString() + " triệu/m2",
+                Value = s.Id.ToString()
+            }), "-- Select --", new { Class = "select-box ajax-validate-relation" })
+        </td>
+        <td colspan="5">
+            <table width="100%" class="noborder-table">
+                <tr>
+                    <td>@Html.LabelFor(m => m.CoefficientAlley1Max, T("H1-max"))</td>
+                    <td>@Html.TextBoxFor(m => m.CoefficientAlley1Max, new { @class = "text-small" })</td>
+                    <td>@Html.LabelFor(m => m.CoefficientAlley1Min, T("H1-min"))</td>
+                    <td>@Html.TextBoxFor(m => m.CoefficientAlley1Min, new { @class = "text-small" })</td>
+                    <td>@Html.LabelFor(m => m.CoefficientAlleyEqual, T("H-equal"))</td>
+                    <td>@Html.TextBoxFor(m => m.CoefficientAlleyEqual, new { @class = "text-small" })</td>
+                    <td>@Html.LabelFor(m => m.CoefficientAlleyMax, T("H-max"))</td>
+                    <td>@Html.TextBoxFor(m => m.CoefficientAlleyMax, new { @class = "text-small" })</td>
+                    <td>@Html.LabelFor(m => m.CoefficientAlleyMin, T("H-min"))</td>
+                    <td>@Html.TextBoxFor(m => m.CoefficientAlleyMin, new { @class = "text-small" })</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>@Html.LabelFor(m => m.ProvinceId, T("Tỉnh / Thành phố"))</td>
+        <td>
+            @Html.DropDownListFor(m => m.ProvinceId,
+            Model.Provinces.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.ProvinceId,
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }), "-- Tỉnh / Thành Phố --", new { Class = "combobox ajax-validate-relation" + (Model.IsRestrictedLocations ? " restricted" : ""), userid = WorkContext.CurrentUser.Id })
+            @Html.ValidationMessageFor(m => m.ProvinceId, "*")
+        </td>
+        <td>@Html.LabelFor(m => m.DistrictId, T("Quận / Huyện"))</td>
+        <td>
+            @Html.DropDownListFor(m => m.DistrictId,
+            Model.Districts.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.DistrictId,
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }), "-- Quận / Huyện --", new { Class = "combobox ajax-validate-relation" })
+            @Html.ValidationMessageFor(m => m.DistrictId, "*")
+        </td>
+        <td>@Html.LabelFor(m => m.WardId, T("Phường / Xã"))</td>
+        <td>
+            @Html.DropDownListFor(m => m.WardId,
+            Model.Wards.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.WardId,
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }), "-- Phường / Xã --", new { Class = "combobox ajax-validate-relation" })
+            @Html.ValidationMessageFor(m => m.WardId, "*")
+        </td>
+        <td class="align-right">@Html.LabelFor(m => m.StreetId, T("Đường / Phố"))</td>
+        <td class="ui-autocomplete-container-street">
+            @Html.DropDownListFor(m => m.StreetId,
+            Model.Streets.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.StreetId,
+                Text = s.Name + String.Format("{0: (0}", s.FromNumber) + String.Format("{0: - 0)}", s.ToNumber),
+                Value = s.Id.ToString()
+            }), "-- Đường / Phố --", new { Class = "combobox all-street ajax-validate-relation" })
+            @Html.ValidationMessageFor(m => m.StreetId, "*")
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>@Html.LabelFor(m => m.RelatedValue, T("Mặt tiền"))</td>
+        <td>
+            @Html.TextBoxFor(m => m.RelatedValue, new { @class = "text-small" }) %
+            @Html.ValidationMessageFor(m => m.RelatedValue, "*")
+        </td>
+        <td>@Html.LabelFor(m => m.RelatedAlleyValue, T("Hẻm"))</td>
+        <td>
+            @Html.TextBoxFor(m => m.RelatedAlleyValue, new { @class = "text-small" }) %
+            @Html.ValidationMessageFor(m => m.RelatedAlleyValue, "*")
+        </td>
+        <td colspan="4"></td>
+    </tr>
+    <tr>
+        <td>@T("Related")&nbsp;</td>
+        <td>@Html.LabelFor(m => m.RelatedProvinceId, T("Tỉnh / Thành phố"))</td>
+        <td>
+            @Html.DropDownListFor(m => m.RelatedProvinceId,
+            Model.RelatedProvinces.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.RelatedProvinceId,
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }), "-- Tỉnh / Thành Phố --", new { Class = "combobox ajax-validate-relation" + (Model.IsRestrictedLocations ? " restricted" : ""), userid = WorkContext.CurrentUser.Id })
+            @Html.ValidationMessageFor(m => m.RelatedProvinceId, "*")
+        </td>
+        <td>@Html.LabelFor(m => m.RelatedDistrictId, T("Quận / Huyện"))</td>
+        <td>
+            @Html.DropDownListFor(m => m.RelatedDistrictId,
+            Model.RelatedDistricts.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.RelatedDistrictId,
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }), "-- Quận / Huyện --", new { Class = "combobox ajax-validate-relation" })
+            @Html.ValidationMessageFor(m => m.RelatedDistrictId, "*")
+        </td>
+        <td>@Html.LabelFor(m => m.RelatedWardId, T("Phường / Xã"))</td>
+        <td>
+            @Html.DropDownListFor(m => m.RelatedWardId,
+            Model.RelatedWards.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.RelatedWardId,
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }), "-- Phường / Xã --", new { Class = "combobox ajax-validate-relation" })
+            @Html.ValidationMessageFor(m => m.RelatedWardId, "*")
+        </td>
+        <td class="align-right">@Html.LabelFor(m => m.RelatedStreetId, T("Đường / Phố"))</td>
+        <td class="ui-autocomplete-container-street">
+            @Html.DropDownListFor(m => m.RelatedStreetId,
+            Model.RelatedStreets.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.RelatedStreetId,
+                Text = s.Name + String.Format("{0: (0}", s.FromNumber) + String.Format("{0: - 0)}", s.ToNumber),
+                Value = s.Id.ToString()
+            }), "-- Đường / Phố --", new { Class = "combobox all-street ajax-validate-relation" })
+            @Html.ValidationMessageFor(m => m.RelatedStreetId, "*")
+        </td>
+    </tr>
+</table>
+<br />
+@*<fieldset>
+    @Html.LabelFor(m => m.StreetWidth, T("StreetWidth"))
+    @Html.TextBoxFor(m => m.StreetWidth, new { @class = "text-small" })
+    @Html.ValidationMessageFor(m => m.StreetWidth, "*")
+</fieldset>*@
+
+@*<fieldset>
+    @Html.LabelFor(m => m.RelatedStreetWidth, T("StreetWidth"))
+    @Html.TextBoxFor(m => m.RelatedStreetWidth, new { @class = "text-small" })
+    @Html.ValidationMessageFor(m => m.RelatedStreetWidth, "*")
+</fieldset>*@

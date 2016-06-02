@@ -1,0 +1,16 @@
+﻿@model int
+@{
+    Script.Require("Unobtrusive");
+    Script.Require("MicrosoftAjax");
+    Script.Require("MicrosoftMvcAjax");
+}
+
+ @Ajax.ActionLink("Xem lịch sử thay đổi", "Details", new { id = Model }, new AjaxOptions
+{
+    UpdateTargetId = "Revisions",
+    HttpMethod = "GET",
+    InsertionMode = InsertionMode.Replace,
+    LoadingElementId = "overlay"
+}, new { Class = "button", id = "btnRevisions" })
+
+<div id="Revisions"></div>

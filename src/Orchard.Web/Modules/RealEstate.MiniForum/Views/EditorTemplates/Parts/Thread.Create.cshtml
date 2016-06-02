@@ -1,0 +1,32 @@
+﻿@using RealEstateForum.Service.ViewModels
+@model ThreadAdminCreateViewModel
+
+<fieldset>
+    @Html.LabelFor(m => m.Name, T("Tên chuyên mục"))
+    @Html.TextBoxFor(m => m.Name, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.Name, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.ShortName, T("ShortName"))
+    @Html.TextBoxFor(m => m.ShortName, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.ShortName, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.Description, T("Mô tả"))
+    @Html.TextAreaFor(m => m.Description, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.Description, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.SeqOrder, T("Sắp xếp"))
+    @Html.TextBoxFor(m => m.SeqOrder, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.SeqOrder, "*")
+</fieldset>
+<fieldset>
+    @Html.EditorFor(r=>r.IsOpen, new { @class = "textMedium" })
+    <label for="IsOpen" class="threadLabel">Is Open</label>
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.DefaultImage, T("Ảnh đại diện"))
+    <input type="file" name="DefaultImage" id="DefaultImage" />
+</fieldset>
+<hr />

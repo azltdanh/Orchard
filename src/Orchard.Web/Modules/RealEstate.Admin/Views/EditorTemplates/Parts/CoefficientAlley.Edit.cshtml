@@ -1,0 +1,31 @@
+﻿@model RealEstate.ViewModels.CoefficientAlleyEditViewModel
+<fieldset>
+    @Html.LabelFor(m => m.StreetUnitPrice, T("StreetUnitPrice"))
+    @Html.TextBoxFor(m => m.StreetUnitPrice, new { @class = "text-small" })
+    @Html.ValidationMessageFor(m => m.StreetUnitPrice, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.CoefficientAlley1Max, T("CoefficientAlley1Max"))
+    @Html.TextBoxFor(m => m.CoefficientAlley1Max, new { @class = "text-small" })
+    @Html.ValidationMessageFor(m => m.CoefficientAlley1Max, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.CoefficientAlley1Min, T("CoefficientAlley1Min"))
+    @Html.TextBoxFor(m => m.CoefficientAlley1Min, new { @class = "text-small" })
+    @Html.ValidationMessageFor(m => m.CoefficientAlley1Min, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.CoefficientAlleyMax, T("CoefficientAlleyMax"))
+    @Html.TextBoxFor(m => m.CoefficientAlleyMax, new { @class = "text-small" })
+    @Html.ValidationMessageFor(m => m.CoefficientAlleyMax, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.CoefficientAlleyMin, T("CoefficientAlleyMin"))
+    @Html.TextBoxFor(m => m.CoefficientAlleyMin, new { @class = "text-small" })
+    @Html.ValidationMessageFor(m => m.CoefficientAlleyMin, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.CoefficientAlleyEqual, T("CoefficientAlleyEqual"))
+    @Html.TextBoxFor(m => m.CoefficientAlleyEqual, new { @class = "text-small" })
+    @Html.ValidationMessageFor(m => m.CoefficientAlleyEqual, "*")
+</fieldset>

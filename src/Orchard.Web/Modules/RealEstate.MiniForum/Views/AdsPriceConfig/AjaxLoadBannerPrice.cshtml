@@ -1,0 +1,18 @@
+﻿@model RealEstateForum.Service.ViewModels.AdsPriceConfigViewModel
+
+<div class="panel-body">
+    <div class="row">
+        <div class="col-md-12 text-center"><h3 class="light-blue">--- Bảng giá Banner ---</h3></div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="price-bg">
+                @foreach (var item in Model.AdsPriceConfigs)
+                {
+                    <p class="@item.AdsPriceConfig.CssClass">@item.AdsPriceConfig.Price</p>
+                }
+            </div>
+        </div>
+        
+    </div>
+</div>

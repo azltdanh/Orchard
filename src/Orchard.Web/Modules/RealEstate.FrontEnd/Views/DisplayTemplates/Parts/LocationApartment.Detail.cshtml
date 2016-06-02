@@ -1,0 +1,180 @@
+﻿@model LocationApartmentDisplayEntry
+@using RealEstate.Helpers;
+@using RealEstate.Models;
+@using RealEstate.ViewModels;
+@{
+    LocationApartmentPart item = Model.LocationApartment;
+    Layout.Title = item.Name;
+
+}
+@using (Script.Head())
+{
+    <link rel="canonical" href="@("http://dinhgianhadat.vn" + Url.Action("LocationApartmentDetail", new { id = item.Id, title = item.Name.ToSlug() }))" />
+}
+<script type="text/javascript">
+    function InfoMap() {
+        return '@item.DisplayForLocationAddress';
+    }
+</script>
+
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left">
+                    <div class="header-title-triangle">
+                    </div>
+                </div>
+                <h2 class="header-title-text">@item.Name</h2>
+                <div class="header-title-right">
+                </div>
+            </div>
+        </div>
+    </header>
+    <article class="location-apartment-content">
+        <div class="media row content-item-details">
+            <div class="pull-left col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                <!-- Images -->
+                @Html.Partial("LocationApartmentDetail.Images", Model)
+            </div>
+            <div class="media-body col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                <div class="row">
+                    <div class="col-lg-12"><strong class="text-blue f-16">@item.Name</strong></div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 "><strong class="text-info">Địa chỉ:</strong> @item.DisplayForLocationAddress</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 ">@(Html.Raw(!string.IsNullOrEmpty(item.Description) ? item.Description : "-"))</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="alert alert-info">
+                            <a href="@Url.Action("WithCompareApartment", "PropertySearch", new { area = "RealEstate.FrontEnd", apId = item.Id, apName = item.Name.ToSlug() })" class="text-bold text-info"><i class="compare-icon"></i> So sánh dự án</a> &nbsp;
+                            <a href="@Url.Action("ResultFilter", "PropertySearch", new { area = "RealEstate.FrontEnd", AdsTypeCssClass = "ad-selling", TypeGroupCssClass = "gp-apartment", ProvinceId = item.Province.Id, DistrictIds = item.District.Id, ApartmentIds = item.Id })" class="text-bold text-info pull-right"><i class="icon_silk_bullet_go"></i> Xem BĐS rao bán của dự án</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <article>
+            <div class="table-responsive">
+                <table class="table table-bordered border-none">
+                    @if (!string.IsNullOrEmpty(item.ShortName))
+                    {
+                        <tr>
+                            <td>Tên khác</td>
+                            <td>@item.ShortName</td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrEmpty(item.DistanceToCentral))
+                    {
+                        <tr>
+                            <td>Khoảng cách đến trung tâm</td>
+                            <td>@item.DistanceToCentral</td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrEmpty(item.Investors))
+                    {
+                        <tr>
+                            <td>Chủ đầu tư</td>
+                            <td>@item.Investors</td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrEmpty(item.CurrentBuildingStatus))
+                    {
+                        <tr>
+                            <td>Hiện trạng</td>
+                            <td>@item.CurrentBuildingStatus</td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrEmpty(item.ManagementFees))
+                    {
+                        <tr>
+                            <td>Phí pháp lý</td>
+                            <td>@item.ManagementFees</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td>Số tầng:</td>
+                        <td>@item.Floors</td>
+                    </tr>
+                    @if (item.AreaTotal.HasValue)
+                    {
+                        <tr>
+                            <td>Diện tích khuôn viên</td>
+                            <td>@Html.Raw(item.AreaTotal.Value + " m<sup>2</sup>")</td>
+                        </tr>
+                    }
+                    @if (item.AreaConstruction.HasValue)
+                    {
+                        <tr>
+                            <td>Diện tích sàn xây dựng</td>
+                            <td>@Html.Raw(item.AreaConstruction.Value + " m<sup>2</sup>") </td>
+                        </tr>
+                    }
+                    @if (item.AreaGreen.HasValue)
+                    {
+                        <tr>
+                            <td>Diện tích khuôn viên/cây xanh</td>
+                            <td>@Html.Raw(item.AreaGreen.HasValue ? item.AreaGreen + " m<sup>2</sup>" : "-")</td>
+                        </tr>
+                    }
+                    @if (item.TradeFloors.HasValue)
+                    {
+                        <tr>
+                            <td>Số tầng thương mại</td>
+                            <td>@Html.Raw(item.TradeFloors.Value.ToString())</td>
+                        </tr>
+                    }
+                    @if (item.AreaTradeFloors.HasValue)
+                    {
+                        <tr>
+                            <td>Diện tích sàn thương mại</td>
+                            <td>@Html.Raw(item.AreaTradeFloors.Value + " m<sup>2</sup>") </td>
+                        </tr>
+                    }
+
+                    @if (item.Basements.HasValue)
+                    {
+                        <tr>
+                            <td>Số tầng hầm</td>
+                            <td>@item.Basements.Value.ToString()</td>
+                        </tr>
+                    }
+
+                    @if (item.AreaBasements.HasValue)
+                    {
+                        <tr>
+                            <td>Diện tích tầng hầm</td>
+                            <td>@Html.Raw(item.AreaBasements + " m<sup>2</sup>")</td>
+                        </tr>
+                    }
+                    @if (item.Elevators.HasValue)
+                    {
+                        <tr>
+                            <td>Số lượng thang máy</td>
+                            <td>@(item.Elevators.ToString()) </td>
+                        </tr>
+                    }
+                    @if (Model.LocationApartmentAdvantages.Count() > 0)
+                    {
+                        <tr>
+                            <td>Đặc điểm khác</td>
+                            <td>
+                                <ul class="list-unstyled last">
+                                    @foreach (var entry in Model.LocationApartmentAdvantages)
+                                    {
+                                        <li class="text-ellipsis"><i class="icon_silk_check"></i><strong> @entry.Name</strong></li>
+                                    }
+                                </ul>
+                            </td>
+                        </tr>
+                    }
+                </table>
+
+            </div>
+        </article>
+    </article>
+
+</article>

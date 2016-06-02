@@ -1,0 +1,74 @@
+@model RealEstate.FrontEnd.ViewModels.FrontEndSettingsIndexViewModel
+@using RealEstate.FrontEnd.Models;
+@using RealEstate.FrontEnd.ViewModels;
+
+@{
+    Script.Require("Common");
+    Layout.Title = T("FrontEnd Settings").ToString();
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{ 
+    @Html.ValidationSummary()
+    <div class="manage">@Html.ActionLink(T("Add new FrontEnd Setting").ToString(), "Create", new { }, new { @class = "button primaryAction" })</div>
+
+    <fieldset class="bulk-actions">
+        <label for="publishActions">@T("Actions:")</label>
+        <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+            @Html.SelectOption(Model.Options.BulkAction, FrontEndSettingsBulkAction.None, T("Choose action...").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, FrontEndSettingsBulkAction.Enable, T("Enable").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, FrontEndSettingsBulkAction.Disable, T("Disable").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, FrontEndSettingsBulkAction.Delete, T("Delete").ToString())
+        </select>
+        <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+    </fieldset>
+    <fieldset class="bulk-actions">
+        @Html.TextBoxFor(m => m.Options.Search, new { @class = "text" })        
+        <label for="filterResults">@T("Filter:")</label>
+        <select id="filterResults" name="@Html.NameOf(m => m.Options.Filter)">
+            @Html.SelectOption(Model.Options.Filter, FrontEndSettingsFilter.All, T("All").ToString())
+        </select>
+        <label for="filterResults">@T("Sort by:")</label>
+        <select id="filterResults1" name="@Html.NameOf(m => m.Options.Order)">
+            @Html.SelectOption(Model.Options.Order, FrontEndSettingsOrder.Name, T("Name").ToString())
+            @Html.SelectOption(Model.Options.Order, FrontEndSettingsOrder.SeqOrder, T("SeqOrder").ToString())
+        </select>
+        <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+    </fieldset>
+    <fieldset>
+        <table class="items">
+            <thead>
+                <tr>
+                    <th scope="col"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.FrontEndSettings)" /></th>
+                    <th scope="col">@T("Name")</th>
+                    <th scope="col">@T("Value")</th>
+                    <th scope="col">@T("Actions")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.FrontEndSettings)
+            { 
+            <tr>
+                <td>
+                    <input type="hidden" value="@Model.FrontEndSettings[index].FrontEndSetting.Id" name="@Html.NameOf(m => m.FrontEndSettings[index].FrontEndSetting.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.FrontEndSettings[index].IsChecked)"/>
+                </td>
+                <td>
+                    @Html.ActionLink(entry.FrontEndSetting.Name, "Edit", new { entry.FrontEndSetting.Id }) 
+                </td>
+                <td>
+                    @entry.FrontEndSetting.Value 
+                </td>
+                <td>
+                    @Html.ActionLink(T("Edit").ToString(), "Edit", new { entry.FrontEndSetting.Id }) |
+                    @Html.ActionLink(T("Delete").ToString(), "Delete", new { entry.FrontEndSetting.Id }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                </td>
+            </tr>
+                index++;
+            }
+        </table>
+
+    @Display(Model.Pager)
+
+    </fieldset>
+} 

@@ -1,0 +1,67 @@
+﻿@model RealEstate.ViewModels.AdsPaymentIndexViewModel
+
+@{
+    Script.Require("Common");
+    Layout.Title = T("Quản lý giao dịch quảng cáo tin vip").ToString();
+}
+@if (Model.Options != null)
+{
+    @Html.Partial("PaymentHistoryFilter", Model.Options)
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{
+    
+    <fieldset>
+        <h3>Tổng tiền user đã nạp: <strong> @Model.AmountTotalVND</strong></h3>
+        <table class="items fixed-table float-header">
+            <thead>
+                <tr>
+                    <th scope="col" class="w20 align-center"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.AdsPaymentEntry)" /></th>
+                    <th scope="col" class="w58">@T("Mã BĐS")</th>
+                    <th scope="col">@("Người giao dịch")</th>
+                    <th scope="col" class="w130">@T("Ngày giao dịch")</th>
+                    <th scope="col" class="w100" title="Số tiền giao dịch">@T("Số tiền giao dịch")</th>
+                    <th scope="col" class="w100" title="Số tiền sau giao dịch">@T("Số tiền còn lại")</th>
+                    <th scope="col">@T("Ghi chú loại giao dịch")</th>
+                    <th scope="col" class="w130">@T("Trạng thái")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.AdsPaymentEntry)
+            {
+            <tr >
+                <td>
+                    <input type="hidden" value="@Model.AdsPaymentEntry[index].AdsPaymentHistory.Id" name="@Html.NameOf(m => m.AdsPaymentEntry[index].AdsPaymentHistory.Id)" />
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.AdsPaymentEntry[index].IsChecked)" />
+                </td>
+                <td>
+                    @(entry.AdsPaymentHistory.Property != null ? entry.AdsPaymentHistory.Property.Id : 0)
+                </td>
+                <td>
+                    @entry.AdsPaymentHistory.User.UserName
+                </td>
+                <td>
+                    @Convert.ToDateTime(entry.AdsPaymentHistory.DateTrading).ToString("HH:mm:ss dd/MM/yyyy")
+                </td>
+                <td>
+                    @entry.AdsPaymentHistory.TransactionValue VNĐ
+                </td>
+                <td>
+                    @entry.AdsPaymentHistory.EndBalance VNĐ
+                </td>
+                <td>
+                    @entry.AdsPaymentHistory.Note
+                </td>
+                <td>
+                    @(entry.AdsPaymentHistory.PayStatus ? "Đã giao dịch" : "Chờ giao dịch")
+                </td>
+            </tr>
+                    index++;
+            }
+        </table>
+        
+        @Display(Model.Pager)
+
+    </fieldset>
+}

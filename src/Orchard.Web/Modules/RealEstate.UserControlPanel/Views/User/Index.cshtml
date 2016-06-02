@@ -1,0 +1,204 @@
+﻿@model RealEstate.FrontEnd.ViewModels.UserPropertyIndexViewModel
+@using RealEstate.Models;
+@using RealEstate.ViewModels;
+@using RealEstate.Services;
+@using RealEstate.Helpers;
+@{
+    Layout.Title = T("Quản lý tin rao").ToString();
+    
+    Style.Require("jQueryUI_Orchard");
+    Script.Require("jQueryUI_DatePicker");
+    
+    Style.Require("BootstrapCombobox");
+    Script.Require("BootstrapMultiselect");
+    Script.Require("FrontEnd.Common");
+    
+    Script.Require("FrontEnd.Property.Edit");
+}
+
+<article class="content-item block_controlpanel">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left">
+                    <div class="header-title-triangle"></div>
+                </div>
+                <h2 class="header-title-text">@ViewData["Title"]</h2>
+                <div class="header-title-right"></div>
+            </div>
+            <div class="header-msg text-right">
+                <a rel="nofollow" class="text-success text-underline" href="@Url.Action("Create", "Home", new { area = "RealEstate.FrontEnd" })"><i class="icon_silk_layout_add"></i>Đăng tin rao miễn phí</a>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="alert alert-info">
+            <strong>Tin rao của bản sẽ được đăng cùng lúc lên nhiều website liên kết như: <a href="http://www.timmuanhadat.vn" target="_blank">www.timmuanhadat.vn</a> , <a href="http://www.dinhgianhadat.vn" target="_blank">www.dinhgianhadat.vn</a> , <a href="http://www.clbbds.com" target="_blank">www.clbbds.com</a> ...</strong>
+        </div>
+        <input type="hidden" id="ReturnAdstype" name="ReturnAdstype" value='@Request.QueryString.Get("ReturnAdstype")' />
+        <input type="hidden" id="ReturnStatus" name="ReturnStatus" value='@Request.QueryString.Get("ReturnStatus")' />
+        <input type="hidden" id='id_TypeGroupId' value="@Request.QueryString.Get("TypeGroupId")" />
+        <input type="hidden" id='id_ProvinceId' value="@Request.QueryString.Get("ProvinceId")" />
+        <input type="hidden" id='id_DistrictIds' value="@Request.QueryString.Get("DistrictIds")" />
+        <input type="hidden" id='id_StreetIds' value="@Request.QueryString.Get("StreetId")" />
+        <input type="hidden" id='id_Url' value="@HttpContext.Current.Request.Url" />
+
+        <ul class="nav nav-tabs" id="ulControlPanel">
+            <li id="ad-all" class="active"><a href="#ViewIndex" data-toggle="tab" class="ad-all">Tất cả BĐS (<span class="text-error">@ViewData["ad-all"]</span>)</a></li>
+            @foreach (var ads in Model.Options.AdsTypes)
+            {
+                string temp = "BĐS ";
+                if (ads.CssClass == "ad-buying" || ads.CssClass == "ad-renting") { temp = ""; }                    
+                <li id="@ads.CssClass"><a class="@ads.CssClass" href="#ViewIndex-@ads.CssClass" data-toggle="tab">@(temp + ads.ShortName) (<span class="text-error">@ViewData[ads.CssClass]</span>)</a></li>
+            }
+        </ul>
+        @using (Html.BeginFormAntiForgeryPost("/", FormMethod.Post, new { id = "panelSearch" }))
+        {
+            <div class="form-inline panel-search">
+                <!-- TypeGroups -->
+                <div class="form-group fv">
+                    <select id="TypeGroupId" name="options.TypeGroupId" class="form-control">
+                        <option value="" disabled="disabled" selected="selected" style="display:none;"> Loại BĐS </option>
+                        @foreach (var item in Model.Options.TypeGroups)
+                        {
+                            <option value="@item.Id" class="@item.CssClass">@item.Name</option>
+                        }
+                    </select>
+                    <input type="hidden" id="ReturnStatusForm" name="ReturnStatusForm" value='@Request.QueryString.Get("ReturnStatus")' />
+                </div>
+
+                <!-- Province -->
+                <div class="form-group fv">
+                    @Html.DropDownListFor(m => Model.Options.ProvinceId,
+                        Model.Options.Provinces.Select(r => new SelectListItem
+                        {
+                            Selected = r.Id == Model.Options.ProvinceId,
+                            Text = r.Name,
+                            Value = r.Id.ToString()
+                        }), T("Chọn tất cả Tỉnh / TP").ToString(), new { Class = "form-control combobox" })
+                </div>
+                <!-- DistrictIds -->
+                <div class="form-group fv">
+                    @Html.ListBoxFor(m => Model.Options.DistrictIds, new MultiSelectList(Model.Options.Districts.Select(a => new { a.Name, a.Id }).ToList(), "Id", "Name", Model.Options.DistrictIds), new { Class = "form-control multiselect" })
+                </div>
+
+                <!-- StreetIds -->
+                <div class="form-group fv">
+                    @Html.ListBoxFor(m => Model.Options.StreetIds, new MultiSelectList(Model.Options.Streets.Select(a => new { Name = a.Name + " - " + a.District.ShortName, a.Id }).ToList(), "Id", "Name", Model.Options.StreetIds), new { Class = "form-control multiselect" })
+                </div>
+
+                <div class="form-group fbtn">
+                    <input type="hidden" name="FrmReturnStatus" id="FrmReturnStatus" value="ad-all" data-search="0" />
+                    <button type="submit" value="Tìm Kiếm" class="btn btn-primary">Tìm Kiếm</button>
+                </div>
+
+                <div class="clearfix"></div>
+            </div>
+        }
+        <div class="text-bold">Số tiền đang có trong tài khoản của bạn là:  <span class="text-error">&nbsp;&nbsp;@ViewData["TotalAmount"]</span></div>
+        <div class="tab-content">
+            <div id="ViewIndex" class="ajax-paging tab-pane active">
+                <div class="overlay-content-property">
+                    <img src="/Modules/RealEstate.Admin/Styles/images/bigrotation2.gif" class="img-load" alt="loading..." />
+                    <p>Loading...</p>
+                </div>
+            </div>
+            <div id="ViewIndex-ad-selling" class="ajax-paging tab-pane"></div>
+            <div id="ViewIndex-ad-leasing" class="ajax-paging tab-pane"></div>
+            <div id="ViewIndex-ad-buying" class="ajax-paging tab-pane"></div>
+            <div id="ViewIndex-ad-renting" class="ajax-paging tab-pane"></div>
+        </div>
+    </article>
+</article>
+<div id="PostVIPModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginFormAntiForgeryPost("/", FormMethod.Post, new { id = "formPostVIP" }))
+            {
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title text-info">Đăng tin VIP</h3>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <article id="post-vip-modal">
+                        <!--Content here-->
+                        <div class="overlay-content-property">
+                            <img src="/Modules/RealEstate.Admin/Styles/images/bigrotation2.gif" class="img-load" alt="loading..." />
+                            <p>Loading...</p>
+                        </div>
+                    </article>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Đóng</button>
+                    <button type="submit" class="btn btn-warning">Xác nhận</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@using (Script.Foot())
+{
+<script type="text/javascript">
+    $(document).ready(function () {
+        //if ($("#ViewIndex").text().length <= 99) {//ViewNew-ad-leasing
+        var url = '@Url.Action("ViewIndexAjax", "User", new { area = "RealEstate.UserControlPanel" })?ReturnStatus=@Request.QueryString.Get("ReturnStatus")&ReturnUrl=@HttpContext.Current.Request.Url';
+        $("#ViewIndex").load(url);
+        //}
+        var loadding = "<div class='overlay-content-property'><img src='/Modules/RealEstate.Admin/Styles/images/bigrotation2.gif' id='img-load' alt='loading...' /><p>Loading...</p></div>";
+        $('#ulControlPanel a').click(function (e) {
+            Refresh();
+            if ($(this).attr("class") == "ad-all") {
+                $('#ViewIndex').html(loadding);
+                $('#FrmReturnStatus').val('ad-all');
+                var url = '@Url.Action("ViewIndexAjax", "User", new { area = "RealEstate.UserControlPanel" })?ReturnStatus=@Request.QueryString.Get("ReturnStatus")&ReturnUrl=@HttpContext.Current.Request.Url';
+                $("#ViewIndex").load(url);
+            }
+            if ($(this).attr("class") == "ad-selling") {
+                $('#FrmReturnStatus').val('ad-selling');
+                //if ($("#ViewIndex-ad-selling").text().length <= 0 ) {
+                $('#ViewIndex-ad-selling').html(loadding);
+                var url = '@Url.Action("ViewIndexAjax", "User", new { area = "RealEstate.UserControlPanel" })?ReturnStatus=@Request.QueryString.Get("ReturnStatus")&ReturnAdstype=ad-selling&ReturnUrl=@HttpContext.Current.Request.Url';
+                $('#ViewIndex-ad-selling').load(url, function () { /*tipTipPropertyDetails();*/ });
+                //}
+            }
+            if ($(this).attr("class") == "ad-leasing") {
+                $('#FrmReturnStatus').val('ad-leasing');
+                //if ($("#ViewIndex-ad-leasing").text().length <= 0) {
+                $('#ViewIndex-ad-leasing').html(loadding);
+                var url = '@Url.Action("ViewIndexAjax", "User", new { area = "RealEstate.UserControlPanel" })?ReturnStatus=@Request.QueryString.Get("ReturnStatus")&ReturnAdstype=ad-leasing&ReturnUrl=@HttpContext.Current.Request.Url';
+                $('#ViewIndex-ad-leasing').load(url, function () { /*tipTipPropertyDetails();*/ });
+                //}
+            }
+            if ($(this).attr("class") == "ad-buying") {
+                $('#FrmReturnStatus').val('ad-buying');
+                //if ($("#ViewIndex-ad-buying").text().length <= 0) {
+                $('#ViewIndex-ad-buying').html(loadding);
+                var url = '@Url.Action("ListCustomerRequirement", "User", new { area = "RealEstate.UserControlPanel" })?ReturnStatus=@Request.QueryString.Get("ReturnStatus")&AdsTypeCssClass=ad-buying&ReturnUrl=@HttpContext.Current.Request.Url';
+                $('#ViewIndex-ad-buying').load(url, function () { /*tipTipPropertyDetails(); */});
+                //}
+            }
+            if ($(this).attr("class") == "ad-renting") {
+                $('#FrmReturnStatus').val('ad-renting');
+                //if ($("#ViewIndex-ad-renting").text().length <= 0) {
+                $('#ViewIndex-ad-renting').html(loadding);
+                var url = '@Url.Action("ListCustomerRequirement", "User", new { area = "RealEstate.UserControlPanel" })?ReturnStatus=@Request.QueryString.Get("ReturnStatus")&AdsTypeCssClass=ad-renting&ReturnUrl=@HttpContext.Current.Request.Url';
+                $('#ViewIndex-ad-renting').load(url, function () { /*tipTipPropertyDetails();*/ });
+                //}
+            }
+            e.preventDefault();
+            $(this).tab('show');
+        });
+    });
+    function Refresh()
+    {
+        $('#TypeGroupId').val('');
+        var slcDistrictIds = $("#Options_DistrictIds");
+        var selectedValues = slcDistrictIds.val();
+        slcDistrictIds.empty();
+        slcDistrictIds.change().multiselect('rebuild');
+        $('#Options_ProvinceId').combobox("refresh");
+        //$('.combobox-clear').click();
+    }
+</script>
+}

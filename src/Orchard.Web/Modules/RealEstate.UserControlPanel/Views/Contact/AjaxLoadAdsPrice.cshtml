@@ -1,0 +1,98 @@
+﻿@{
+    Dictionary<string, long> Price = (Dictionary<string, long>)ViewBag.Price;
+}
+@*<div class="panel-heading panel-heading-overwrite text-center">
+    <h3 class="panel-title">Bảng giá đăng tin rao</h3>
+</div>*@
+<div class="panel-body">
+    <div class="row">
+        <div class="col-md-12 text-center"><h3 class="light-blue">--- Bảng giá ---</h3></div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table table-bordered border-none">
+                    <thead class="tb-header">
+                        <tr>
+                            <th class="thc-1">Loại VIP</th>
+                            <th class="thc-2">Phí theo ngày</th>
+                            <th>Chú giải</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>VIP 1</td>
+                            <td>@Price["ex-vip-1"] / ngày</td>
+                            <td>- Là tin có tiêu đề <strong class="text-error">màu đỏ <i class="icon_vip_3"></i></strong> và được sắp xếp trên cùng trong danh sách tìm kiếm bất động sản</td>
+                        </tr>
+                        <tr>
+                            <td>VIP 2</td>
+                            <td>@Price["ex-vip-2"] / ngày</td>
+                            <td>- Là tin có tiêu đề <strong class="organe">màu cam <i class="icon_vip_2"></i></strong> và được sắp xếp sau tin VIP 1 trong danh sách tìm kiếm bất động sản</td>
+                        </tr>
+                        <tr>
+                            <td>VIP 3</td>
+                            <td>@Price["ex-vip-3"] / ngày</td>
+                            <td>- Là tin có tiêu đề <strong class="brown">màu nâu <i class="icon_vip_1"></i></strong> và được sắp xếp sau tin VIP 2 trong danh sách tìm kiếm bất động sản</td>
+                        </tr>
+                        <tr>
+                            <td>Khuyến mãi</td>
+                            <td>20%</td>
+                            <td>Nhà môi giới nạp tiền bằng thẻ cào sẽ được tặng thêm 20% giá trị thẻ nạp. Nạp tiền bằng chuyển khoản Ngân Hàng sẽ được tặng thêm 30% giá trị chuyển khoản.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+    </div>
+    <div class="row">
+        <div class="col-md-12 text-center"><h3 class="light-blue">--- Quảng cáo bài viết ---</h3></div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table table-bordered border-none">
+                    <thead class="tb-header">
+                        <tr>
+                            <th>Loại bài viết</th>
+                            <th>Danh mục</th>
+                            <th>Mô tả</th>
+                            <th>Phí</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Quảng cáo bằng bài viết</td>
+                            <td>Mục tin tức</td>
+                            <td>Bài viết có nội dung liên quan đến ngành BĐS, Không dài quá 1000 từ.</td>
+                            <td>500.000đ/bài</td>
+                        </tr>
+                        <tr>
+                            <td>Quảng cáo Dự án</td>
+                            <td>Mục dự án nổi bật</td>
+                            <td>Các dự án bất động sản</td>
+                            <td>500.000đ/tháng</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 text-center"><h3 class="light-blue">--- Phương thức thanh toán ---</h3></div>
+    </div>
+    <div class="row">
+        <ul class="list-none margin-bottom-10">
+            <li><strong>1. Thẻ cào điện thoại:</strong> Bạn phải đăng nhập để có tài khoản trên trang web, sau đó Click <a href="/control-panel/nap-tien-bang-the-cao" target="_blank"><strong>vào đây</strong></a> để nạp tền.</li>
+            <li><strong>2. Nhắn tin điện thoại:</strong> Bạn phải đăng nhập để có <strong class="text-error">"mã khách hàng"</strong> trên trang web, sau đó nhắn tin theo cú pháp:<br /><strong class="text-error"> DGND "mã khách hàng" </strong>Gửi <strong class="text-error">8798</strong></li>
+            <li>
+                <strong>3. Chuyển khoản Ngân hàng </strong> đến số Tài Khoản:<br />
+                - Số Tài Khoản: 54510049<br />
+                - Tại Ngân hàng ACB - phòng giao dịch Lê Ngô Cát, TP. HCM<br />
+                - Chủ tài khoản: Lê Đình Dũng.<br />
+                - khuyến mãi 30% khi thanh toán qua tài khoản ngân hàng
+            </li>
+        </ul>
+    </div>
+</div>

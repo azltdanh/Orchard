@@ -1,0 +1,41 @@
+﻿@using Orchard.Comments.Models
+@using Orchard.ContentManagement
+@using Orchard.Security;
+@using Orchard.Utility.Extensions;
+@using Orchard.Comments;
+
+@{
+    CommentPart comment = Model.ContentPart;
+    CommentsPart comments = comment.CommentedOnContentItem.As<CommentsPart>();
+
+    var children = New.List(Items: Model.Items);
+    children.Classes.Add("comments");
+}
+<article class="comment comment-@comment.Id" data-id="@comment.Id">
+    @if (WorkContext.CurrentUser != null)
+    {
+        @*if (WorkContext.CurrentUser.UserName == comment.UserName || AuthorizedFor(Permissions.ManageComments) || WorkContext.CurrentUser.UserName == ViewData["current_user"])
+        {*@
+            <span class="pull-right">
+                @if (WorkContext.CurrentUser.UserName == comment.UserName || AuthorizedFor(Permissions.ManageComments) || WorkContext.CurrentUser.UserName == ViewData["current_user"])
+                {
+                    <a href="javascript:;" class="edit-comment" rel="nofollow" title="sửa bình luận này"><i class="glyphicon glyphicon-edit"></i></a>
+                }
+                <a href="javascript:;" class="delete-comment" rel="nofollow" title="xóa bình luận này"><i class="glyphicon glyphicon-remove"></i></a>
+            </span>
+       @* }*@
+    }
+    <header>
+            <span class="who">@Display.CommentAuthor(ContentPart: comment)</span>
+            <small class="when">@Display.CommentMetadata(ContentPart: comment)</small>
+            @if (comments.ThreadedComments) {
+                <span class="reply">@Display.CommentReplyButton(ContentPart: comment)</span>
+            }
+    </header>
+
+    @Display.CommentText(ContentPart: Model.ContentPart, ContentItem: Model.ContentItem)
+
+    @Display(children)
+</article>
+
+

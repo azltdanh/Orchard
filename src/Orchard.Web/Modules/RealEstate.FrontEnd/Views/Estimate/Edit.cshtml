@@ -1,0 +1,39 @@
+﻿@{ 
+    Layout.Title = T("Định giá bất động sản trực tuyến").ToString();
+    SetMeta("description", "Trung tâm dữ liệu giao dịch nhà đất Việt Nam. Nơi lưu trữ mọi thông tin về bất động sản dùng làm dữ liệu để tra cứu và Định giá bất động sản. Phần mềm quản lý và định giá bất động sản trực tuyến đầu tiên của Việt Nam.");
+    SetMeta("keywords", "dinh gia, tham dinh gia, bat dong san, nha dat, mua ban, cho thue, nha, nha pho, can ho, biet thu, chung cu, phong, dat dai, du an, bang gia dat, khung gia dat, luat, moi gioi, nha o, huong nha, Ho Chi Minh, quan 1, quan 2, quan 3, quan 4, quan 5, quan 6, quan 7, quan 8, quan 9, quan 10, quan 11, quan 12, quan Binh Tan, quan Binh Thanh, quan Go Vap, quan Phu Nhuan, quan Tan Binh, quan Tan Phu, quan Thu Duc, huyen Binh Chanh");
+}
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Post, new { enctype = "multipart/form-data", Class = "formvalidate" }))
+{
+    <div class="form-editor">
+        @Html.ValidationSummary()
+    </div>
+    // Model is a Shape, calling Display() so that it is rendered using the most specific template for its Shape type
+    @Display(Model)
+}
+
+<!-- Modal -->
+<div class="modal fade modal-large" id="dialogAdsPrice" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title">Bảng giá quảng cáo</h3>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("Loading")
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        $('#dialogAdsPrice').on('show.bs.modal', function() {
+            $(this).find('.modal-body').load('@Url.Action("AjaxAdsPrice", "AdsPrice", new {area = "RealEstateForum.FrontEnd"})')
+        })
+    </script>
+}

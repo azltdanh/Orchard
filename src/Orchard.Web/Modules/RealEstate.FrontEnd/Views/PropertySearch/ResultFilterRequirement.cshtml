@@ -1,0 +1,52 @@
+﻿@using RealEstate.ViewModels
+@model CustomerDisplayIndexViewModel
+@{
+    Layout.Title = "Kết quả tìm kiếm";
+    SetMeta("description", Model.DisplayForDescription);
+    SetMeta("keywords", Model.DisplayForDescription);
+}
+@using (Script.Foot())
+{
+    <script>
+        $(function() {
+            $('.marquee-title').replaceWith('<h2 class="marquee-title page-title text-ellipsis  pull-left col-lg-7 col-sm-7 col-md-7 col-xs-7">' + "@(Model.DisplayForDescription)" + '</h2>');
+            //scroll
+            //scroll
+            if ($('.header-msg-text').length > 0) {
+                $('html, body').animate({ scrollTop: ($('.header-msg-text').offset().top) }, 1000);
+            }
+        });
+    </script>
+}
+<article class="content-item block_requirement">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left">
+                    <div class="header-title-triangle"></div>
+                </div>
+                <h2 class="header-title-text">Kết quả tìm kiếm <span class="text-danger">(@Model.TotalCount)</span></h2>
+                <div class="header-title-right"></div>
+            </div>
+            <div class="header-msg">
+                @if (Model.TotalCount > 0)
+                {
+                    <h1 class="header-msg-text " title="@Model.DisplayForDescription">@Model.DisplayForDescription</h1>
+                }
+                else
+                {
+                    <strong>Không tìm thấy yêu cầu nào.</strong>
+                }
+            </div>
+        </div>
+    </header>
+    <article>
+        @if (Model.TotalCount > 0)
+        {
+            @Html.Partial("ListRequirements", Model)
+        }
+    </article>
+    <footer>
+    </footer>
+</article>
+<input type="hidden" value="@Model.Options.TypeGroupCssClass" id="tab-control-filter" />

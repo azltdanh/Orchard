@@ -1,0 +1,27 @@
+﻿@model HostNameCreateViewModel
+@using RealEstateForum.Service.ViewModels
+
+<fieldset>
+    @Html.LabelFor(m => m.Name, T("Tên Host"))
+    @Html.TextBoxFor(m => m.Name, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.Name, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.ShortName, T("Ký hiệu"))
+    @Html.TextBoxFor(m => m.ShortName, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.ShortName, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.CssClass, T("Nội dung"))
+    @Html.TextBoxFor(m => m.CssClass, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.CssClass, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.SeqOrder, T("Sắp xếp"))
+    @Html.TextBoxFor(m => m.SeqOrder, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.SeqOrder, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.IsEnabled, T("IsEnabled"))
+    @Html.EditorFor(m => m.IsEnabled, new { @class = "textMedium" })
+</fieldset>

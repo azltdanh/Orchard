@@ -1,0 +1,32 @@
+﻿@using RealEstateForum.Service.ViewModels
+@model UserFriendIndexViewModel
+
+
+@if (Model.ListUser.Count > 0)
+{
+    <div class="row list-friend">
+        <div class="col-md-12">
+            @foreach (var item in Model.ListUser)
+            {
+                <div class="text-center f-item">
+                    <img class="img" src="@(item.Avatar)?w=120&h=100" />
+                    <div class="user-friend-info">
+                        <a class="text-bold" href="@Url.Action("FriendPage", "PersonalPage", new { area = "RealEstate.MiniForum.FrontEnd", UserId = item.Id, UserName = item.UserName.Split('@')[0]})"><i class="icon_silk_user_go"></i> @item.UserName</a><br />
+                        <a class="text-bold" href="javascript:;" onclick="PartialSendMessage(@item.Id,'@item.UserName')"><i class="icon_silk_comment"></i> Gửi tin nhắn</a><br />
+                        <a class="btn btn-default btn-acceptfriend" onclick="AjaxAcceptFriend(this)" data-userselect="@item.Id"><i class="glyphicon glyphicon-user text-green"></i> Đồng ý</a>
+                    </div>
+                </div>
+            }
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 text-center">@Display(Model.Pager)</div>
+    </div>
+
+    @Html.Partial("Partial.SendMessage")
+}
+else
+{
+    <strong>Chưa có bạn nào!</strong>
+}

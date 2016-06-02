@@ -1,0 +1,155 @@
+﻿@model RealEstate.ViewModels.PropertyCreateViewModel
+@using RealEstate.ViewModels;
+
+@if (Model.TypeGroupCssClass == "gp-house" || Model.TypeGroupCssClass == "gp-land")
+{
+<!-- Hướng & Vị trí -->
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-center header-bg-green">
+                <div class="header-left header-bg-green">
+                    <div class="header-left-triangle"></div>
+                </div>
+                <h1>Hướng &amp; Vị trí</h1>
+                <div class="header-right"></div>
+            </div>
+            <div class="header-msg">
+                <p class="text-success">Các mục có dấu (<span class="text-error">*</span>) là bắt buộc nhập</p>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="form-horizontal pull-left">
+            <!-- LegalStatus -->
+            <div class="control-group">
+                <label class="control-label">@T("Tình trạng pháp lý:")</label>
+                <div class="controls">
+                    @Html.DropDownListFor(m => m.LegalStatusId,
+                    Model.LegalStatus.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.LegalStatusId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }),
+                    "-- Vui lòng chọn --", new { @class = "select-box" })
+                    @Html.ValidationMessageFor(m => m.LegalStatusId, "*")
+                </div>
+            </div>
+            <!-- Direction -->
+            <div class="control-group">
+                <label class="control-label">@T("Hướng của BĐS:")</label>
+                <div class="controls">
+                    @Html.DropDownListFor(m => m.DirectionId,
+                    Model.Directions.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.DirectionId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }),
+                    "-- Vui lòng chọn --", new { @class = "select-box" })
+                    @Html.ValidationMessageFor(m => m.DirectionId, "*")
+                </div>
+            </div>
+            <!-- Location -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Vị trí BĐS:")</label>
+                <div class="controls">
+                    @Html.DropDownListFor(m => m.LocationCssClass,
+                    Model.Locations.Select(s => new SelectListItem
+                    {
+                        Selected = s.CssClass == Model.LocationCssClass,
+                        Text = s.Name,
+                        Value = s.CssClass
+                    }),
+                    "-- Vui lòng chọn --", new { @class = "select-box" })
+                    @Html.ValidationMessageFor(m => m.LocationCssClass, "*")
+                </div>
+            </div>
+            <!-- StreetWidth -->
+            <div class="control-group" id="divStreetWidth" style="display:none;">
+                <label class="control-label">@T("Độ rộng đường trước nhà:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.StreetWidth, new { @class = "text number-box-ext" }) m
+                    @Html.ValidationMessageFor(m => m.StreetWidth, "*")
+                </div>
+            </div>
+            <!-- DistanceToStreet -->
+            <div class="control-group form-horizontal-268" id="divDistanceToStreet" style="display:none;">
+                <label class="control-label">@T("Khoảng cách từ BĐS ra đường chính:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.DistanceToStreet, new { @class = "text number-box-medium" }) m
+                    @Html.ValidationMessageFor(m => m.DistanceToStreet, "*")
+                </div>
+            </div>
+            <!-- AlleyTurns -->
+            <div class="control-group form-horizontal-268" id="divAlleyTurns" style="display:none;">
+                <label class="control-label">@T("Số lần rẽ (quẹo) từ đường chính vào đến BĐS:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.AlleyTurns, new { @class = "text number-box-medium" })
+                    @Html.ValidationMessageFor(m => m.AlleyTurns, "*")
+                </div>
+            </div>
+            <div class="control-group" id="divAlleyWidth10" style="display:none;">
+                <strong>@T("Nhập độ rộng của các hẻm từ đường chính vào đến BĐS:")</strong>
+            </div>
+            <!-- AlleyWidth1 -->
+            <div class="control-group form-horizontal-268" id="divAlleyWidth1" style="display:none;">
+                <label class="control-label">@T("Lần rẽ thứ nhất (Hẻm đầu tiên) rộng:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.AlleyWidth1, new { @class = "text number-box-medium" }) m
+                    @Html.ValidationMessageFor(m => m.AlleyWidth1, "*")
+                </div>
+            </div>
+            <!-- AlleyWidth2 -->
+            <div class="control-group form-horizontal-268" id="divAlleyWidth2" style="display:none;">
+                <label class="control-label">@T("Lần rẽ thứ 2:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.AlleyWidth2, new { @class = "text number-box-medium" }) m
+                    @Html.ValidationMessageFor(m => m.AlleyWidth2, "*")
+                </div>
+            </div>
+            <!-- AlleyWidth3 -->
+            <div class="control-group form-horizontal-268" id="divAlleyWidth3" style="display:none;">
+                <label class="control-label">@T("Lần rẽ thứ 3:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.AlleyWidth3, new { @class = "text number-box-medium" }) m
+                    @Html.ValidationMessageFor(m => m.AlleyWidth3, "*")
+                </div>
+            </div>
+            <!-- AlleyWidth4 -->
+            <div class="control-group form-horizontal-268" id="divAlleyWidth4" style="display:none;">
+                <label class="control-label">@T("Lần rẽ thứ 4:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.AlleyWidth4, new { @class = "text number-box-medium" }) m
+                    @Html.ValidationMessageFor(m => m.AlleyWidth4, "*")
+                </div>
+            </div>
+            <!-- AlleyWidth5 -->
+            <div class="control-group form-horizontal-268" id="divAlleyWidth5" style="display:none;">
+                <label class="control-label">@T("Lần rẽ thứ 5:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.AlleyWidth5, new { @class = "text number-box-medium" }) m
+                    @Html.ValidationMessageFor(m => m.AlleyWidth5, "*")
+                </div>
+            </div>
+            <!-- AlleyWidth6 -->
+            <div class="control-group form-horizontal-268" id="divAlleyWidth6" style="display:none;">
+                <label class="control-label">@T("Lần rẽ thứ 6:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.AlleyWidth6, new { @class = "text number-box-medium" }) m
+                    @Html.ValidationMessageFor(m => m.AlleyWidth6, "*")
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal pull-left">
+        </div>
+        <div class="clearfix"></div>
+    </article>
+    <footer></footer>
+</article>
+}
+@if (Model.TypeGroupCssClass == "gp-apartment")
+{
+
+}

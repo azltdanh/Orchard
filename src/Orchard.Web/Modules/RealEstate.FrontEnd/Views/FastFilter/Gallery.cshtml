@@ -1,0 +1,38 @@
+﻿@model List<RealEstate.Models.PropertyFilePartRecord>
+@{
+    Script.Require("ZoomAssets");
+    Style.Require("PrettyPhoto");
+    Script.Require("PrettyPhoto");
+}
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        var smPos = 153;
+        var spPos = 153;
+        var sW;
+        var sH;
+        jQuery(function(f) {
+            f(".zoom_gallery a[rel^='prettyPhoto']").prettyPhoto({
+                changepicturecallback: function() { f("#fullResImage").z("destroy").z() },
+                callback: function() { f("#fullResImage").z("destroy") },
+                social_tools: false
+            });
+        });
+    </script>
+}
+@if (Model.Count > 0)
+{
+    <div class="zoom_gallery">
+    @foreach (RealEstate.Models.PropertyFilePartRecord file in Model)
+    {
+        if (Model.IndexOf(file) == 0)
+        {
+            <a href="@file.Path" target="_blank" rel="prettyPhoto[@file.PropertyPartRecord.Id]" class="ui-icon icon-mime-jpg">@(Model.IndexOf(file) + 1)</a>
+        }
+        else
+        {
+            <a href="@file.Path" target="_blank" rel="prettyPhoto[@file.PropertyPartRecord.Id]" class="hide">@(Model.IndexOf(file) + 1)</a>
+        }
+    }
+    </div>
+}

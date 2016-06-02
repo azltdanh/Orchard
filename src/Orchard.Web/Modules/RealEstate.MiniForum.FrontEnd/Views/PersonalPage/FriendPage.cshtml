@@ -1,0 +1,99 @@
+﻿@using RealEstateForum.Service.ViewModels
+@model PersonalPageViewModel
+@{
+    Layout.Title = T("Trang blog cá nhân " + Model.UserSelect.DisplayName).ToString();
+}
+@using (Script.Foot())
+{
+    Script.Require("realEstate.miniforum.media");
+    Script.Require("realEstate.MiniForum.FrontEnd");
+
+    <script>
+        var isLoadingNextPage = false;
+        $(window).scroll(function () {
+            if ($(window).scrollTop() + $(window).height() > $(document).height() - 250) {
+                var currentPage = $('#listPostContent').attr('data-current-page');
+                var totalPages = $('#listPostContent').attr('data-total-pages');
+                if (currentPage < totalPages && isLoadingNextPage == false) {
+                    isLoadingNextPage = true;
+                    currentPage++;
+                    var url = $('#listPostContent').attr('data-url') + '?page=' + currentPage;
+                    $.get(url, function (data) {
+                        if (data != '') {
+                            $('#listPostContent').append(data);
+                            $('#listPostContent').attr('data-current-page', currentPage);
+                        }
+                        isLoadingNextPage = false;
+                    });
+                }
+            }
+        });
+    </script>
+}
+
+<div class="media blog-content">
+    <span id="FriendRightLink" style="display: none;"><a href="@Url.Action("ViewFriends", "UserFriend", new { Area = "RealEstateForum.FrontEnd" })">Danh sách bạn bè</a></span>
+
+    <div class="media-body">
+
+        <input type="hidden" id="userId" value="@Model.UserSelect.Id" />
+        <input type="hidden" id="userNameSelect" value="@(Model.UserSelect != null ? Model.UserSelect.UserName : "no-name")" />
+
+
+        <input type="hidden" id="userCurentId" value="@(Model.UserCurent != null ? Model.UserCurent.Id : -1)" />
+        <input type="hidden" id="userNameCurent" value="@(Model.UserCurent != null ? Model.UserCurent.UserName : "no-name")" />
+
+        <input type="hidden" id="pagefriend_count" />
+
+        <noscript><span style="color: Red;">Xin lỗi! trình duyệt hiện tại chưa hổ trợ Javascript, bạn vui lòng bật chức năng hổ trợ Javascript!</span></noscript>
+        <div class="row">
+            @if (WorkContext.CurrentUser != null)
+            {
+                <form action="/" role="form">
+                    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 form-group">
+                        <div id="areatinymce_Content" class="collapse">
+                            @Html.TextArea("Text", "", 3, 80,
+                                new Dictionary<string, object> {
+		                        {"class", "html tinymce"},
+		                        {"data-mediapicker-uploadpath",Model.UserCurent.UserName},
+		                        {"data-mediapicker-title",T("Thêm ảnh vào bài viết")},
+                                {"style", "width:100%;"},
+                                {"id","areaContent"}
+                        })
+                            <a rel="nofollow" data-toggle="modal" onclick="UploadImgMedia()" href="#UploadMediaModalId">
+                                <i class="icon_rev_image_add"></i>
+                                Chèn ảnh
+                            </a>
+                            <a rel="nofollow" data-toggle="modal" onclick="FileAttachmentMedia()" href="#UploadMediaModalId">
+                                <i class="icon_rev_tag_blue_add"></i>
+                                File đính kèm
+                            </a>
+                        </div>
+                        <textarea class="form-control" rows="3" placeholder="Viết vào đây những gì bạn nghĩ!" id="areatinymceContent"></textarea>
+                    </div>
+                    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 form-group" id="btn_post_function">
+                        <input type="button" class="btn btn-warning" value="Đăng" id="btnPostHomePage" name="btnPostHomePage" />
+                    </div>
+                    <div class="clearfix"></div>
+                    <input type="hidden" id="foldernameUpload" value="@Model.UserCurent.UserName" />
+                </form>
+            }
+            else
+            {
+                <div class="col-md-12">
+                    <div class="block-ellipsis-1"></div>
+                    <span>Mời bạn <a href="/thanh-vien/dang-nhap?returnUrl=@HttpContext.Current.Request.Url">Đăng nhập</a> hoặc <a href="/thanh-vien/dang-ky">Đăng ký</a> để tham gia bình luận</span>
+                    <div class="block-ellipsis-1"></div>
+                </div>
+            }
+        </div>
+        <div class="" id="listPostContent" data-url="@Url.Action("FriendPage", "PersonalPage", new { area = "RealEstate.MiniForum.FrontEnd", UserName = Model.UserSelect.UserName, UserId = Model.UserSelect.Id })" data-current-page="1" data-total-pages="@Model.Pager">
+            @Html.Partial("ListPost.PersonalPage", Model)
+        </div>
+        <input type="hidden" id="ParentCommentId" />
+    </div>
+</div>
+
+@Html.Partial("form.attachment.partial")
+
+

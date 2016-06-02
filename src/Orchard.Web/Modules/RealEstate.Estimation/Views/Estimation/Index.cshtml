@@ -1,0 +1,113 @@
+﻿@model RealEstate.Estimation.ViewModels.EstimateIndexViewModel
+
+@{
+    Layout.Title = T("Estimation Log").ToString();
+}
+
+@*<fieldset>
+    <button type="button" class="button button-migrate" data-url="@Url.Action("RunEstimate")">Start Estimation <span id="propertiesCount">@Model.PropertiesCount</span> BĐS</button>
+</fieldset>*@
+
+<div id="message-progress">
+    
+</div>
+
+    @using (Script.Foot())
+    {
+        <script type="text/javascript">
+            $(function () {
+                var antiForgeryToken = '@HttpUtility.JavaScriptStringEncode(Html.AntiForgeryTokenValueOrchard().ToString())';
+                var endMessage = '@HttpUtility.JavaScriptStringEncode(T("All items have been processed").Text)';
+
+                $('.button-migrate').click(function () {
+                    var importUrl = $(this).data('url');
+
+                    var startIndex = 0;
+                    var count = $('#propertiesCount').text();
+
+                    var iId = setInterval(function () {
+
+                        $.ajax({
+                            type: 'POST',
+                            url: importUrl,
+                            async: false,
+                            data: {
+                                __RequestVerificationToken: antiForgeryToken,
+                                startIndex: startIndex // start at index 0
+                            },
+                            success: function (response) {
+                                if (Number(response.data) >= count) {
+                                    // end process
+                                    clearInterval(iId);
+                                    $('#message-progress').append('<div class="message message-Information">' + endMessage + '</div>');
+                                }
+                                else {
+                                    // continue process
+                                    startIndex = Number(response.data);
+                                    $('#message-progress').append('<div class="message message-Information">Processing content item ' + startIndex + ' Msg: ' + response.msg + '</div>');
+                                }
+                            },
+                            fail: function (result) {
+                                startIndex++;
+                                console.log("An error occured: " + result);
+                            }
+                        });
+
+                    }, 100);
+
+                });
+
+                //window.setTimeout(function () { $('.button-migrate').click(); }, 5000)
+            });
+        </script>
+    }
+
+    @using (Html.BeginFormAntiForgeryPost())
+    {
+        @Html.ValidationSummary()
+
+        <fieldset class="bulk-actions">
+            @Html.TextBoxFor(m => m.Options.Search, new { @class = "text" })
+            <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+        </fieldset>
+        <fieldset>
+            <table class="items">
+                <thead>
+                    <tr>
+                        <th scope="col">@T("No.")</th>
+                        <th scope="col">@T("StartTime")</th>
+                        <th scope="col">@T("EndTime")</th>
+                        <th scope="col">@T("Total")</th>
+                        <th scope="col">@T("Sucess")</th>
+                        <th scope="col">@T("Msg")</th>
+                    </tr>
+                </thead>
+                @{var index = 0;}
+                @foreach (var entry in Model.Estimates)
+            {
+            <tr>
+                <td>@(index+1)</td>
+                <td>
+                    @entry.StartTime
+                </td>
+                <td>
+                    @entry.EndTime
+                </td>
+                <td>
+                    @entry.TotalItems
+                </td>
+                <td>
+                    @entry.SucessItems
+                </td>
+                <td>
+                    @entry.Msg
+                </td>
+            </tr>
+                index++;
+            }
+            </table>
+
+            @Display(Model.Pager)
+
+        </fieldset>
+    }

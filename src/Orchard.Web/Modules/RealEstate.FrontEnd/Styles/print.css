@@ -1,0 +1,64 @@
+﻿#layout-wrapper #layout-header {
+    display: none;
+}
+/*layout-navigation*/
+#layout-wrapper #layout-navigation {
+    display: none;
+}
+/*layout-before-main*/
+#layout-wrapper #layout-before-main {
+    display: none;
+}
+/*layout-footer*/
+#layout-wrapper #layout-footer {
+    display: none;
+}
+
+/*layout-main aside-first*/
+#layout-main #aside-first {
+    display: none;
+}
+
+/*shape-tracing-container*/
+#shape-tracing-container {
+    display: none;
+}
+
+#shape-tracing-container-ghost {
+    display: none;
+}
+
+.ui-resizable {
+    display: none;
+}
+
+.movemap {
+    display: none;
+}
+
+#ViewSameProperties {
+    display: none;
+}
+
+#layout-content {
+    float: left;
+}
+
+.header-title-triangle {
+    display: none;
+}
+
+.header-title {
+    display: none;
+}
+.header-wrapper .header-msg p strong{
+    margin: -415px;
+}
+
+#layout-content {
+    margin-right: 120px;
+}
+
+#moreoption {
+    display: none;
+}

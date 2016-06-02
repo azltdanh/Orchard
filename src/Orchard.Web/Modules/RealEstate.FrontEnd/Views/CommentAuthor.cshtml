@@ -1,0 +1,7 @@
+﻿@using Orchard.Comments.Models
+@{
+    CommentPart comment = Model.ContentPart;
+}
+
+<a href="@Url.Action("RedirectUserProfile", "PropertySearch", new { area = "RealEstate.FrontEnd", username = comment.Author })"><strong>@comment.Author</strong></a>
+@*@Html.LinkOrDefault(comment.Record.Author, comment.Record.SiteName, new { rel = "nofollow" })*@

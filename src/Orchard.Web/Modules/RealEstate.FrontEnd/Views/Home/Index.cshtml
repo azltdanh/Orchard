@@ -1,0 +1,160 @@
+﻿@model RealEstate.FrontEnd.ViewModels.UserPropertyIndexViewModel
+@using RealEstate.Models;
+@using RealEstate.ViewModels;
+@using RealEstate.Services;
+@using RealEstate.Helpers;
+@{
+    Layout.Title = T("Quản lý tin rao").ToString();
+
+    Style.Require("BootstrapCombobox");
+    Script.Require("BootstrapCombobox");
+
+    Script.Require("BootstrapMultiselect");
+    int pId = 0;
+    if (Session["PropertyId"] != null)
+    {
+        pId = (int)Session["PropertyId"];
+
+        Session["PropertyId"] = null;
+    }
+}
+
+<article class="content-item block_controlpanel">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left">
+                    <div class="header-title-triangle"></div>
+                </div>
+                <h2 class="header-title-text">@ViewData["Title"]</h2>
+                <div class="header-title-right"></div>
+            </div>
+            <div class="header-msg text-right">
+                <a rel="nofollow" class="text-success text-underline" href="@Url.Action("Create", "Home", new { area = "RealEstate.FrontEnd" })"><i class="icon_silk_layout_add"></i>Đăng tin rao miễn phí</a>
+            </div>
+        </div>
+    </header>
+    <article>
+        <input type="hidden" id="ReturnAdstype" name="ReturnAdstype" value='@Request.QueryString.Get("ReturnAdstype")'/>
+        <input type="hidden" id="ReturnStatus" name="ReturnStatus" value='@Request.QueryString.Get("ReturnStatus")'/>
+        <input type="hidden" id='id_TypeGroupId' value="@Request.QueryString.Get("TypeGroupId")" />
+        <input type="hidden" id='id_ProvinceId' value="@Request.QueryString.Get("ProvinceId")" />
+        <input type="hidden" id='id_DistrictIds' value="@Request.QueryString.Get("DistrictIds")" />
+        <input type="hidden" id='id_StreetIds' value="@Request.QueryString.Get("StreetId")" />
+        <input type="hidden" id='id_Url' value="@HttpContext.Current.Request.Url" />
+
+        <ul class="nav nav-tabs ajax-tabs">
+            <li class="active">
+                <a class="ad-all" href="#ViewIndex" data-toggle="tab"
+                data-url="@Url.Action("ViewIndexAjax", "User", new { area = "RealEstate.UserControlPanel", ReturnStatus = Request.QueryString.Get("ReturnStatus") })">
+                    Tất cả BĐS (<span class="text-error">@ViewData["ad-all"]</span>)
+                </a>
+            </li>
+            @foreach (var ads in Model.Options.AdsTypes)
+            {
+                <li>
+                    <a class="@ads.CssClass" href="#ViewIndex-@ads.CssClass" data-toggle="tab"
+                    data-url="">
+                        BĐS @ads.ShortName (<span class="text-error">@ViewData[ads.CssClass]</span>)
+                    </a>
+                </li>
+            }
+        </ul>
+        @using (Html.BeginFormAntiForgeryPost("/",FormMethod.Post, new { id = "panelSearch"}))
+        {
+        <div class="form-inline row">
+            
+            <!-- TypeGroups -->
+            <div class="form-group col-md-2">
+                <select id="TypeGroupId" name="options.TypeGroupId" class="form-control">
+                    <option value="" disabled="disabled" selected="selected" style="display:none;"> Loại BĐS </option>
+                    @foreach (var item in Model.Options.TypeGroups)
+                    {
+                        <option value="@item.Id" class="@item.CssClass">@item.Name</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Province -->
+            <div class="form-group col-md-2">
+                    @Html.DropDownListFor(m => Model.Options.ProvinceId,
+                    Model.Options.Provinces.Select(r => new SelectListItem
+                    {
+                        Selected = r.Id == Model.Options.ProvinceId,
+                        Text = r.Name,
+                        Value = r.Id.ToString()
+                    }), T("Chọn tất cả Tỉnh / TP").ToString(), new { Class = "form-control combobox" })
+            </div>
+            <!-- DistrictIds -->
+            <div class="form-group col-md-3">
+                    @Html.ListBoxFor(m => Model.Options.DistrictIds, new MultiSelectList(Model.Options.Districts.Select(a => new { a.Name, a.Id }).ToList(), "Id", "Name", Model.Options.DistrictIds), new { Class = "form-control multiselect" })
+            </div>
+            
+            <!-- StreetIds -->
+            <div class="form-group col-md-3">
+                    @Html.ListBoxFor(m => Model.Options.StreetIds, new MultiSelectList(Model.Options.Streets.Select(a => new { Name = a.Name + " - " + a.District.ShortName, a.Id }).ToList(), "Id", "Name", Model.Options.StreetIds), new { Class = "form-control multiselect" })
+            </div>
+            <div class="form-group col-md-2">
+                <input type="hidden" name="FrmReturnStatus" id="FrmReturnStatus" value="ad-all" data-search="0" />
+                <button type="submit" value="Tìm Kiếm" class="btn btn-primary">Tìm Kiếm</button>
+            </div>
+        </div>
+        }
+        <div class="tab-content">
+            <div id="ViewIndex" class="ajax-paging tab-pane active">
+                @Html.Partial("Loading")
+            </div>
+            @foreach (var adsType in Model.Options.AdsTypes)
+            {
+            <div id="ViewIndex-@adsType.CssClass" class="ajax-paging tab-pane">
+                @Html.Partial("Loading")
+            </div>
+            }
+        </div>
+    </article>
+</article>
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+            $('#ulControlPanel a').click(function(e) {
+                if ($(this).attr("class") == "ad-selling") {
+                    $('#FrmReturnStatus').val('ad-selling');
+                    var url = '@Url.Action("ViewIndexAjax", "User", new {area = "RealEstate.UserControlPanel"})?ReturnStatus=@Request.QueryString.Get("ReturnStatus")&ReturnAdstype=ad-selling&ReturnUrl=@HttpContext.Current.Request.Url';
+                }
+                if ($(this).attr("class") == "ad-leasing") {
+                    $('#FrmReturnStatus').val('ad-leasing');
+                    var url = '@Url.Action("ViewIndexAjax", "User", new {area = "RealEstate.UserControlPanel"})?ReturnStatus=@Request.QueryString.Get("ReturnStatus")&ReturnAdstype=ad-leasing&ReturnUrl=@HttpContext.Current.Request.Url';
+                }
+                if ($(this).attr("class") == "ad-buying") {
+                    $('#FrmReturnStatus').val('ad-buying');
+                    var url = '@Url.Action("ListCustomerRequirement", "User", new {area = "RealEstate.UserControlPanel"})?ReturnStatus=@Request.QueryString.Get("ReturnStatus")&AdsTypeCssClass=ad-buying&ReturnUrl=@HttpContext.Current.Request.Url';
+                }
+                if ($(this).attr("class") == "ad-renting") {
+                    $('#FrmReturnStatus').val('ad-renting');
+                    var url = '@Url.Action("ListCustomerRequirement", "User", new {area = "RealEstate.UserControlPanel"})?ReturnStatus=@Request.QueryString.Get("ReturnStatus")&AdsTypeCssClass=ad-renting&ReturnUrl=@HttpContext.Current.Request.Url';
+                }
+                e.preventDefault();
+                $(this).tab('show');
+            });
+            if (@pId != 0) {
+                $.ajax({
+                    type: 'post',
+                    url: '@Url.Action("AjaxPropertyToFaceBook", "PropertySearch", new {area = "RealEstate.FrontEnd"})',
+                    data: {
+                        pId: @pId,
+                        __RequestVerificationToken: antiForgeryToken
+                    },
+                    success: function(results) {
+                        console.log('s');
+                    },
+                    error: function(request, status, error) {
+                        console.log(error);
+                    }
+                });
+            }
+        });
+
+    </script>
+}

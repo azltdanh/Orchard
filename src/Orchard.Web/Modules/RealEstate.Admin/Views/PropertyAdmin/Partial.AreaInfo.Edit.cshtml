@@ -1,0 +1,184 @@
+﻿@model RealEstate.ViewModels.PropertyEditViewModel
+@using RealEstate.ViewModels;
+
+<!-- Diện tích -->
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-center header-bg-green">
+                <div class="header-left header-bg-green">
+                    <div class="header-left-triangle"></div>
+                </div>
+                @if (Model.TypeGroupCssClass == "gp-apartment")
+                {
+                <h1>Thông tin chung</h1>
+                }
+                else
+                {
+                <h1>Diện tích</h1>
+                }
+                <div class="header-right"></div>
+            </div>
+            <div class="header-msg">
+                <p class="text-success">Các mục có dấu (<span class="text-error">*</span>) là bắt buộc nhập</p>
+            </div>
+        </div>
+    </header>
+    <article>
+        @if (Model.TypeGroupCssClass == "gp-house")
+        {
+        <div class="form-horizontal pull-left">
+            <!-- AreaTotal -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Diện tích khuôn viên đất:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.AreaTotal, new { @class = "text number-box-long", placeholder = T("diện tích") }) m<sup>2</sup>&nbsp;
+                    @Html.TextBoxFor(m => m.AreaTotalWidth, new { @class = "text number-box-long", placeholder = T("chiều ngang") })
+                    &nbsp;x&nbsp;
+                    @Html.TextBoxFor(m => m.AreaTotalLength, new { @class = "text number-box-long", placeholder = T("chiều dài") }) m
+                    &nbsp;-->&nbsp;
+                    @Html.TextBoxFor(m => m.AreaTotalBackWidth, new { @class = "text number-box-long", placeholder = T("mặt hậu") }) m
+                    
+                    @Html.ValidationMessageFor(m => m.AreaTotal, "*")
+                    @Html.ValidationMessageFor(m => m.AreaTotalWidth, "*")
+                    @Html.ValidationMessageFor(m => m.AreaTotalLength, "*")
+                    @Html.ValidationMessageFor(m => m.AreaTotalBackWidth, "*")
+                </div>
+            </div>
+            <!-- AreaLegal -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Diện tích phù hợp quy hoạch:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.AreaLegal, new { @class = "text number-box-long", placeholder = T("diện tích") }) m<sup>2</sup>&nbsp;
+                    @Html.TextBoxFor(m => m.AreaLegalWidth, new { @class = "text number-box-long", placeholder = T("chiều ngang") })
+                    &nbsp;x&nbsp;
+                    @Html.TextBoxFor(m => m.AreaLegalLength, new { @class = "text number-box-long", placeholder = T("chiều dài") }) m
+                    &nbsp;-->&nbsp;
+                    @Html.TextBoxFor(m => m.AreaLegalBackWidth, new { @class = "text number-box-long", placeholder = T("mặt hậu") }) m
+            
+                    @Html.ValidationMessageFor(m => m.AreaLegal, "*")
+                    @Html.ValidationMessageFor(m => m.AreaLegalWidth, "*")
+                    @Html.ValidationMessageFor(m => m.AreaLegalLength, "*")
+                    @Html.ValidationMessageFor(m => m.AreaLegalBackWidth, "*")
+                </div>
+            </div>
+            <!-- AreaIlegalRecognized -->
+            <div class="control-group form-horizontal-402">
+                <label class="control-label">@T("Diện tích đất vi phạm lộ giới (quy hoạch) nhưng được công nhận:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.AreaIlegalRecognized, new { @class = "text number-box-long" }) m<sup>2</sup>
+                    @Html.ValidationMessageFor(m => m.AreaIlegalRecognized, "*")
+                </div>
+            </div>
+        </div>
+        }
+        @if (Model.TypeGroupCssClass == "gp-apartment")
+        {
+        <div class="form-horizontal pull-left">
+            <!-- ApartmentFloors -->
+            <div class="control-group">
+                <label class="control-label">@T("Chung cư có bao nhiêu tầng:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.ApartmentFloors, new { @class = "text number-box-ext" })
+                    <input type="hidden" id="oldAprartmentId" value="@Model.ApartmentId" />
+                </div>
+            </div>
+            <!-- ApartmentTradeFloors -->
+            <div class="control-group">
+                <label class="control-label">@T("Số tầng thương mại:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.ApartmentTradeFloors, new { @class = "text number-box-ext" })
+                </div>
+            </div>
+            <!-- ApartmentFloorTh -->
+            <div class="control-group">
+                <label class="control-label">@T("Căn hộ thuộc tầng:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.ApartmentFloorTh, new { @class = "text number-box-ext" })
+                </div>
+            </div>
+            <!-- ApartmentElevators -->
+            <div class="control-group">
+                <label class="control-label">@T("Số lượng thang máy:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.ApartmentElevators, new { @class = "text number-box-ext" })
+                </div>
+            </div>
+            <!-- ApartmentBasements -->
+            <div class="control-group">
+                <label class="control-label">@T("Số tầng hầm:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.ApartmentBasements, new { @class = "text number-box-ext" })
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal pull-left">
+            <ul style="padding-left:60px;">
+            @{
+                var rIndex = 0;
+            }
+            @foreach (var r in Model.ApartmentAdvantages)
+            {
+                <li><input type="hidden" value="@r.Advantage.Id"
+                    name="@Html.FieldNameFor(m => m.ApartmentAdvantages[rIndex].Advantage.Id)"/>
+                    <label for="@Html.FieldNameFor(m => m.ApartmentAdvantages[rIndex].IsChecked)">
+                        <input type="checkbox" value="true" class="@r.Advantage.CssClass"
+                            name="@Html.FieldNameFor(m => m.ApartmentAdvantages[rIndex].IsChecked)"
+                            id="@Html.FieldNameFor(m => m.ApartmentAdvantages[rIndex].IsChecked)"
+                            @if (r.IsChecked)
+                            {<text>checked="checked"</text>}/>
+                        @String.Format("{0} {1}", r.Advantage.Name, String.Format("({0:+0;-0;}%)", r.Advantage.AddedValue))
+                    </label>
+                    @{rIndex++;}
+                </li>
+            }
+            </ul>
+        </div>
+        }
+        @if (Model.TypeGroupCssClass == "gp-land")
+        {
+        <div class="form-horizontal pull-left">
+            <!-- AreaTotal -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Diện tích khuôn viên đất:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.AreaTotal, new { @class = "text number-box-long", placeholder = T("diện tích") }) m<sup>2</sup>&nbsp;
+                    @Html.TextBoxFor(m => m.AreaTotalWidth, new { @class = "text number-box-long", placeholder = T("chiều ngang") })
+                    &nbsp;x&nbsp;
+                    @Html.TextBoxFor(m => m.AreaTotalLength, new { @class = "text number-box-long", placeholder = T("chiều dài") }) m
+                    
+                    @Html.ValidationMessageFor(m => m.AreaTotal, "*")
+                    @Html.ValidationMessageFor(m => m.AreaTotalWidth, "*")
+                    @Html.ValidationMessageFor(m => m.AreaTotalLength, "*")
+                </div>
+            </div>
+            <!-- AreaResidential -->
+            <div class="control-group">
+                <label class="control-label">@T("Diện tích đất thổ cư:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.AreaResidential, new { @class = "text number-box-long", placeholder = T("diện tích") }) m<sup>2</sup>
+                    @Html.ValidationMessageFor(m => m.AreaResidential, "*")
+                </div>
+            </div>
+            <!-- AreaConstruction -->
+            <div class="control-group">
+                <label class="control-label">@T("Diện tích đất xây dựng:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.AreaConstruction, new { @class = "text number-box-long" }) m<sup>2</sup>
+                    @Html.ValidationMessageFor(m => m.AreaConstruction, "*")
+                </div>
+            </div>
+            <!-- AreaConstructionFloor -->
+            <div class="control-group">
+                <label class="control-label">@T("Tổng diện tích sàn:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.AreaConstructionFloor, new { @class = "text number-box-long" }) m<sup>2</sup>
+                    @Html.ValidationMessageFor(m => m.AreaConstructionFloor, "*")
+                </div>
+            </div>
+        </div>
+        }
+        <div class="clearfix"></div>
+    </article>
+    <footer></footer>
+</article>

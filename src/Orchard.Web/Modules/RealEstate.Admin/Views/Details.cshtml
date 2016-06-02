@@ -1,0 +1,116 @@
+﻿@model RealEstate.ViewModels.PropertyRevisionsViewModel
+@{
+    var item = Model.Property;
+    string priceProposed = item.PriceProposed.ToString();
+    string paymentMethodName = item.PaymentMethod.Name;
+}
+<fieldset>
+    <table id="tblRevisions" class="items">
+        <thead>
+            <tr>
+                <th scope="col">@T("Tình trạng")</th>
+                <th scope="col">@T("Giá")</th>
+                <th scope="col">@T("Địa chỉ")</th>
+                <th scope="col">@T("Diện tích")</th>
+                @*<th scope="col">@T("MT / Hẻm")</th>
+                    <th scope="col">@T("Xây dựng")</th>
+                    <th scope="col">@T("Thông tin khác")</th>*@
+                <th scope="col">@T("Liên hệ")</th>
+                <th scope="col">@T("Nguồn")</th>
+                <th scope="col">@T("Sửa bởi")</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="@item.Status.CssClass">@item.Status.Name</td>
+                <td class="@item.Flag.CssClass">@string.Format("{0:#,0.##} {1:0}", item.PriceProposed, item.PaymentMethod.ShortName)</td>
+                <td>
+                    <div>@item.DisplayForAddressForOwner</div>
+                    <div>@item.Note</div>
+                </td>
+                <td>
+                    <div>DTKV @Html.Raw(item.DisplayForAreaTotal)</div>
+                    @if (!String.IsNullOrEmpty(item.DisplayForAreaLegal))
+                    {
+                        <div>DTQH @Html.Raw(item.DisplayForAreaLegal)</div>
+                    }
+                    <div>@Html.Raw(String.Format("{0:LGDCN: 0.##m<sup>2</sup>}", item.AreaIlegalRecognized))</div>
+                    <div>@Html.Raw(String.Format("{0:DTXD: 0.##m<sup>2</sup>}", item.AreaConstruction))</div>
+                    <div>@Html.Raw(String.Format("{0:DTSD: 0.##m<sup>2</sup>}", item.AreaUsable))</div>
+                </td>
+                <td>@item.ContactPhone</td>
+                <td>@item.LastInfoFromUser.UserName</td>
+                <td>@item.LastUpdatedUser.UserName (@Html.DisplayFor(m => item.LastUpdatedDate, "ShortDate"))</td>
+            </tr>
+            @foreach (var entry in Model.Revisions)
+            {
+                if (!String.IsNullOrEmpty(entry.PriceProposed))
+                {
+                    priceProposed = entry.PriceProposed;
+                    paymentMethodName = entry.PaymentMethodName;
+                }
+                <tr>
+                    <td>@entry.StatusName</td>
+                    <td>@string.Format("{0:0} {1:1}", priceProposed, paymentMethodName)</td>
+                    <td>
+                        <div>@entry.Address</div>
+                        <div>@string.Format("{0:Ghi chú 0}", entry.Note)</div>
+                    </td>
+                    <td>
+                        @if (!String.IsNullOrEmpty(entry.ImageUrl))
+                        {
+                            <a target="_blank" href="@entry.ImageUrl">@entry.ImageName</a>
+                            if (entry.Editable)
+                            {
+                                <a href="#" class="ui-icon icon-delete" id="@entry.ImageId" rel="@entry.ImageName">Delete</a>
+                                @*<label><input type="checkbox" id="chkPublished-@entry.ImageId" value="@entry.ImageId" @(entry.ImagePublished == true ? "checked=checked" : "")>Published</label>*@
+                            }
+                        }
+                        else
+                        {
+                            @entry.ImageName
+                        }
+
+                    </td>
+                    @*<td></td>
+                        <td></td>
+                        <td></td>*@
+                    <td>@entry.ContactPhone</td>
+                    <td>@entry.LastInfoFromUserName</td>
+                    <td>@entry.CreatedUser.UserName (@Html.DisplayFor(m => entry.CreatedDate, "ShortDate"))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</fieldset>
+<script type="text/javascript">
+    $(function () {
+        // Delete image
+        $("#tblRevisions").on('click', '.icon-delete', function () {
+            var name = $(this).attr('rel');
+            if (confirm('Bạn muốn xóa hình ' + name + ' ?')) {
+                $.ajax({
+                    type: "post",
+                    dataType: "",
+                    url: "/RealEstate.Admin/Home/AjaxPermanentlyDeletePropertyImage",
+                    data: {
+                        id: $(this).attr("id"),
+                        __RequestVerificationToken: antiForgeryToken
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            $("a[id=" + response.id + "]").closest('td').fadeOut("slow", function () {
+                                $(this).html(name).fadeIn();
+                            });
+                        }
+                        else
+                            alert(response.message);
+                    },
+                    error: function (request, status, error) {
+                    }
+                });
+            }
+            return false;
+        });
+    });
+</script>

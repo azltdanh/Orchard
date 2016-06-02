@@ -1,0 +1,139 @@
+﻿@model RealEstate.ViewModels.LocationStreetsIndexViewModel
+@using RealEstate.Models;
+@using RealEstate.ViewModels;
+
+@{
+    Script.Require("BootstrapCombobox");
+    Script.Require("Common");
+    Layout.Title = T("Location Streets").ToString();
+}
+
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Get))
+{      
+    @Html.ValidationSummary()
+
+    <fieldset class="bulk-actions">
+        <table class="filter-table">
+            <thead>
+                <tr>
+                    <th>@Html.LabelFor(m => m.Options.ProvinceId, @T("Tỉnh / Thành phố:"))</th>
+                    <th>@Html.LabelFor(m => m.Options.DistrictId, @T("Quận / Huyện:"))</th>
+                    <th>@Html.LabelFor(m => m.Options.Search, @T("Tên Đường / Phố:"))</th>
+                    <th>@Html.LabelFor(m => m.Options.StreetId, @T("Related To:"))</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        @Html.DropDownListFor(m => m.Options.ProvinceId,
+                        Model.Options.Provinces.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.Options.ProvinceId,
+                            Text = s.Name,
+                            Value = s.Id.ToString()
+                        }), "-- Tỉnh / Thành Phố --", new { Class = "combobox" + (Model.Options.IsRestrictedLocations ? " restricted" : ""), userid = WorkContext.CurrentUser.Id })
+                    </td>
+                    <td>
+                        @Html.DropDownListFor(m => m.Options.DistrictId,
+                        Model.Options.Districts.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.Options.DistrictId,
+                            Text = s.Name,
+                            Value = s.Id.ToString()
+                        }), "-- Quận / Huyện --", new { Class = "combobox" })
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(m => m.Options.Search, new { @class = "text text-box" })
+                    </td>
+                    <td>
+                        @Html.DropDownListFor(m => m.Options.StreetId,
+                        Model.Options.Streets.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.Options.StreetId,
+                            Text = s.Name,
+                            Value = s.Id.ToString()
+                        }), T("All").ToString(), new { Class = "combobox" })
+                    </td>
+                    <td>
+                        <label>@Html.CheckBoxFor(m => m.Options.ShowRelatedStreetOnly)@T("Related Street Only")</label>
+                    </td>
+                    <td>
+                        <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </fieldset>
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{ 
+    @Html.ValidationSummary()
+    
+    <fieldset class="bulk-actions right">
+        @if (AuthorizedFor(RealEstate.Permissions.ManageAddressLocations))
+        {
+        <label for="publishActions">@T("Actions:")</label>
+        <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+            @Html.SelectOption(Model.Options.BulkAction, LocationStreetsBulkAction.None, T("Choose action...").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, LocationStreetsBulkAction.Enable, T("Enable").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, LocationStreetsBulkAction.Disable, T("Disable").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, LocationStreetsBulkAction.Delete, T("Delete").ToString())
+        </select>
+        <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+        }
+        @Html.ActionLink(T("Add new Street").ToString(), "Create", new { returnUrl = HttpContext.Current.Request.Url }, new { @class = "button primaryAction" })
+    </fieldset>
+    
+    <fieldset>
+
+        <table class="items">
+            <thead>
+                <tr>
+                    <th scope="col"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.LocationStreets)" /></th>
+                    <th scope="col">@T("Province")</th>
+                    <th scope="col">@T("District")</th>
+                    <th scope="col">@T("Name")</th>
+                    <th scope="col">@T("Ward")</th>
+                    <th scope="col">@T("Width")</th>
+                    <th scope="col">@T("Actions")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.LocationStreets)
+            {
+                <tr>
+                    <td>
+                        <input type="hidden" value="@Model.LocationStreets[index].LocationStreet.Id" name="@Html.NameOf(m => m.LocationStreets[index].LocationStreet.Id)"/>
+                        <input type="checkbox" value="true" name="@Html.NameOf(m => m.LocationStreets[index].IsChecked)"/>
+                    </td>
+                    <td>
+                        @entry.LocationStreet.Province.Name
+                    </td>
+                    <td>
+                        @entry.LocationStreet.District.Name
+                    </td>
+                    <td>
+                        @Html.ActionLink(entry.DisplayForStreetName, "Edit", new { entry.LocationStreet.Id, returnUrl = HttpContext.Current.Request.Url }) 
+                    </td>
+                    <td>
+                        @(entry.LocationStreet.Ward != null ? entry.LocationStreet.Ward.Name : "")
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => entry.LocationStreet.StreetWidth, "m")
+                    </td>
+                    <td>
+                        @Html.ActionLink(T("Edit").ToString(), "Edit", new { entry.LocationStreet.Id, returnUrl = HttpContext.Current.Request.Url }) |
+                        @Html.ActionLink(T("Delete").ToString(), "Delete", new { entry.LocationStreet.Id, returnUrl = HttpContext.Current.Request.Url }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                    </td>
+                </tr>
+                index++;
+            }
+        </table>
+
+        @Display(Model.Pager)
+
+    </fieldset>
+} 

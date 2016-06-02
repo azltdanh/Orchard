@@ -1,0 +1,279 @@
+﻿@using System.Globalization
+@model RealEstate.ViewModels.LocationApartmentCartCreateViewModel
+@{
+    Script.Require("BootstrapCombobox");
+    Script.Require("Common");
+    Layout.Title = T("Location Apartment Cart").ToString();
+}
+
+<div>
+    <a target="_blank" href="@Url.Action("ApartmentWithCartIndex", "LocationApartmentAdmin", new { area = "RealEstate.Admin"})" class="button primaryAction right">Xem giỏ hàng dự án</a>
+</div>
+<div class="clearfix"></div>
+<br />
+@using (Html.BeginFormAntiForgeryPost(Url.Action("ApartmentCartCreate", "LocationApartmentAdmin", new { area = "RealEstate.Admin" }), FormMethod.Post, new { @class = "apartment-cart-form" }))
+{
+@Html.ValidationSummary()
+<div class="form-editor">
+    <article class="content-item">
+        <header>
+            <div class="header-wrapper">
+                <div class="header-center header-bg-green">
+                    <div class="header-left header-bg-green">
+                        <div class="header-left-triangle"></div>
+                    </div>
+                    <h1>Thêm giỏ hàng dự án chung cư</h1>
+                    <div class="header-right"></div>
+                </div>
+                <div class="header-msg">
+                    <p class="text-success">Các mục có dấu (<span class="text-error">*</span>) là bắt buộc nhập</p>
+                </div>
+            </div>
+        </header>
+        <article>
+            <div class="form-horizontal pull-left">
+                <div class="control-group">
+                    <div><a target="_blank" href="@Url.Action("ApartmentBlockIndex", "LocationApartmentAdmin", new { })"><span class="text-error">* Chú ý: Cần nhập đầy đủ thông tin Block và tạo thông tin chung của dự án trước khi tạo giỏ hàng</span></a></div>
+                </div>
+
+                <!-- Apartment -->
+                <div class="control-group">
+                    <label class="control-label"><span class="text-error">*</span> <strong>@T("Dự án:")</strong></label>
+                    <div class="controls">
+                        @Html.DropDownListFor(m => m.ApartmentId,
+                        Model.LocationApartments.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.ApartmentId,
+                            Text = s.Name,
+                            Value = s.Id.ToString()
+                        }), "-- Chọn dự án --", new { Class = "combobox" })
+                        @Html.ValidationMessageFor(m => m.ApartmentId, "*")
+                    </div>
+                </div>
+                <!-- Block -->
+                <div class="control-group">
+                    <label class="control-label"><span class="text-error">*</span> <strong>@T("Block Dự án: ")</strong></label>
+                    <div class="controls">
+                        @Html.DropDownListFor(m => m.ApartmentBlockId,
+                            Model.LocationApartmentBlocks.Select(s => new SelectListItem
+                            {
+                                Selected = s.Id == Model.ApartmentBlockId,
+                                Text = s.BlockName,
+                                Value = s.Id.ToString(CultureInfo.InvariantCulture)
+                            }),
+                            new { @class = "select-box" })
+                        @Html.ValidationMessageFor(m => m.ApartmentBlockId, "*")
+                        @Html.Hidden("oldAprartmentBlockId", Model.ApartmentBlockId)
+                        @Html.ActionLink(T("AddBlock").ToString(), "ApartmentBlockCreate", new { apartmentId = Model.ApartmentId, returnUrl = HttpContext.Current.Request.Url }, new { @class = "button primaryAction" })
+                    </div>
+                </div>
+                
+                <!-- Floor -->
+                <div class="control-group">
+                    <label class="control-label"><strong>@T("Số tầng:")</strong></label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.FloorsNumber, new { @class = "text text-box-small" })
+                    </div>
+                </div>
+
+                <!-- FloorGroupTotal -->
+                <div class="control-group">
+                    <label class="control-label"><strong>@T("Số nhóm tầng:")</strong></label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.FloorGroupTotal, new { @class = "text text-box-small" })
+                    </div>
+                </div>
+
+                
+                <fieldset id="GroupFloorInfo" style="display:none;">
+                    <!-- Group Floor-->
+                    @Html.HiddenFor(r => r.GroupFloorPosition)
+                    @{
+                        int? groupPostionTemp = Model.GroupFloorPosition == null ? 1 : Model.GroupFloorPosition;
+                    }
+                    <label class="label-groupname">Nhóm @groupPostionTemp</label>
+                    
+                    <div class="text-error">Nếu nhóm này đã có, vui lòng click <a href="@Url.Action("ApartmentCartCreate", "LocationApartmentAdmin", new { apartmentId = Model.ApartmentId, groupFloorPosition = groupPostionTemp + 1})">vào đây</a> để sang nhóm kế tiếp</div>
+                    <br />
+
+                    <div class="control-group">
+                        <label class="control-label"><strong>@T("Vị trí tầng:")</strong></label>
+                        <div class="controls">
+                            Từ tầng
+                            @Html.TextBoxFor(r => r.FloorFrom, new { @class = "text text-box-small" })
+                            đến
+                            @Html.TextBoxFor(r => r.FloorTo, new { @class = "text text-box-small" })
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label"><strong>@T("Số căn hộ / tầng:")</strong></label>
+                        <div class="controls">
+                            @Html.TextBoxFor(r => r.RoomInFloor, new { @class = "text text-box" })
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">&nbsp;</label>
+                        <div class="controls">
+                            <label class="w130">@Html.CheckBoxFor(m => m.Published) @T("Published")</label>
+                        </div>
+                    </div>
+
+                    <label class="label-groupinfo">Thông tin căn hộ</label>
+
+                    <!-- Price -->
+                    @*<div class="control-group" id="apartmentPrice">
+                        <label class="control-label"><strong>@T("Đơn giá:")</strong></label>
+                        <div class="controls">
+                            @Html.DropDownListFor(m => m.PaymentMethodId,
+                            Model.PaymentMethods.Select(s => new SelectListItem
+                            {
+                                Selected = s.Id == Model.PaymentMethodId,
+                                Text = s.Name,
+                                Value = s.Id.ToString(CultureInfo.InvariantCulture)
+                            }),
+                            new { @class = "" })
+                            @Html.DropDownListFor(m => m.PaymentUnitId,
+                            Model.PaymentUnits.Select(s => new SelectListItem
+                            {
+                                Selected = s.Id == Model.PaymentUnitId,
+                                Text = s.Name,
+                                Value = s.Id.ToString(CultureInfo.InvariantCulture)
+                            }),
+                            new { @class = "" })
+                        </div>
+                    </div>*@
+
+                    <div class="control-group" style="display:none;" id="apartment-info">
+                        <label class="control-label">&nbsp;</label>
+                        <div class="controls">
+                            <table class="tbl-apartment" id="tbl-apartment">
+                                <thead>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>Tên</td>
+                                        <td>Tổng hệ số ( không bao gồm hệ số tầng )</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @*<tr>
+                                        <td>Căn 1</td>
+                                        <td><input type="text" id="ApartmentName01" name="ApartmentName01" placeholder="Tên" class="text text-box" /></td>
+                                        <td><input type="text" id="ApartmentArea01" name="ApartmentArea01" placeholder="Diện tích" class="text text-box" /></td>
+                                        <td><input type="text" id="ApartmentPrice01" name="ApartmentPrice01" placeholder="Giá" class="text text-box" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Căn 2</td>
+                                        <td><input type="text" id="ApartmentName02" name="ApartmentName02" placeholder="Tên" class="text text-box" /></td>
+                                        <td><input type="text" id="ApartmentArea02" name="ApartmentArea02" placeholder="Diện tích" class="text text-box" /></td>
+                                        <td><input type="text" id="ApartmentPrice02" name="ApartmentPrice02" placeholder="Giá" class="text text-box" /></td>
+                                    </tr>*@
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="control-group" id="price-difference" style="display:none;">
+                        <label class="control-label"><strong>@T("Hệ số chênh lệch theo tầng")</strong></label>
+                        <div class="controls">
+                            <table class="tbl-pricedifference" id="tbl-pricedifference">
+                                <thead>
+                                    <tr>
+                                        <td>tầng</td>
+                                        <td>Hệ số tầng chênh lệch</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @*<tr>
+                                        <td><input type="text" id="FromPosition01" name="FromPosition01" placeholder="Từ tầng" class="text text-box" /></td>
+                                        <td><input type="text" id="ToPosition01" name="ToPosition01" placeholder="Đến tầng" class="text text-box" /></td>
+                                        <td><input type="text" id="PositionPrice01" name="PositionPrice01" placeholder="Giá" class="text text-box" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" id="FromPosition02" name="FromPosition02" placeholder="Từ tầng" class="text text-box" /></td>
+                                        <td><input type="text" id="ToPosition02" name="ToPosition02" placeholder="Đến tầng" class="text text-box" /></td>
+                                        <td><input type="text" id="PositionPrice02" name="PositionPrice02" placeholder="Giá" class="text text-box" /></td>
+                                    </tr>*@
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Contact Phone -->
+                    <div class="control-group">
+                        <label class="control-label"><strong>@T("Điện thoại liên hệ:")</strong></label>
+                        <div class="controls">
+                            @Html.TextBoxFor(r => r.ContactPhone, new { @class = "text text-box-medium" })
+                        </div>
+                    </div>
+
+                </fieldset>
+                
+                <!-- RoomNumber -->
+                @*<div class="control-group">
+                    <label class="control-label"><strong>@T("Số căn hộ / Tầng:")</strong></label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.RoomNumber, new { @class = "text text-box-small" })
+                    </div>
+                </div>*@
+
+                <!-- Area -->
+                @*<div class="control-group" style="display: none" id="apartmentArea">
+                    <label class="control-label"><strong>@T("Diện tích:")</strong></label>
+                    <div class="controls area-form">
+
+                    </div>
+                </div>*@
+
+                <div class="control-group">
+                    <label>&nbsp;</label>
+                    <div class="controls">
+                        <div class="save-button">
+                            <button value="submit.Save" name="submit.Save" type="submit" class="primaryAction">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </article>
+        <footer></footer>
+    </article>
+</div>
+}
+<style>
+    strong {font-weight: bold;}
+    .area-item, .price-item{margin-bottom: 5px;}
+</style>
+<script>
+    $(function () {
+        apartmentBlockChange($('#ApartmentBlockId').val());
+        $('#ApartmentBlockId').change(function () {
+            apartmentBlockChange($(this).val());
+        });
+    });
+    function apartmentBlockChange(id) {
+        if (id != null && id != 0) {
+            $.ajax({
+                type: "get",
+                dataType: "",
+                url: "/RealEstate.Admin/Home/AjaxGetApartmentBlockInfo",
+                data: {
+                    apartmentBlockId: id
+                },
+                success: function (response) {
+                    $('#FloorsNumber').val(response.floor);
+                    $('#GroupFloorInfo').show();
+                    //$('#RoomNumber').val(response.eachfloor).change();
+                    if (response.groupFloor == null || response.groupFloor == 0) {
+                        alert('Block dự án này chưa có tổng nhóm tầng, vui lòng nhập tổng nhóm tầng trước khi tạo giỏ hàng này!');
+                    } else {
+                        $('#FloorGroupTotal').val(response.groupFloor);
+                    }
+                },
+                error: function (request, status, error) {
+                }
+            });
+        }
+    }
+</script>

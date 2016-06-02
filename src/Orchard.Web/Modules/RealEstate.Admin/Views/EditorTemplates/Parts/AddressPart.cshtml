@@ -1,0 +1,60 @@
+@model RealEstate.Models.AddressPart
+@using Orchard.ContentManagement;
+
+@{ Layout.Title = T("Edit AddressPart").ToString(); }
+
+<fieldset>
+    <legend>@T("AddressPart settings")</legend>
+        <div>
+            @Html.LabelFor(m => m.Province, @T("Province"))
+            @Html.EditorFor(m => m.Province)
+            @Html.ValidationMessageFor(m => m.Province, "*")
+        </div>
+        <div>
+            @Html.LabelFor(m => m.District, @T("District"))
+            @Html.EditorFor(m => m.District)
+            @Html.ValidationMessageFor(m => m.District, "*")
+        </div>
+        <div>
+            @Html.LabelFor(m => m.Ward, @T("Ward"))
+            @Html.EditorFor(m => m.Ward)
+            @Html.ValidationMessageFor(m => m.Ward, "*")
+        </div>
+        <div>
+            @Html.LabelFor(m => m.Street, @T("Street"))
+            @Html.EditorFor(m => m.Street)
+            @Html.ValidationMessageFor(m => m.Street, "*")
+        </div>
+        <div>
+            @Html.LabelFor(m => m.AddressNumber, @T("AddressNumber"))
+            @Html.EditorFor(m => m.AddressNumber)
+            @Html.ValidationMessageFor(m => m.AddressNumber, "*")
+        </div>
+        <div>
+            @Html.LabelFor(m => m.AlleyNumber, @T("AlleyNumber"))
+            @Html.EditorFor(m => m.AlleyNumber)
+            @Html.ValidationMessageFor(m => m.AlleyNumber, "*")
+        </div>
+        <div>
+            @Html.LabelFor(m => m.OtherProvinceName, @T("OtherProvinceName"))
+            @Html.EditorFor(m => m.OtherProvinceName)
+            @Html.ValidationMessageFor(m => m.OtherProvinceName, "*")
+        </div>
+        <div>
+            @Html.LabelFor(m => m.OtherDistrictName, @T("OtherDistrictName"))
+            @Html.EditorFor(m => m.OtherDistrictName)
+            @Html.ValidationMessageFor(m => m.OtherDistrictName, "*")
+        </div>
+        <div>
+            @Html.LabelFor(m => m.OtherWardName, @T("OtherWardName"))
+            @Html.EditorFor(m => m.OtherWardName)
+            @Html.ValidationMessageFor(m => m.OtherWardName, "*")
+        </div>
+        <div>
+            @Html.LabelFor(m => m.OtherStreetName, @T("OtherStreetName"))
+            @Html.EditorFor(m => m.OtherStreetName)
+            @Html.ValidationMessageFor(m => m.OtherStreetName, "*")
+        </div>
+
+</fieldset>
+

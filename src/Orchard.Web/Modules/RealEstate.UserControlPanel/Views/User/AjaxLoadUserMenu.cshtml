@@ -1,0 +1,25 @@
+﻿@using System.Web.Mvc;
+
+@if (WorkContext.CurrentUser != null)
+{
+    <li class="dropdown">
+        <a href="#" id="userDropdown" class="dropdown-toggle" data-toggle="dropdown"><i class="icon_silk_user_go"></i> <span id="navbar-username" class="text-ellipsis">@WorkContext.CurrentUser.UserName</span> <b class="caret"></b></a>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="userDropdown">
+            <li><a rel="nofollow" href="@Url.Action("MyPage", "PersonalPage", new { area = "RealEstate.MiniForum.FrontEnd" })"><i class="icon_silk_user_go"></i> Trang cá nhân</a></li>
+            <li><a rel="nofollow" href="@Url.Action("Create", "Home", new { area = "RealEstate.FrontEnd" })"><i class="icon_silk_layout_add"></i> Đăng tin rao miễn phí</a></li>
+            <li><a rel="nofollow" href="@Url.Action("Index", "User", new { area = "RealEstate.UserControlPanel" })"><i class="icon_silk_cog"></i> Quản lý tin rao</a></li>
+            <li><a rel="nofollow" href="@Url.Action("ChangePassword", "Account", new { area = "Orchard.Users" })"><i class="icon_silk_bullet_key"></i> Đổi mật khẩu</a></li>
+            @if (AuthorizedFor(Orchard.Security.StandardPermissions.AccessAdminPanel))
+            {
+                <li class="divider"></li>
+                <li><a rel="nofollow" href="@Url.Action("Index", "Admin", new { area = "Dashboard" })"><i class="icon_silk_building"></i> Phần mềm BĐS</a></li>
+            }
+            <li class="divider"></li>
+            <li><a rel="nofollow" href="@Url.Action("LogOff", "Account", new { area = "Orchard.Users"})"><i class="icon_silk_bullet_go"></i> Thoát</a></li>
+        </ul>
+    </li>
+}
+else
+{
+    <li><a class="logon" rel="nofollow" href="@Url.Action("LogOn", "Account", new { area = "Orchard.Users", ReturnUrl = (Request.QueryString["ReturnUrl"] ?? Request.Url.AbsolutePath) })"><i class="icon_silk_user_go"></i>Đăng nhập</a></li>
+}

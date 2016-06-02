@@ -1,0 +1,35 @@
+﻿@using RealEstateForum.Service.ViewModels
+@using RealEstate.Helpers
+@{
+    var model = Model;
+    List<PostByTopicEntry> ListPost = model.ListPostWithImage;// listtopic
+}
+
+@if (ListPost.Count() > 0)
+{
+    <ul class="media-list media-list-condensed last" style="list-style-type:square">
+        @foreach (var item in ListPost)
+        {
+            var userDisplayName = item.UserInfo.DisplayName;
+
+            var urlUserAvatar = item.UserInfo.Avatar;
+
+            <li class="media@(ListPost.IndexOf(item) == 0 ? " first" : "")@(ListPost.IndexOf(item) == ListPost.Count - 1 ? " last" : "")"
+                data-toggle="popover" data-html="true" data-placement="auto" data-trigger="hover" data-content="">
+                <div class="media-body">
+                    <div class="block-ellipsis block-ellipsis-2">
+                        <strong>- </strong>@Html.ActionLink(item.Title, "PostDetail", new { controller = "PostForumFrontEnd", area = "RealEstate.MiniForum.FrontEnd", Id = item.Id, title = item.DisplayForNameForUrl, ThreadShortName = item.ThreadShortName, TopicShortName = item.TopicShortName }, new { })
+                    </div>
+                    <div class="popover-data-content">
+                        <h5><strong>@item.Title</strong></h5>
+                        <a class="text-success">@userDisplayName</a>
+                        <small class='text-muted'>@string.Format("{0:h:mm tt (dd/MM/yyyy)}", @item.DateUpdated)</small>
+                        <div class="block-ellipsis block-ellipsis-6 justify">
+                            @Html.Raw(item.Content.Normalize().Trim())
+                        </div>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+}

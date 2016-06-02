@@ -1,0 +1,49 @@
+﻿@model List<PropertyDisplayEntry>
+@using RealEstate.ViewModels;
+@using RealEstate.Helpers;
+
+               <ul class="list-properties-gooddeal">
+                   @foreach (var entry in Model)
+                   {
+                       var item = entry.Property;
+                       var index = Model.IndexOf(entry);
+                       <li class="col-lg-12 col-md-12 col-sm-12 col-xs-12@(index == 0 ? " first" : "")@(index == Model.Count - 1 ? " last" : "")">
+                           <div class="media @(item.IsAuthenticatedInfo == true ? "bg-authenticated" : "")" data-id="@item.Id">
+                               <a class="pull-left" href="@Url.Action("RealEstateDetail", "PropertySearch", new { area = "RealEstate.FrontEnd", id = item.Id, title = item.DisplayForUrl })">
+                                   <img alt="@item.DisplayForTitle.StripHtml()" src="@entry.DefaultImgUrl?width=100" class="img-thumbnail img-responsive" />
+                               </a>
+                               <div class="media-body@(item.IsAuthenticatedInfo == true? " bg-authenticated" : "")">
+                                   <div class="block-ellipsis block-ellipsis-2">
+                                       <a href="@Url.Action("RealEstateDetail", new { id = item.Id, title = item.DisplayForUrl })" title="@item.DisplayForTitle.StripHtml()">
+                                           <strong>@Html.Raw(item.DisplayForTitle)</strong>
+                                       </a>
+                                   </div>
+                                   <div class="block-ellipsis block-ellipsis-4">
+                                       @if (!String.IsNullOrEmpty(item.Title))
+                                       {
+                                           @item.DisplayForLocationFullAddress
+                                       }
+                                       @Html.Raw(item.DisplayForAreaConstructionLocationInfo)
+                                   </div>
+                                   <div class="link-view-detail"><a href="@Url.Action("RealEstateDetail", new { id = item.Id, title = item.DisplayForUrl })" title="Xem chi tiết">>> Click xem chi tiết</a></div>
+                                   <div>
+                                       <strong class="text-danger">@item.DisplayForPriceProposed</strong>
+                                       -
+                                       <strong class="text-error">
+                                           @if (item.Province != null)
+                                           { @item.Province.Name }
+                                           else
+                                           { @item.OtherProvinceName}
+                                       </strong>
+
+                                   </div>
+                                   @if (item.AdsExpirationDate < DateTime.Now)
+                                   { <div><strong class="text-muted">(Tin quá hạn)</strong></div>  }
+                                   <a href="@Url.Action("RealEstateDetail", new { id = item.Id, title = item.DisplayForUrl })" class="text-info"><i class="icon_silk_image"></i>Vị trí BĐS</a>
+                                   <a href="@Url.Action("RealEstateDetail", new { id = item.Id, title = item.DisplayForUrl })" class="text-info"><i class="icon_silk_comments"></i>Bình luận BĐS</a>
+                               </div>
+                           </div>
+                       </li>
+                   }
+               </ul>
+<div class="clearfix"></div>

@@ -1,0 +1,44 @@
+﻿@model RealEstate.ViewModels.PropertyEditViewModel
+
+<div class="debug-panel">
+    <div class="ui-growl ui-widget">
+        <div class="ui-growl-item-container ui-state-highlight ui-corner-all ui-shadow">
+            <div class="ui-growl-item">
+                <div style="display: none;" class="ui-growl-icon-close ui-icon ui-icon-closethick"></div>
+                <span class="ui-growl-image ui-growl-image-info"></span>
+                <div class="ui-growl-message">
+                    <div>DT HQH: @Html.DisplayFor(m => m.DebugAreaLegal, "Area", new { Width = Model.DebugFrontWidth, Length = Model.DebugLength, BackWidth = Model.DebugBackWidth })</div>
+                    <div>@Html.Raw(String.Format("{0:DT chuẩn: #,0.##m<sup>2</sup>; ; }", Model.DebugAreaStandard))</div>
+                    <div>@Html.Raw(String.Format("{0:DT vượt chuẩn: #,0.##m<sup>2</sup>; ; }", Model.DebugAreaExcess))</div>
+                    <div>--</div>
+                    <div>@Html.Raw(String.Format("{0:DT LGĐB: #,0.##m<sup>2</sup>; ; }", Model.DebugAreaIlegalRecognized))</div>
+                    <div>@Html.Raw(String.Format("{0:DT LGKĐB: #,0.##m<sup>2</sup>; ; }", Model.DebugAreaIlegalNotRecognized))</div>
+                    <div>@Html.Raw(String.Format("{0:DT ngang: #,0.##m<sup>2</sup>; ; }", Model.DebugAreaWidth))</div>
+                    <div>--</div>
+                    <div>@Html.Raw(String.Format("{0:HS ngang: #,0.##; ; }", Model.DebugWidthCoeff))</div>
+                    <div>@Html.Raw(String.Format("{0:HS dài: #,0.##; ; }", Model.DebugLengthCoeff))</div>
+                    <div>@Html.Raw(String.Format("{0:HS hẻm: #,0.##; ; }", Model.DebugAlleyCoeff))</div>
+                    <div>@if (!string.IsNullOrEmpty(Model.DebugAlleyUnitPrice))
+                            {@("ĐG các cấp hẻm: " + Model.DebugAlleyUnitPrice)}</div>
+                    <div>--</div>
+                    <div>@Html.Raw(String.Format("{0:Đơn giá MT rao bán: #,0.### Tỷ / m<sup>2</sup>;N/A;N/A}", Model.DebugUnitPrice))</div>
+                    <div>@Html.Raw(String.Format("{0:Giá nhà định giá: #,0.### Tỷ;N/A;N/A}", Model.DebugPriceHouseEstimated))</div>
+                    <div>@Html.Raw(String.Format("{0:Giá đất rao bán: #,0.### Tỷ;N/A;N/A}", Model.DebugPriceLandProposed))</div>
+                    <div>--</div>
+                    <div>@Html.Raw(String.Format("{0:Giá đất định giá: #,0.### Tỷ;N/A;N/A}", Model.DebugPriceLandEstimated))</div>
+                    <div>@Html.Raw(String.Format("{0:Đơn giá MT dùng ĐG: #,0.### Tỷ / m<sup>2</sup>;N/A;N/A}", Model.DebugUnitPriceEstimate))</div>
+                    <div>--</div>
+                    <div class="@Model.FlagCssClass">
+                        @Html.Raw(String.Format("{0:Định giá BĐS: <strong>#,0.### Tỷ</strong>;N/A;N/A}", Model.PriceEstimatedInVND))
+                        @String.Format("{0:(+#,0.##\\%);(-#,0.##\\%);}", Model.DebugPriceChangedInPercent)
+                    </div>
+                    <div>Đặc điểm tốt / xấu: @String.Format("{0:#,0.##\\%;-#,0.##\\%;}", Model.DebugPercent)</div>
+                    <div>@Model.DebugPercentMsg</div>
+                    <div>--</div>
+                    <div>@Html.Raw(Model.DebugEstimationMsg)</div>
+                </div>
+                <div style="clear: both;"></div>
+            </div>
+        </div>
+    </div>
+</div>

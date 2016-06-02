@@ -1,0 +1,97 @@
+﻿@model RealEstate.FrontEnd.ViewModels.CommentsIndexViewModel
+<fieldset>
+    <table class="items" summary="@T("This is a table of the comments in your application")">
+        <colgroup>
+            <col id="Col1" />
+            <col id="Col2" />
+            <col id="Col3" />
+            <col id="Col4" />
+            <col id="Col5" />
+            <col id="Col6" />
+        </colgroup>
+        <thead>
+            <tr>
+                <th scope="col">@T("Author")</th>
+                <th scope="col">@T("Comment")</th>
+                <th scope="col">@T("Actions")</th>
+            </tr>
+        </thead>
+        <tbody id="tbody_comment">
+            @{var commentIndex = 0;}
+            @foreach (var commentEntry in Model.Comments) {
+                var commentClass = "";
+                if ( commentEntry.Comment.UserName == "") {
+                    commentClass = "anonymous";
+                }
+                <tr itemscope="itemscope" itemid="@Model.Comments[commentIndex].Comment.Id" itemtype="http://orchardproject.net/data/Comment" class="@commentClass">
+                    <td>
+                    <div>@commentEntry.Comment.Author</div>
+                        @if (HasText(commentEntry.Comment.UserName) && commentEntry.Comment.Author != commentEntry.Comment.UserName) {
+                            <div class="authenticated-commenter-id">@commentEntry.Comment.UserName</div>
+                        }
+                    </td>
+                    <td>
+                        <p class="commentbody">
+                            @if (commentEntry.Comment.CommentText != null) {
+                                if (commentEntry.Comment.CommentText.Length <= 500)
+                                {
+                                    @Html.Raw(commentEntry.Comment.CommentText)
+                                }
+                                else
+                                {
+                                    @Html.Raw(commentEntry.Comment.CommentText.Substring(0, 500))
+                                }
+                            }
+                            else {
+                                @T("[Empty]")
+                            }
+                        </p>
+                    </td>
+                    <td>
+                        <div>
+                            <a href="#commenter" class="edit_comment">@T("Edit")</a> |
+                            <a href="javascript:;" class="del_comment">@T("Delete")</a>
+                        </div>
+                    </td>
+                </tr>
+                commentIndex = commentIndex + 1;
+            } 
+        </tbody>
+    </table>
+    @Display(Model.Pager)
+</fieldset>
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".del_comment").click(function() {
+                var div = $(this).closest('tr');
+                if (confirm("Bạn có muốn xoá bình luận này không?")) {
+                    $.ajax({
+                        type: "post",
+                        url: "@Url.Action("DeleteComment", "PropertySearch", new {area = "RealEstate.FrontEnd"})",
+                        data: {
+                            Id: div.attr("itemid"),
+                            __RequestVerificationToken: antiForgeryToken
+                        },
+                        success: function(results) {
+                            if (results.success) {
+                                div.fadeOut().remove();
+                            }
+                        },
+                        error: function(request, status, error) {
+                            alert('Có lỗi xảy ra');
+                        }
+                    });
+                }
+                return false;
+            });
+
+            $(".edit_comment").click(function() {
+                var div = $(this).closest('tr');
+                $("#comment-text").val(div.find("p.commentbody").html().trim());
+                $("#edit_comment_id").val(div.attr("itemid"));
+            });
+        });
+    </script>
+}

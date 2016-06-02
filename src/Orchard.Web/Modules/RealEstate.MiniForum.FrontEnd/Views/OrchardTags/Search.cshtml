@@ -1,0 +1,92 @@
+﻿@model RealEstateForum.Service.ViewModels.OrchardTagsViewModel
+@using RealEstate.Helpers;
+
+@{ 
+    Html.AddTitleParts(T("dinhgianhadat.vn").ToString()); 
+    Html.AddTitleParts(T("Tagged: {0}", Model.TagName).ToString());
+    SetMeta("keywords", Model.TagName);
+    SetMeta("description", "dinh gia nha dat Tagged: " + Model.TagName);
+}
+@using (Script.Foot())
+{
+    <script>
+        $(function () {
+            $('.marquee-title').html('Tagged: ' + '@Model.TagName');
+        });
+    </script>
+}
+<div class="alert alert-info">
+    <h2 class="page-title">@T("Tagged: <span>{0}</span>", Model.TagName)</h2>
+</div>
+
+    <article>
+        <header>
+            <div class="header-wrapper">
+                <div class="wrapper-left" style="width:45%">
+                </div>
+                <div class="wrapper-center" style="text-align:center; width:20%"><h2>Tìm được @Model.ListPropertyPart.TotalCount bất động sản</h2></div>
+            </div>
+        </header>
+        <article>
+            <div class="tab-content">
+                <div id="ViewNew-ad-selling" class="active">
+                    <div id="table-responsive">
+                        @Html.Partial("ListPropertiesTags", Model.ListPropertyPart)
+                    </div>
+                </div>
+            </div>
+        </article>
+    </article>
+
+<div class="block-ellipsis-2"></div>
+<article class="content-tags-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="wrapper-left" style="width:45%">
+            </div>
+            <div class="wrapper-center" style="text-align:center; width:20%"><h2>Tìm được @Model.TopicForum.TotalCount bài viết</h2></div>
+        </div>
+    </header>
+    <article>
+     <div class="body-wrapper">
+         @{
+             var listPost = Model.TopicForum.TopicInfo.ListPostItem;
+         }
+     @if (listPost.Count() > 0)
+     {
+         foreach (var item in listPost)
+         {
+             var urlUserProfile = (WorkContext.CurrentUser != null && item.UserInfo.Id == WorkContext.CurrentUser.Id) ?
+                                    Url.Action("MyPage", "PersonalPage", new { Area = "RealEstate.MiniForum.FrontEnd" })
+                                    :
+                                    Url.Action("FriendPage", "PersonalPage", new { Area = "RealEstate.MiniForum.FrontEnd", UserName = item.UserInfo.UserName.ToSlug(), UserId = item.UserInfo.Id });
+             
+            <div class="search-wrapper">
+                <div class="search-icon">
+                    <img src="/Themes/TheRealEstate/Styles/images/bai-viet.png" class="img-polaroid img-width" alt="image" title="Bài viết"/>
+                </div>
+                <div class="search-body">
+                   <div class="search-title-wrapper">
+                       <h2>
+                           <a href="@Url.Action("PostDetail", "PostForumFrontEnd", new { area = "RealEstate.MiniForum.FrontEnd", Id = item.Id, title = item.DisplayForNameForUrl, ThreadShortName = item.ThreadShortName, TopicShortName = item.TopicShortName })" title="@item.Title"><strong>@item.Title</strong></a>
+                        </h2>
+                       <div><span class="search-uname">Được viết bới </span><a href="@urlUserProfile" target="_blank">@item.UserInfo.UserName</a></div>
+                   </div>
+                   <div class="search-content-wrapper">
+                      @Html.Raw(item.Content.Count() >= 200 ? item.Content.StripHtml().Substring(0, 200) : item.Content.StripHtml())<span>...</span>
+                  </div>
+               </div>
+            </div>
+         }
+     }
+     else
+     {
+          <div class="search-wrapper">
+             <div class="alert alert-success">Không có bài viết nào được tìm thấy.</div>
+          </div>
+     }
+     </div>
+    
+        @Display(Model.TopicForum.Pager)
+    </article>
+</article>

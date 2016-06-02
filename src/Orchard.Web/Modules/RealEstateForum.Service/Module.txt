@@ -1,0 +1,10 @@
+﻿Name: RealEstateForum.Service
+AntiForgery: enabled
+Author: The Orchard Team
+Website: http://orchardproject.net
+Version: 1.0
+OrchardVersion: 1.0
+Description: RealEstate Forum Service.
+Features:
+    RealEstateForum.Service:
+        Description: RealEstateForum.Service.

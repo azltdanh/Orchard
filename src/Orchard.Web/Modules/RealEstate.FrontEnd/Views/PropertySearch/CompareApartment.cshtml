@@ -1,0 +1,19 @@
+﻿@using RealEstate.ViewModels
+@model LocationApartmentDisplayOptions
+@{
+    Style.Require("BootstrapCombobox");
+    Script.Require("BootstrapCombobox");
+
+    Script.Require("jqueryValidate");
+
+    if (!string.IsNullOrEmpty(Model.MetaTitle))
+    {
+        Layout.Title = Html.Raw(Model.MetaTitle);
+        SetMeta("description", Model.MetaDescription);
+        SetMeta("keywords", Model.MetaKeywords);
+    }
+}
+
+@Html.Partial("CompareApartment.Form", Model)
+
+    

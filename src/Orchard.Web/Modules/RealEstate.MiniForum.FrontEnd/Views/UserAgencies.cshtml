@@ -1,0 +1,76 @@
+﻿@model PropertyDisplayIndexOptions
+@using RealEstate.ViewModels;
+@using RealEstate.Models;
+@using RealEstate.Helpers;
+@using Orchard.Users.Models;
+
+
+@if (Model.UserUpdateOptions != null)
+{
+    foreach (var item in Model.UserUpdateOptions)
+    {
+        <li>
+            @{
+        var personPage = (WorkContext.CurrentUser != null && WorkContext.CurrentUser.Id == item.UserUpdateProfilePart.Id) ?
+                Url.Action("MyPage", "PersonalPage", new { area = "RealEstate.MiniForum.FrontEnd" })
+                : Url.Action("FriendPage", "PersonalPage", new { area = "RealEstate.MiniForum.FrontEnd", UserId = item.UserUpdateProfilePart.Id, UserName = item.UserPart.UserName.ToSlug() });
+        var displayName = item.UserUpdateProfilePart.DisplayName == null ? item.UserPart.UserName : item.UserUpdateProfilePart.DisplayName;
+            }
+
+            <div class="media">
+                <div class="pull-left block-image-small">
+                    <a href="@personPage" class="img-thumbnail block-image-small">
+                        @if (!string.IsNullOrEmpty(item.UserUpdateProfilePart.Avatar))
+                        {
+                            <img class="img-agency" src="@item.UserUpdateProfilePart.Avatar" alt="@item.UserPart.UserName">
+                        }
+                        else
+                        {
+                            <i class="img-user-no-avatar"></i>
+                        }
+                    </a>
+                </div>
+                <div class="media-body">
+                    <a href="@personPage">
+                        <span class="text-ellipsis name-agency">
+                            @displayName
+                        </span>
+                    </a>
+
+                    <div class="phone-agency">
+                        <strong>
+                            @if (!string.IsNullOrEmpty(item.UserUpdateProfilePart.Phone))
+                                {
+                                @item.UserUpdateProfilePart.Phone
+                                }
+                        </strong>
+                    </div>
+                    <div class="nick-agency">
+                        <strong>
+                            @if (!string.IsNullOrEmpty(item.UserUpdateProfilePart.NickName))
+                                {
+                                @item.UserUpdateProfilePart.NickName
+                                }
+                        </strong>
+                    </div>
+
+                    <div class="margin-bottom-5">
+                        <a href="@personPage">
+                            <span class="text-danger content-agency">
+                                @if (!string.IsNullOrEmpty(item.UserLocation.AreaAgencies))
+                                {
+                                    @item.UserLocation.AreaAgencies
+                                }
+                                else
+                                {
+                                    @item.UserUpdateProfilePart.AreaAgencies
+                                }
+                            </span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </li>
+    }
+}

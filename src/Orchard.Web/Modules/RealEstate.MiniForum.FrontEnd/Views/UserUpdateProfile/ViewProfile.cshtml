@@ -1,0 +1,138 @@
+﻿@model RealEstateForum.Service.ViewModels.UserUpdateProfileOptions
+@{
+    Layout.Title = T("Thông tin thành viên").ToString();
+}
+@using (Script.Foot())
+{
+    Script.Require("realEstate.MiniForum.FrontEnd");
+    //Script.Require("JsPageUser");
+}
+<input id="userId" type="hidden" value="@ViewBag.UserId" />
+<input id="userNameSelect" type="hidden" value="@Model.UserPart.UserName" />
+
+<article class="widget-content">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left">
+                    <div class="header-title-triangle"></div>
+                </div>
+                <h2 class="header-title-text">Thông tin thành viên</h2>
+                <div class="header-title-right"></div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </header>
+
+    <article>
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title">Hình ảnh đại diện</h3>
+            </div>
+            <div class="row">
+                <label class="control-label col-lg-3 col-md-3 col-sm-3 align-right">Avatar:</label>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <img src="@Model.UserUpdateProfilePart.Avatar" alt="Avatar" class="img-thumbnail" />
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title">Thông tin cơ bản</h3>
+            </div>
+
+            <div class="row">
+                <label class="control-label col-lg-3 col-md-3 col-sm-3 align-right">Họ và tên:</label>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    @Model.UserUpdateProfilePart.LastName @Model.UserUpdateProfilePart.FirstName
+                </div>
+            </div>
+
+            @*@if (!string.IsNullOrEmpty(Model.UserUpdateProfilePart.Gender))
+            {
+                <div class="row">
+                    <label class="control-label col-lg-3 col-md-3 col-sm-3 align-right">Giới tính:</label>
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        @if (Model.UserUpdateProfilePart.Gender.ToString() == "Male")
+                        {<span>Nam</span> }
+                        else
+                        {<span>Nữ</span> }
+                    </div>
+                </div>
+            }*@
+            @if (!string.IsNullOrEmpty(Model.UserUpdateProfilePart.Address) && Model.UserUpdateProfilePart.PublishAddress.ToString() == "Publish")
+            {
+                <div class="row">
+                    <label class="control-label col-lg-3 col-md-3 col-sm-3 align-right">Địa chỉ:</label>
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        @Model.UserUpdateProfilePart.Address
+                    </div>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.UserUpdateProfilePart.Email))
+            {
+                <div class="row">
+                    <label class="control-label col-lg-3 col-md-3 col-sm-3 align-right">Email:</label>
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        @Model.UserUpdateProfilePart.Email
+                    </div>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.UserUpdateProfilePart.Phone) && Model.UserUpdateProfilePart.PublishPhone.ToString() == "Publish")
+            {
+                <div class="row">
+                    <label class="control-label col-lg-3 col-md-3 col-sm-3 align-right">Số điện thoại:</label>
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        @Model.UserUpdateProfilePart.Phone
+                    </div>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(Model.UserUpdateProfilePart.Level) && Model.UserUpdateProfilePart.PublishLevel.ToString() == "Publish")
+            {
+                <div class="row">
+                    <label class="control-label col-lg-3 col-md-3 col-sm-3 align-right">Trình độ:</label>
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        @Model.UserUpdateProfilePart.Level
+                    </div>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.UserUpdateProfilePart.Job) && Model.UserUpdateProfilePart.PublishJob.ToString() == "Publish")
+            {
+                <div class="row">
+                    <label class="control-label col-lg-3 col-md-3 col-sm-3 align-right">Nghề nghiệp:</label>
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        @Model.UserUpdateProfilePart.Job
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title">Sở thích và Chữ ký các nhân</h3>
+            </div>
+            <div class="row">
+                <label class="control-label col-lg-3 col-md-3 col-sm-3 align-right">Sở thích:</label>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    @if (!string.IsNullOrEmpty(Model.UserUpdateProfilePart.Note))
+                    { @Model.UserUpdateProfilePart.Note }
+                    else
+                    { <text>...</text>}
+                </div>
+            </div>
+            <div class="row">
+                <label class="control-label col-lg-3 col-md-3 col-sm-3 align-right">Chữ ký:</label>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    @if (!string.IsNullOrEmpty(Model.UserUpdateProfilePart.Signature) && Model.UserUpdateProfilePart.IsSignature == true)
+                    { @Html.Raw(Model.UserUpdateProfilePart.Signature) }
+                    else
+                    { <text>...</text>}
+                </div>
+            </div>
+        </div>
+    </article>
+</article>

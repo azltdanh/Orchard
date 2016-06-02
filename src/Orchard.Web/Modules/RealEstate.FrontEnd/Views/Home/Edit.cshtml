@@ -1,0 +1,59 @@
+﻿@{ Layout.Title = T("Chỉnh sửa tin rao").ToString(); }
+
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Post, new { enctype = "multipart/form-data", Class = "formvalidate", id="formUpdateId" }))
+{ 
+    @*@Html.ValidationSummary()*@
+    if (ViewData.ModelState.Any(x => x.Value.Errors.Any()))
+    {
+        <div class="alert alert-warning">
+            <a class="close" data-dismiss="alert">&times;</a>
+            @Html.ValidationSummary()
+        </div>
+    }
+    // Model is a Shape, calling Display() so that it is rendered using the most specific template for its Shape type
+    @Display(Model)
+    <article class="content-item">
+        <article>
+            <div class="row">
+                <div class="col-md-6 col-xs-12 check-share-face">
+                </div>
+                <div class="col-md-6 col-xs-12">
+                    <input type="hidden" name="submit.Captcha" id="submitCaptcha" />
+                    @*<button value="submit.Update" name="submit.Update" type="button" id="ButtonUpdate" class="btn btn-warning">Đăng tin</button>*@
+                    <button value="submit.Update" name="submit.Update" type="submit" id="submit.Update" class="btn btn-success pull-right">Đăng tin</button>
+                    <button value="submit.Save" name="submit.Save" type="submit" id="submit.Save" class="btn btn-warning pull-right cancel right-10">Lưu tạm</button>
+                    <button value="submit.SaveContinueRequirement" name="submit.SaveContinueRequirement" type="submit" id="submit.SaveContinueRequirement" class="btn btn-warning pull-right cancel right-10">Lưu và Chọn BĐS muốn nhận</button>
+                </div>
+            </div>
+        </article>
+    </article>
+}
+<!-- Modal -->
+<div class="modal fade modal-large" id="dialogAdsPrice" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title">Bảng giá quảng cáo</h3>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("Loading")
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        $('#dialogAdsPrice').on('show.bs.modal', function() {
+            $(this).find('.modal-body').load('@Url.Action("AjaxAdsPrice", "AdsPrice", new {area = "RealEstateForum.FrontEnd"})')
+        })
+        $("#AdsTypeCssClass").change(function () {
+            $('button[name="submit.Save"],button[name="submit.Update"]').toggle($(this).val() != 'ad-exchange');
+            $('button[name="submit.SaveContinueRequirement"]').toggle($(this).val() == 'ad-exchange');
+        }).change();
+    </script>
+}

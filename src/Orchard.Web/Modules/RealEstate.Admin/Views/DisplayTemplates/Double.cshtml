@@ -1,0 +1,23 @@
+@model dynamic
+@if (Model != null)
+{
+    double value = (double)Model;
+    string pm = ViewBag.PaymentMethodCssClass;
+    switch(pm)
+    {
+        case "pm-vnd-b":
+            break;
+        
+        case "pm-vnd-m":
+            value = value * 1000;
+            break;
+        
+        case "pm-vnd-k":
+            value = value * 1000000;
+            break;
+            
+        default:
+            break;
+    }
+    @String.Format("{0:#,0.##;N/A;N/A}", value)
+}

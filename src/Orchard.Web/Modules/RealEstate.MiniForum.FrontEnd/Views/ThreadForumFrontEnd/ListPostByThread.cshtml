@@ -1,0 +1,37 @@
+﻿@using RealEstateForum.Service.ViewModels
+@model ThreadForumFrontEndViewModel
+@{
+    if (Model.Metas != null && !string.IsNullOrEmpty(Model.Metas["Title"]))
+    {
+        SetMeta("keywords", Model.Metas["Keywords"]);
+        SetMeta("Description", Model.Metas["Description"]);
+        Layout.Title = Model.Metas["Title"];
+    }
+    var ListTopics = Model.ListTopics;
+    var CurrentUser = WorkContext.CurrentUser;
+}
+
+
+ @if (Model.ThreadInfo != null)
+    {
+        <article class="content-item content-item-forum-category">
+            <header>
+                <div class="header-wrapper">
+                    <div class="header-title">
+                        <div class="header-title-left">
+                            <div class="header-title-triangle"></div>
+                        </div>
+                        <h2 class="header-title-text">@Model.ThreadInfo.Name</h2>
+                        <div class="header-title-right"></div>
+                    </div>
+                    <div class="header-msg text-right">
+                        @if (CurrentUser != null)
+                        {@*<a rel="nofollow" class="text-success text-underline" href="@Url.Action("Create", "PostForumFrontEnd", new { Area = "RealEstate.MiniForum.FrontEnd", ThreadId = Model.ThreadInfo.Id })"><i class="icon_silk_layout_add"></i>Đăng bài mới</a>*@}
+                    </div>
+                </div>
+            </header>
+            <article>
+                @Html.Raw(Model.ContentFromFile)
+            </article>
+        </article>
+    } 

@@ -1,0 +1,72 @@
+﻿@using RealEstateForum.Service.ViewModels;
+@model HostNameIndexViewModel
+@{
+    Layout.Title = T("Danh sách các Host Name").ToString();
+}
+
+@using (Script.Head())
+{
+<script type="text/javascript">
+
+    //<![CDATA[
+    var antiForgeryToken = '@Html.AntiForgeryTokenValueOrchard()';
+    //]]>
+</script>
+}
+@using (Html.BeginFormAntiForgeryPost())
+{ 
+<div class="manage">@Html.ActionLink(T("Tạo mới một HostName").ToString(), "HostNameCreate", new { returnUrl = HttpContext.Current.Request.Url }, new { @class = "button primaryAction" })</div>
+<fieldset class="bulk-actions">
+        <label for="filterResults">@T("Sort by:")</label>
+        <select id="filterResults1" name="@Html.NameOf(m => m.Options.Order)">
+            @Html.SelectOption(Model.Options.Order, HostNameOrder.Id, T("Id").ToString())
+            @Html.SelectOption(Model.Options.Order, HostNameOrder.Name, T("Name").ToString())
+            @Html.SelectOption(Model.Options.Order, HostNameOrder.ShortName, T("ShortName").ToString())
+        </select>
+        <button type="submit" name="submit.Filter" value="@T("Order")">@T("Order")</button>
+    </fieldset>
+<fieldset>
+    <table class="items">
+        <thead>
+            <tr>
+                <th scope="col">@T("ID")</th>
+                <th scope="col">@T("Name")</th>
+                <th scope="col">@T("ShortName")</th>
+                <th scope="col">@T("CssClass")</th>
+                <th scope="col">@T("SeqOrder")</th>
+                <th scope="col">@T("IsEnable")</th>
+                <th scope="col" style="padding-left:20px; padding-right:20px;">@T("Action")</th>
+            </tr>
+        </thead>
+        @{var index = 0;}
+        @foreach (var entry in Model.HostNames)
+            { 
+            <tr>
+                <td>
+                @entry.HostName.Id
+                </td>
+                    <td>
+                @entry.HostName.Name
+                </td>
+                    <td>
+                @entry.HostName.ShortName
+                </td>
+                    <td>
+                @entry.HostName.CssClass
+                </td>
+                    <td>
+                @entry.HostName.SeqOrder
+                </td>
+                    <td>
+                @entry.HostName.IsEnabled
+                </td>
+                <td>
+                    @Html.ActionLink(T("Edit").ToString(), "HostNameEdit", new { entry.HostName.Id, returnUrl = HttpContext.Current.Request.Url }) |
+                    @Html.ActionLink(T("Delete").ToString(), "HostNameDelete", new { entry.HostName.Id, returnUrl = HttpContext.Current.Request.Url })
+                </td>
+            </tr>
+                index++;
+            }
+    </table>
+</fieldset>
+}

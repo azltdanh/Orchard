@@ -1,0 +1,33 @@
+﻿@model RealEstate.ViewModels.CustomerCalledByUsers
+@{
+    var item = Model.Customer;
+}
+    <fieldset>
+        <table class="items fixed-table">
+            <thead>
+                <tr>
+                    <th scope="col" class="w200">@T("Nhân viên")</th>
+                    <th scope="col">@T("Số lần gọi")</th>
+                </tr>
+            </thead>
+            <tbody>                
+            @foreach (var entry in Model.CalledByUsers)
+            {
+                <tr>
+                    <td>@entry.User.UserName</td>
+                    <td>
+                        @entry.CallLogs.Count lần
+                        <br />
+                        <div class="hidden">
+                        @foreach (var date in entry.CallLogs)
+                        {
+                            <div>- @Html.DisplayFor(model => date, "DateTime")</div>
+                        }
+                        </div>
+                        <a href="#" onclick="$(this).prev('.hidden').removeClass('hidden'); $(this).remove(); return false;">chi tiết...</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </fieldset>

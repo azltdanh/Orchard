@@ -1,0 +1,27 @@
+﻿@model RealEstate.ViewModels.CustomerVisitedPropertiesViewModel
+ 
+<fieldset>
+    <table class="items fixed-table">
+        <thead>
+            <tr>
+                <th scope="col">@T("Tỉnh / Thành Phố")</th>
+                <th scope="col">@T("Quận / Huyện")</th>
+                <th scope="col">@T("Phường / Xã")</th>
+                <th scope="col">@T("Đường / Phố")</th>
+                <th scope="col">@T("BĐS đã xem")</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.VisitedStreets)
+        {
+            <tr>
+                <td>@item.Province.Name</td>
+                <td>@item.District.Name</td>
+                <td>@item.Ward.Name</td>
+                <td>@item.Street.Name</td>
+                <td>@item.Count</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</fieldset>

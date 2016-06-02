@@ -1,0 +1,112 @@
+﻿@using RealEstate.Models;
+@{
+    IEnumerable<AdsTypePartRecord> listAdsTypes = Model.AdsTypes;
+    IEnumerable<PropertyTypeGroupPartRecord> listTypeGroups = Model.TypeGroups;
+    var CountSellingHouse = (int)Model.CountSellingHouse;
+    var CountSellingApartment = (int)Model.CountSellingApartment;
+    var CountSellingLand = (int)Model.CountSellingLand;
+    var CountLeasingHouse = (int)Model.CountLeasingHouse;
+    var CountLeasingApartment = (int)Model.CountLeasingApartment;
+    var CountLeasingLand = (int)Model.CountLeasingLand;
+    //var Count = CountSellingHouse + CountSellingApartment + CountSellingLand + CountLeasingHouse + CountLeasingApartment + CountLeasingLand;
+    var CountBuying = (int)Model.CountBuying;
+    var CountRenting = (int)Model.CountRenting;
+}
+
+@*<strong>BĐS đang giao dịch</strong>*@
+<ul class="list-unstyled">
+    @foreach (var typeGroup in listTypeGroups)
+    {
+        foreach (var adsType in listAdsTypes)
+        {
+            if (adsType.CssClass == "ad-selling" || adsType.CssClass == "ad-leasing")
+            {
+                if (adsType.CssClass == "ad-selling" && typeGroup.CssClass == "gp-house")
+                {
+                    <li>
+                        <a href="@Url.Action("ResultFilter", "PropertySearch", new { area = "RealEstate.FrontEnd", AdsTypeCssClass = adsType.CssClass, TypeGroupCssClass = typeGroup.CssClass})">
+                            @adsType.ShortName @typeGroup.ShortName <small class="text-danger">(@CountSellingHouse)</small>
+                        </a>
+                    </li>
+                }
+
+                if (adsType.CssClass == "ad-selling" && typeGroup.CssClass == "gp-apartment")
+                {
+                    <li>
+                        <a href="@Url.Action("ResultFilter", "PropertySearch", new { area = "RealEstate.FrontEnd", AdsTypeCssClass = adsType.CssClass, TypeGroupCssClass = typeGroup.CssClass })">
+                            @adsType.ShortName @typeGroup.ShortName <small class="text-danger">(@CountSellingApartment)</small>
+                        </a>
+                    </li>
+                }
+                if (adsType.CssClass == "ad-selling" && typeGroup.CssClass == "gp-land")
+                {
+                    <li>
+                        <a href="@Url.Action("ResultFilter", "PropertySearch", new { area = "RealEstate.FrontEnd", AdsTypeCssClass = adsType.CssClass, TypeGroupCssClass = typeGroup.CssClass})">
+                            @adsType.ShortName @typeGroup.ShortName <small class="text-danger">(@CountSellingLand)</small>
+                        </a>
+                    </li>
+                }
+                if (adsType.CssClass == "ad-leasing" && typeGroup.CssClass == "gp-house")
+                {
+                    <li>
+                        <a href="@Url.Action("ResultFilter", "PropertySearch", new { area = "RealEstate.FrontEnd", AdsTypeCssClass = adsType.CssClass, TypeGroupCssClass = typeGroup.CssClass})">
+                            @adsType.ShortName @typeGroup.ShortName <small class="text-danger">(@CountLeasingHouse)</small>
+                        </a>
+                    </li>
+                }
+                if (adsType.CssClass == "ad-leasing" && typeGroup.CssClass == "gp-apartment")
+                {
+                    <li>
+                        <a href="@Url.Action("ResultFilter", "PropertySearch", new { area = "RealEstate.FrontEnd", AdsTypeCssClass = adsType.CssClass, TypeGroupCssClass = typeGroup.CssClass })">
+                            @adsType.ShortName @typeGroup.ShortName <small class="text-danger">(@CountLeasingApartment)</small>
+                        </a>
+                    </li>
+                }
+
+                if (adsType.CssClass == "ad-leasing" && typeGroup.CssClass == "gp-land")
+                {
+                    <li>
+                        <a href="@Url.Action("ResultFilter", "PropertySearch", new { area = "RealEstate.FrontEnd", AdsTypeCssClass = adsType.CssClass, TypeGroupCssClass = typeGroup.CssClass })">
+                            @adsType.ShortName @typeGroup.ShortName <small class="text-danger">(@CountLeasingLand)</small>
+                        </a>
+                    </li>
+                }
+            }
+        }
+    }
+    @foreach (var adsType in listAdsTypes)
+    {
+        if (adsType.CssClass == "ad-buying")
+        {
+            <li>
+                <a href="@Url.Action("ResultFilterRequirement", "PropertySearch", new { area = "RealEstate.FrontEnd", AdsTypeCssClass = adsType.CssClass })">
+                    @adsType.Name <small class="text-danger">(@CountBuying)</small>
+                </a>
+            </li>
+        }
+        if (adsType.CssClass == "ad-renting")
+        {
+            <li>
+                <a href="@Url.Action("ResultFilterRequirement", "PropertySearch", new { area = "RealEstate.FrontEnd", AdsTypeCssClass = adsType.CssClass })">
+                    @adsType.Name <small class="text-danger">(@CountRenting)</small>
+                </a>
+            </li>
+        }
+    }
+</ul>
+
+@using (Html.BeginFormAntiForgeryPost(Url.Action("ResultFilter", "PropertySearch", new { area = "RealEstate.FrontEnd" }), FormMethod.Post))
+{
+    <div class="input-group">
+        <input id="PropertyId" name="PropertyId" type="text" class="form-control" placeholder="Nhập mã tin cần tìm" />
+        <span class="input-group-btn">
+            <button type="submit" class="btn btn-warning">
+                Go!
+            </button>
+        </span>
+    </div>
+    @*<div class="gsc-control g-search input-group">
+            @Html.Partial("Searching")
+        </div>*@
+}
+

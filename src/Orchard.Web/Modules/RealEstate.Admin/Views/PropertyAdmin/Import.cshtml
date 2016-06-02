@@ -1,0 +1,35 @@
+﻿@model IEnumerable<ImportActionEntry>
+@using RealEstate.ViewModels;           
+@{
+    Style.Require("jQueryUI_Orchard");
+    Script.Require("jQueryUI");
+
+
+    Script.Require("Cookie");
+    Script.Require("Common");
+    Layout.Title = T("Import").ToString();
+}
+    
+@using (Html.BeginFormAntiForgeryPost())
+{
+    List<string> groups = Model.Select(a => a.Group).Distinct().ToList();
+    <div class="left">
+        <fieldset class="bulk-actions">
+            <label for="ImportAction" class="filter-label">@T("Tác vụ:")</label>
+            <select id="ImportAction" name="ImportAction">
+                <option value="">-- Vui lòng chọn --</option>
+                @foreach (string group in groups)
+                {
+                <optgroup label="@group">
+                    @foreach (ImportActionEntry entry in Model.Where(a => a.Group == group).ToList())
+                    {
+                    <option @(entry.IsEnable ? "" : "disabled='disabled'") value="@entry.Value">@entry.Name</option>
+                    }
+                </optgroup>
+                }                
+            </select>
+            <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+        </fieldset>
+    </div>
+    
+}

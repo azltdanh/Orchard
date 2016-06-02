@@ -1,0 +1,28 @@
+﻿@model RealEstate.ViewModels.PropertyDisplayIndexViewModel
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left">
+                    <div class="header-title-triangle"></div>
+                </div>
+                <h2 class="header-title-text">Những BĐS cùng khu vực với BĐS bạn đang xem</h2>
+                <div class="header-title-right"></div>
+            </div>
+            <div class="header-msg">
+                <p class="text-info"><strong>@Model.TotalCount Kết quả</strong></p>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="pager-top">
+        </div>
+        @Html.Partial("ListProperties", Model.Properties)
+        <div class="pager-bottom">
+            @Display(Model.Pager)
+        </div>
+        <div class="clearfix"></div>
+    </article>
+    <footer>
+    </footer>
+</article>

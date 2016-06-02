@@ -1,0 +1,65 @@
+﻿@model RealEstate.ViewModels.PropertyEditViewModel
+@using RealEstate.ViewModels;
+
+<!-- Thông tin liên hệ -->
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-center header-bg-green">
+                <div class="header-left header-bg-green">
+                    <div class="header-left-triangle"></div>
+                </div>
+                <h1>Thông tin liên hệ</h1>
+                <div class="header-right"></div>
+            </div>
+            <div class="header-msg">
+                <p class="text-success">Các mục có dấu (<span class="text-error">*</span>) là bắt buộc nhập</p>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="form-horizontal pull-left">
+            <!-- ContactPhone -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Nhập tên + điện thoại:")</label>
+                <div class="controls">
+                    @if (Model.EnableEditContactPhone || String.IsNullOrEmpty(Model.ContactPhone))
+                    {
+                        @Html.TextBoxFor(m => m.ContactPhone, new { maxlength = 250, @class = "text text-box-medium" })
+                        @Html.ValidationMessageFor(m => m.ContactPhone, "*")
+                        <label>@Html.CheckBoxFor(m => m.PublishContact) @T("Cho phép hiện Liên hệ")</label>
+                    }
+                    else
+                    {
+                        @Html.Password("FakeContactPhone", "password", new { @class = "text text-box-medium", disabled = "disabled" })
+                    }
+                </div>
+            </div>
+            <!-- ContactEmail -->
+            <div class="control-group">
+                <label class="control-label">@T("Nhập Email liên hệ:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.ContactEmail, new { maxlength = 250, @class = "text text-box-medium" })
+                </div>
+            </div>
+            <!-- ContactAddress -->
+            <div class="control-group" style="display:none;">
+                <label class="control-label">@T("Nhập Địa chỉ liên hệ:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.ContactAddress, new { maxlength = 250, @class = "text text-box-medium" })
+                </div>
+            </div>
+            <!--  -->
+            <div class="control-group">
+                <div class="controls">
+                    <label>@Html.CheckBoxFor(m => m.IsOwner) @T("Tin chính chủ")</label>
+                    <label>@Html.CheckBoxFor(m => m.NoBroker) @T("Miễn trung gian")</label>
+                    <label>@Html.CheckBoxFor(m => m.IsAuction) @T("BĐS phát mãi")</label>
+                    @*<label>@Html.CheckBoxFor(m => m.IsHighlights) @T("BĐS nổi bật")</label>*@
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </article>
+    <footer></footer>
+</article>

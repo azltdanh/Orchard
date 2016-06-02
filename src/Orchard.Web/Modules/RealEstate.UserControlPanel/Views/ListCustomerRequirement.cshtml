@@ -1,0 +1,107 @@
+﻿@model RealEstate.ViewModels.CustomerIndexViewModel
+@using RealEstate.Models;
+@using RealEstate.ViewModels;
+@using RealEstate.Services;
+@using RealEstate.Helpers;
+@{
+    //Style.Require("jQueryUI_Orchard");
+    //Script.Require("jQueryUI");
+    Style.Require("TipTip");
+    Script.Require("TipTip");
+
+    Script.Require("Floatheader");
+    Script.Require("Cookie");
+    Script.Require("Combobox");
+    Script.Require("Dropdownchecklist");
+    Script.Require("Common");
+    
+}
+@if (Model.Customers.Count > 0){
+    <div>
+        <table id="tblRequirements" class="table table-bordered table-condensed table-striped">
+            <thead>
+                <tr>
+                    <th style="width: 30%;">@T("Tên người yêu cầu")</th>
+                    <th style="width: 70%;">@T("Mục đích & Yêu cầu")</th>
+                </tr>
+            </thead>
+            <tbody>
+            @{var index = 0;}
+            @foreach (var entry in Model.Customers)
+            {
+                var item = entry.Customer;
+            <tr class="@(Model.Options != null && item.LastUpdatedDate < Model.Options.NeedUpdateDate ? "bg-new" : "")">
+                <td>
+                    <div>@item.ContactName</div>
+                    @if (item.ContactPhone != null)
+                    {  <div>@item.ContactPhone</div> }
+                    @if (item.ContactAddress != null)
+                    {  <div>@item.ContactAddress</div> }
+                    @if (item.ContactEmail != null)
+                    {  <div>@item.ContactEmail</div> }
+                    <div>Ngày yêu cầu: @item.LastUpdatedDate.ToString("dd/MM/yyyy")</div>
+                </td>
+                <td>
+                    @if (entry.Purposes.Count() > 0)
+                    { <div><strong>Mục đích: </strong>@string.Join(", ", entry.Purposes.Select(r => r.Name).ToArray())</div> }
+                    @if (!string.IsNullOrEmpty(item.Note))
+                    { <div><strong>Ghi chú: </strong><span class="color-note">@item.Note</span></div> }
+                    @{
+                        var groupIds = item.Requirements.Select(a => a.GroupId).Distinct().ToList();
+                        int i = 1;
+                    }
+
+                    @foreach (int groupId in groupIds)
+                    {
+                        
+                        IEnumerable<CustomerRequirementRecord> requirements = item.Requirements.Where(a => a.GroupId == groupId && a.AdsTypePartRecord.Id == Model.Options.AdsTypeId).ToList();
+                        if (requirements.Count() != 0)
+                        {
+                            <div>
+                                @Html.Partial("ViewCustomerRequirements", requirements)
+                            </div>
+                            <div>
+                                <a rel="nofollow" href="@Url.Action("EditCustomerRequirements","Home", new { area = "RealEstate.FrontEnd", groupId })" groupId="@groupId"><i class="icon_silk_page_white_edit"></i>Chỉnh Sửa</a>
+                                <a rel="nofollow" href="@Url.Action("Delete","Home", new {  area = "RealEstate.FrontEnd", groupId })" groupId="@groupId" class="icon-delete"><i class="icon_silk_bin_empty"></i>Xóa Tin</a>
+                            </div>
+                        }
+                    }
+                </td>
+            </tr>
+                    index++;
+            }
+            </tbody>
+        </table>
+    </div>
+    <footer class="link-view-more" id="pagingajax_requirement">
+        @Display(Model.Pager)
+    </footer>
+} else
+{
+    <div >Không tìm thấy tài sản nào!</div>
+}
+    <script type="text/javascript">
+        $(function () {
+
+            // Delete requirement
+            $("#tblRequirements").on('click', '.icon-delete', function () {
+                if (confirm('Bạn muốn xóa thông tin này?')) {
+                    $.ajax({
+                        type: "post",
+                        dataType: "",
+                        url: "/RealEstate.Admin/Home/AjaxDeleteGroupRequirements",
+                        data: {
+                            groupId: $(this).attr("groupId"),
+                            __RequestVerificationToken: antiForgeryToken
+                        },
+                        success: function (response) {
+                            $("a[groupId=" + response.groupId + "]").closest('tr').fadeOut();
+                        },
+                        error: function (request, status, error) {
+                        }
+                    });
+                }
+                return false;
+            });
+        });
+    </script>

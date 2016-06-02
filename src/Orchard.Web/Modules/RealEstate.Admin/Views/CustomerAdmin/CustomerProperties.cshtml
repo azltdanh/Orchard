@@ -1,0 +1,180 @@
+﻿@model RealEstate.ViewModels.CustomerEditViewModel
+@{
+    Script.Require("Floatheader");
+    Script.Require("Bootstrap");
+} 
+
+<div class="form-editor save-button">
+    Mã số @Html.TextBoxFor(m => m.PropertyId, new { Class = "text number-box" })
+
+    Ý kiến của KH 
+    @Html.DropDownListFor(m => m.FeedbackId,
+    Model.Feedbacks.Select(s => new SelectListItem
+    {
+        Selected = s.Id == Model.FeedbackId,
+        Text = s.Name,
+        Value = s.Id.ToString()
+    }), "Vui lòng chọn...",
+    new { @class = "select-box" })
+
+    Nhân viên 
+    @Html.ListBoxFor(m => m.UserIds,
+    new MultiSelectList(Model.Users.Select(a => new { a.UserName, a.Id }).ToList(), "Id", "UserName", Model.DistrictIds)
+    , new { Class = "select-box multiselect", placeholder = "-- Vui lòng chọn --" })
+
+    Ngày @Html.TextBoxFor(m => m.VisitedDate, new { Class = "text text-box" })
+    @Html.CheckBoxFor(m => m.IsWorkOverTime)
+    @Html.LabelFor(m => m.IsWorkOverTime, T("Làm ngoài giờ"))
+    
+    <button type="submit" id="submit_BulkUpdateProperties" name="submit.BulkUpdateProperties" value="@T("Mark Properties")">@T("Thêm BĐS")</button>
+</div>
+
+<div id="suggestionProperties" class="ajax-content ajax-paging" 
+    data-url="@Url.Action("SearchCustomerProperties", "CustomerAdmin", new { area = "RealEstate.Admin", customerId = Url.RequestContext.RouteData.Values["id"] })">
+    <div class="overlay-content">
+        <p><img src="@Url.Content("~/Modules/RealEstate.Admin/Styles/images/bigrotation2.gif")" alt="loading..." /> Loading...</p>
+    </div>
+</div>
+
+@*@Html.Action("SearchCustomerProperties", "CustomerAdmin", new { area = "RealEstate.Admin", customerId = Url.RequestContext.RouteData.Values["id"] })*@
+
+<script type="text/javascript">
+    $(function () {
+        
+        // RealEstate - ajax loading paging
+        $('.ajax-paging').on('click', '.pager a', function() {
+            var container = $(this).closest('.ajax-paging');
+            $('html, body').animate({ scrollTop: container.offset().top }, 500);
+            container.load($(this).attr('href'), function() {initTooltip();});
+            return false;
+        });
+
+        $('.ajax-content').each(function(){
+            $(this).load($(this).attr("data-url"), function() {
+                initTooltip();
+            });
+        });
+
+        $(".pagination .paginationRight a").each(function () {
+            $(this).attr("href", $(this).attr("href").replace("/ListProperties/", "/Edit/"));
+        });
+
+        $("#VisitedDate").datepicker({ dateFormat: "dd/mm/yy" });
+
+        // Validate before mark properties
+        $("#submit_BulkUpdateProperties").click(function () {
+            var selectedProperties = new Array();
+            $("input[name^='Properties']:checked").each(function () { selectedProperties.push($(this).prev().val()); });
+            var propertyId = $("#PropertyId").val();
+            if (propertyId != "" && !isNaN(propertyId)) { selectedProperties.push(propertyId); }
+
+            var feedback = $("#FeedbackId").val();
+            var feedbackClass = $("#FeedbackId").children("option:selected").attr("class");
+            var selectedStaff = $("#UserIds").val();
+
+            var errorMsg = "";
+            errorMsg += (selectedProperties.length == 0) ? "\n - BĐS cần đánh dấu" : "";
+            errorMsg += (feedback == '') ? "\n - Ý kiến của khách hàng" : "";
+            errorMsg += (feedback != '' && feedbackClass != "fb-wait-visit" && selectedStaff == null) ? "\n - Nhân viên đã phục vụ" : "";
+
+            if (errorMsg != "") {
+                alert("Vui lòng chọn các mục sau và thử lại: " + errorMsg);
+                return false;
+            }
+            else{
+                //alert(selectedProperties);
+            }
+        });
+
+        var previous;
+
+        // Ajax update customer's feedback on property
+        $('#suggestionProperties').on('focus',"select[id^='entry_CustomerFeedbackId']",function () {
+            // Store the current value on focus, before it changes
+            previous = $(this).val();
+        });
+            
+        $('#suggestionProperties').on('change',"select[id^='entry_CustomerFeedbackId']",function () {
+            if ($(this).val() != "") {
+                var slc = $(this);
+                var tr = $(this).closest('tr')[0];
+                var feedbackClass = $(this).children("option:selected").attr("class");
+                var selectedStaff = $("#UserIds").val();
+                var staffs = $(this).attr("staffs");
+                if ((feedbackClass != "fb-wait-visit" && selectedStaff == null && staffs == '')) {
+                    var errorMsg = "Vui lòng chọn các Nhân viên đã dẫn khách.";
+                    $(this).val(previous);
+                    alert(errorMsg);
+                    return false;
+                }
+                $.ajax({
+                    type: "post",
+                    dataType: "JSON",
+                    url: "/RealEstate.Admin/Home/AjaxUpdateCustomerPropertyFeedback",
+                    traditional: true,
+                    data: {
+                        cpId: $(tr).find('a.icon-delete').attr("cpid"),
+                        cId: @(Url.RequestContext.RouteData.Values["id"]),
+                        pId: $(tr).find('input[type=hidden][name="Properties[' + (tr.rowIndex - 1) +'].CustomerPropertyRecord.PropertyPartRecord.Id"]').val(),
+                        feedbackId: $(this).val(),
+                        selectedStaff: selectedStaff,
+                        visitedDate: $("#VisitedDate").val(),
+                        isWorkOverTime: $("#IsWorkOverTime").is(":checked"),
+                        __RequestVerificationToken: antiForgeryToken
+                    },
+                    success: function (results) {
+                        if (results.success) {
+                            $(slc).attr("class", results.css + " w120");
+                            $(tr).find('a.icon-delete').attr("cpid", results.cpId);
+                            if (staffs == '' && results.staffs != '') {
+                                $(slc).parent().next().html(results.staffs).next().html(results.visited + (results.isWorkOverTime ? " <span class='small'>NG</span>" : ""));
+                                $(slc).attr("staffs", results.staffs);
+                            }
+                        }
+                        else
+                            alert(results.message);
+                    },
+                    error: function (request, status, error) {
+                    }
+                });
+            }
+            else {
+                $(this).val(previous);
+            }
+        });
+
+        // Delete requirement
+        $('#suggestionProperties').on('click','.icon-delete',function () {
+            var tr = $(this).closest('tr');
+
+            if (confirm('Bạn muốn xóa thông tin này?\n' + $(this).parent().siblings().eq(3).text())) {
+                $.ajax({
+                    type: "post",
+                    dataType: "",
+                    url: "/RealEstate.Admin/Home/AjaxDeleteCustomerProperty",
+                    data: {
+                        cpId: $(this).attr("cpid"),
+                        __RequestVerificationToken: antiForgeryToken
+                    },
+                    success: function (results) {
+                        if (results.success) {
+                            $(tr).fadeOut('medium', function () {
+                                $(tr).find('a.icon-delete').attr("cpid", 0);
+                                $(tr).find('select').val('').attr("staffs", '');
+                                $(tr).children('td:last-child').html('').prev().html('');
+                                $(tr).fadeIn();
+                            });
+                        }
+                        else
+                            alert(results.message);
+                    },
+                    error: function (request, status, error) {
+                    }
+                });
+            }
+            return false;
+        });
+
+    });
+
+</script>

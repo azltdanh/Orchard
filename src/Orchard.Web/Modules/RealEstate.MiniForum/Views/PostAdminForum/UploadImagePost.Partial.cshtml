@@ -1,0 +1,36 @@
+﻿@{
+    Style.Require("Uploadify");
+    Script.Require("Uploadify");
+}
+
+Chèn ảnh bài viết: <input type="file" name="file_upload" id="file_upload" />
+<script type="text/javascript">
+    var upl_handling = $(function () {
+        $("#file_upload").uploadify({
+            swf: '/Modules/RealEstate.Admin/Scripts/uploadify-v3.1/uploadify.swf',
+            uploader: '@Url.Action("UploadMedia", "Upload", new { area = "RealEstate.MiniForum.FrontEnd"})',
+            cancelImg: '/Modules/RealEstate.Admin/Scripts/uploadify-v3.1/uploadify-cancel.png',
+            buttonText: 'Chọn hình',
+            buttonClass: 'button primaryAction',
+            width: 85,
+            height: 21,
+            fileObjName: 'file',
+            fileSizeLimit: '5MB',
+            fileTypeDesc: 'Image Files',
+            fileTypeExts: '*.jpg;*.jpeg;*.gif;*.png',
+            formData: { __RequestVerificationToken: antiForgeryToken},
+            onUploadSuccess: function(file, data, response) {
+                var json = jQuery.parseJSON(data);
+                var img = '';
+                if (json._w < 530) {
+                    img = '<img src="' + json.path + '?width=' + json._w + '" alt=""/>';
+                } else {
+                    img = '<img src="' + json.path + '?width=530" alt=""/>';
+                }
+                tinyMCE.activeEditor.execCommand('mceInsertContent', false, img);
+            },
+            debug: false
+        });
+    });
+    setTimeout('upl_handling', 300);
+</script>

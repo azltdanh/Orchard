@@ -1,0 +1,66 @@
+﻿@using RealEstate.NewLetter.ViewModels
+@model MesageFrontEndViewModel
+
+@{
+    Layout.Title = T("Tin nhắn cá nhân").ToString();
+}
+@using (Script.Foot())
+{
+    Script.Require("realEstate.MiniForum.FrontEnd");    
+}
+
+<div class="media blog-message">
+    <div class="media-body">
+        <input type="hidden" id="userId" value="@Model.UserInfo.Id" />
+        <input type="hidden" id="userCurentId" value="@Model.UserInfo.Id" />
+        <input type="hidden" id="userNameCurent" value="@Model.UserInfo.UserName" />
+
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="active ajax-event-content" data-url="@Url.Action("AjaxLoadMessageInboxBlog", "MessageInboxFrontEnd", new { area = "RealEstate.NewLetter", type = 2 })"><a href="#messageuser" role="tab" data-toggle="tab">Tin nhắn cá nhân (<strong>@Model.CountMessageInboxFrontEnd</strong>)</a></li>
+            <li class="ajax-event-content" data-url="@Url.Action("AjaxLoadMessageInboxBlog", "MessageInboxFrontEnd", new { area = "RealEstate.NewLetter", type = 1 })"><a href="#messagesadmin" role="tab" data-toggle="tab">Tin nhắn từ Admin (<strong>@Model.CountMessageInboxAdmin</strong>)</a></li>
+            <li class="ajax-event-content" data-url="@Url.Action("AjaxLoadMessageSendBlog", "MessageInboxFrontEnd", new { area = "RealEstate.NewLetter", type = 1 })"><a href="#messagesend" role="tab" data-toggle="tab">Tin đã gửi</a></li>
+            @*<li class="ajax-event-content"><a href="#messagenew" role="tab" data-toggle="tab">Gửi tin nhắn mới</a></li>*@
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content tab-content-message">
+            <div class="tab-pane active ajax-content-inbox" id="messageuser" data-url="@Url.Action("AjaxLoadMessageInboxBlog", "MessageInboxFrontEnd", new { area = "RealEstate.NewLetter", type = 2 })">
+                @Html.Partial("Loading")
+            </div>
+            <div class="tab-pane" id="messagesadmin">
+                @Html.Partial("Loading")
+            </div>
+            <div class="tab-pane" id="messagesend">
+                @Html.Partial("Loading")
+            </div>
+            @*<div class="tab-pane" id="messagenew">
+                @using (Html.BeginFormAntiForgeryPost(Url.Action("SendMessageUser", "MessageInboxFrontEnd", new { area = "RealEstate.NewLetter" }), FormMethod.Post, new { Class = "message-user-send" }))
+                {
+                        @Html.ValidationSummary()
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-xs-3">@T("Tiêu đề:")</label>
+                                <div class="col-md-9 col-xs-9">
+                                    <input type="text" name="Title" id="Title" class="form-control" placeholder="Tiêu đề tin nhắn" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-xs-3">@T("Nội dung:")</label>
+                                <div class="col-md-9 col-xs-9">
+                                    <textarea name="Content" id="Content" class="form-control" required="required" placeholder="Nội dung tin nhắn"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-xs-3">&nbsp;</label>
+                                <div class="col-md-9 col-xs-9">
+                                    <button type="submit" name="Submit.Reply" class="btn btn-default" value="@T("Gửi")">@T("Gửi")</button>
+                                </div>
+                            </div>
+                        </div>
+                }
+            </div>*@
+        </div>
+    </div>
+</div>
+

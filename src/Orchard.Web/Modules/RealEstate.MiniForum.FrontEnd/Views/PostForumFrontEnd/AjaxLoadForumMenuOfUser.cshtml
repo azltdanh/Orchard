@@ -1,0 +1,49 @@
+﻿@{
+    var count = (Dictionary<string, int>)ViewBag.Count;
+}
+<div id="menuHomePage" class="menu-home-page">
+    <ul class="media-list media-list-condensed">
+        <li class="media">
+            <a href="@Url.Action("MyMessage", "PersonalPage", new {Area = "RealEstate.MiniForum.FrontEnd"})" title="Tin nhắn cá nhân">
+                <i class="icon_silk_comment"></i> Tin nhắn 
+            </a>
+            <span class="pull-right">(<strong id="wg-message">@count["message"]</strong>)</span>
+        </li>
+        <li class="media">
+            <a href="@Url.Action("MyListFriend", "PersonalPage", new {Area = "RealEstate.MiniForum.FrontEnd"})" title="Danh sách bạn">
+                <i class="icon_rev_group"></i> Danh sách bạn
+            </a>
+            <span class="pull-right">(<strong id="wg-listfriend">@count["friend"]</strong>)</span>
+        </li>
+        <li class="media">
+            <a href="@Url.Action("MyListRequestFriend", "PersonalPage", new {Area = "RealEstate.MiniForum.FrontEnd"})" title="Danh sách yêu cầu kết bạn">
+                <i class="icon_rev_group_add"></i> Yêu cầu kết bạn
+            </a>
+            <span class="pull-right">(<strong id="wg-listrequest">@count["requestfriend"]</strong>)</span>
+        </li>
+        @*<li class="media">
+            <a href="@Url.Action("MyPage", "PersonalPage", new {Area = "RealEstate.MiniForum.FrontEnd"})" title="Photo Album">
+                <i class="icon_rev_image"></i> Photo Album
+            </a>
+            <span class="pull-right">(<strong id="wg-photoalbum">0</strong>)</span>
+        </li>
+        <li class="media">
+            <a href="@Url.Action("MyPage", "PersonalPage", new {Area = "RealEstate.MiniForum.FrontEnd"})" title="music Album">
+                <i class="icon_rev_music"></i> Music Album
+            </a>
+            <span class="pull-right">(<strong id="wg-musicalbum">0</strong>)</span>
+        </li>
+        <li class="media">
+            <a href="#" title="Video Album">
+                <i class="icon_rev_film"></i> Video Album
+            </a>
+            <span class="pull-right">(<strong id="wg-videoalbum">0</strong>)</span>
+        </li>*@
+        <li class="media">
+            <a href="@Url.Action("ResultFilter", "PropertySearch", new { area = "RealEstate.FrontEnd", Create_Id = WorkContext.CurrentUser.Id })" title="Danh sách BĐS">
+                <i class="icon_rev_house"></i> Danh sách BĐS
+            </a>
+            <span class="pull-right">(<strong class="listproperty-user">@count["PropertyCount"]</strong>)</span>
+        </li>
+    </ul>
+</div>

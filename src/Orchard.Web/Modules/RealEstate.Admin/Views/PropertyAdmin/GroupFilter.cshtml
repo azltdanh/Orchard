@@ -1,0 +1,376 @@
+﻿@model RealEstate.ViewModels.PropertyIndexOptions
+@using RealEstate.Models;
+@using RealEstate.ViewModels;
+@using RealEstate.Services;
+
+@{
+    Script.Require("jQueryUI_DatePicker");
+    
+    Script.Require("Cookie");
+    Script.Require("BootstrapCombobox");
+    Script.Require("BootstrapMultiselect");
+}
+    
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Get))
+{      
+    @Html.ValidationSummary()
+
+    <div id="tabsAdsType">        
+        <ul class="nav nav-tabs">
+            @foreach (var typeGroup in Model.TypeGroups)
+            {
+                foreach (var ads in Model.AdsTypes)
+                {
+                <li class="@(typeGroup.Id == Model.TypeGroupId && ads.Id == Model.AdsTypeId ? "active" : "")">
+                    <a href="#" ads="@ads.Id" typegroup="@typeGroup.Id" class="@(ads.CssClass + "-" + typeGroup.CssClass)">
+                        @typeGroup.ShortName
+                        @ads.ShortName
+                        <span class="count"></span>
+                    </a>
+                </li>
+                }
+            }
+        </ul>
+    </div>
+    
+    <fieldset>
+
+        <table class="filter-table">
+            <tbody>
+                <tr>
+                    <td class="filter-label">Loại tin</td>
+                    <td class="filter-label">Nhóm BĐS</td>
+                    <td class="filter-label">Loại BĐS</td>
+                    <td class="filter-label">Trạng thái</td>
+                    <td class="filter-label">Duyệt tin của group</td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.DropDownListFor(m => m.AdsTypeId,
+                        Model.AdsTypes.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.AdsTypeId,
+                            Text = s.ShortName,
+                            Value = s.Id.ToString()
+                        }), T("-- Tất cả --").ToString(), new { Class = "select-box" })
+                    </td>
+                    <td>       
+                        @Html.DropDownListFor(m => m.TypeGroupId,
+                        Model.TypeGroups.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.TypeGroupId,
+                            Text = s.Name,
+                            Value = s.Id.ToString()
+                        }), T("-- Tất cả --").ToString(), new { Class = "select-box" })                 
+                    </td>
+                    <td>
+                        <select id="@Html.NameOf(m => m.TypeIds)" name="@Html.NameOf(m => m.TypeIds)" multiple="multiple" class="select-box multiselect" placeholder="Tất cà các loại BĐS">
+                            @foreach (var optGroup in Model.TypeGroups)
+                            {
+                                <optgroup label="@optGroup.Name">
+                                    @foreach (var opt in Model.Types.Where(a => a.Group.Id == optGroup.Id).ToList())
+                                    {
+                                        <option value="@opt.Id" @(Model.TypeIds != null && Model.TypeIds.Contains(opt.Id) ? "selected = selected" : "")>@opt.Name</option>
+                                    }
+                                </optgroup>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        @Html.DropDownListFor(m => m.StatusId,
+                        Model.Status.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.StatusId,
+                            Text = s.Name,
+                            Value = s.Id.ToString()
+                        }), T("-- BĐS Đang rao --").ToString(), new { Class = "select-box" })
+                    </td>
+                    <td>
+                        @Html.DropDownListFor(m => m.GroupApproved,
+                        Model.IsApprovedEntries.Select(s => new SelectListItem
+                        {
+                            Selected = s.Value == Model.GroupApproved,
+                            Text = s.Name,
+                            Value = s.Value.ToString()
+                        }), T("-- Chọn duyệt tin --").ToString(), new { Class = "select-box" })
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <br />
+
+        <!-- Tìm kiếm cơ bản -->
+        <table class="filter-table">
+            <tbody>
+                <tr>
+                    <td class="filter-label">Tỉnh / Thành phố</td>
+                    <td class="filter-label">Quận / Huyện</td>
+                    <td class="filter-label">Phường / Xã</td>
+                    <td class="filter-label">Tên đường</td>
+                    <td class="filter-label">Mã ID</td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.DropDownListFor(m => m.ProvinceId, Model.Provinces, "-- Chọn tất cả Tỉnh / TP --", new { Class = "combobox" })
+                    </td>
+                    <td>
+                        @Html.ListBoxFor(m => m.DistrictIds,
+                        new MultiSelectList(Model.Districts.Select(a => new { a.Name, a.Id }).ToList(), "Id", "Name", Model.DistrictIds)
+                        , new { Class = "select-box multiselect", placeholder = "Tất cả Quận / Huyện" })
+                    </td>
+                    <td>
+                        @Html.ListBoxFor(m => m.WardIds,
+                        new MultiSelectList(Model.Wards.Select(a => new { Name = a.Name + " - " + a.District.ShortName, a.Id }).ToList(), "Id", "Name", Model.WardIds)
+                        , new { Class = "select-box multiselect", placeholder = "Tất cả Phường / Xã" })
+                    </td>
+                    <td>
+                        <input type="hidden" id="SelectedStreetId" value="@Model.StreetId" />
+                        @Html.DropDownListFor(m => m.StreetId,
+                        Model.Streets.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.StreetId,
+                            Text = s.Name + " - " + s.District.ShortName,
+                            Value = s.Id.ToString()
+                        }), T("-- Tất cả --").ToString(), new { Class = "combobox" })
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(m => m.IdStr, new { @class = "text text-box-small" })
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        @Html.TextBoxFor(m => m.MinPriceProposed, new { @class = "text number-box", placeholder = T("Giá từ") }) 
+                        @Html.TextBoxFor(m => m.MaxPriceProposed, new { @class = "text number-box", placeholder = T("đến") })
+                        
+                        @Html.DropDownListFor(m => m.PaymentMethodId,
+                        Model.PaymentMethods.Select(a => new SelectListItem
+                        {
+                            Selected = a.Id == Model.PaymentMethodId,
+                            Text = a.ShortName,
+                            Value = a.Id.ToString()
+                        }), new { Class = "", style = "width:70px" })
+
+                        @Html.DropDownListFor(m => m.PaymentUnitId,
+                        Model.PaymentUnits.Select(a => new SelectListItem
+                        {
+                            Selected = a.Id == Model.PaymentUnitId,
+                            Text = a.ShortName,
+                            Value = a.Id.ToString()
+                        }), new { Class = "", style = "width:111px" })
+                        
+                    </td>
+                    <!-- gp-apartment -->
+                    @if (Model.TypeGroupCssClass == "gp-apartment")
+                    {
+                    <td class="filter-label align-right">Dự án / Chung cư:</td>
+                    <td>
+                        @Html.DropDownListFor(m => m.ApartmentId,
+                        Model.Apartments.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.ApartmentId,
+                            Text = s.Name + " - " + s.District.ShortName,
+                            Value = s.Id.ToString()
+                        }), T("-- Tất cả --").ToString(), new { Class = "combobox" })
+                    </td>
+                    <td class="filter-label align-right">MS căn hộ</td>
+                    <td>
+                        @Html.TextBoxFor(m => m.ApartmentNumber, new { @class = "text text-box-small" })
+                    </td>
+                    }
+                </tr>
+            </tbody>
+        </table>
+        
+        <a href="#" class="advance-search-trigger"><span class="ui-icon icon-expand"></span> Tìm kiếm nâng cao</a>
+        <label style="display:inline-block;">&nbsp; @Html.CheckBoxFor(m => m.UseAccurateSearch)@T("Tìm kiếm chính xác")</label>
+
+        <!-- Tìm kiếm nâng cao -->
+        <table id="tblAdvanceSearch" class="filter-table">
+            <tbody>
+                <tr>                    
+                    @if (AuthorizedFor(RealEstate.Permissions.ManageProperties))
+                    {
+                        <td class="filter-label">Nhóm</td>
+                        <td>
+                            @Html.DropDownListFor(m => m.GroupId,
+                        Model.Groups.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.GroupId,
+                            Text = s.Name,
+                            Value = s.Id.ToString()
+                        }),
+                        T("-- Tất cả --").ToString(), new { Class = "select-box" })
+                        </td>
+                    }
+                    else
+                    {
+                        <td class="filter-label">Website</td>
+                        <td>
+                            @Html.DropDownListFor(m => m.GroupId,
+                            Model.UserGroupDomains.Select(s => new SelectListItem
+                            {
+                                Selected = s.Id == Model.GroupId,
+                                Text = s.Name,
+                                Value = s.Id.ToString()
+                            }),
+                            T("-- Tất cả --").ToString(), new { Class = "select-box" })
+                        </td>
+                    }  
+                    <td class="filter-label">Liên hệ</td>
+                    <td>@Html.TextBoxFor(m => m.ContactPhone, new { @class = "text text-box" })</td>
+                    <td class="filter-label"></td>
+                    <td></td>
+                </tr>
+                <!-- gp-house || gp-land -->
+                @if (Model.TypeGroupCssClass == "gp-house" || Model.TypeGroupCssClass == "gp-land")
+                {
+                <tr>
+                    <td class="filter-label">DTKV từ</td>
+                    <td>@Html.TextBoxFor(m => m.MinAreaTotal, new { @class = "text number-box" }) đến @Html.TextBoxFor(m => m.MaxAreaTotal, new { @class = "text number-box" }) m<sup>2</sup></td>
+                    <td class="filter-label">Chiều ngang</td>
+                    <td>@Html.TextBoxFor(m => m.MinAreaTotalWidth, new { @class = "text number-box" }) đến @Html.TextBoxFor(m => m.MaxAreaTotalWidth, new { @class = "text number-box" }) m</td>
+                    <td class="filter-label">Chiều sâu</td>
+                    <td>@Html.TextBoxFor(m => m.MinAreaTotalLength, new { @class = "text number-box" }) đến @Html.TextBoxFor(m => m.MaxAreaTotalLength, new { @class = "text number-box" }) m</td>
+                    <td class="filter-label">Số lầu</td>
+                    <td>@Html.TextBoxFor(m => m.MinFloors, new { @class = "text number-box" }) đến @Html.TextBoxFor(m => m.MaxFloors, new { @class = "text number-box" })
+                        
+                    </td>
+                </tr>
+                <tr>
+                    <td class="filter-label">Nhà MT / Hẻm</td>
+                    <td>
+                        @Html.DropDownListFor(m => m.LocationId,
+                        Model.Locations.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.LocationId,
+                            Text = s.Name,
+                            Value = s.Id.ToString()
+                        }),
+                        T("-- Tất cả --").ToString(), new { Class = "select-box" })
+                    </td>
+                    <td class="filter-label">Hẻm rộng</td>
+                    <td>@Html.TextBoxFor(m => m.MinAlleyWidth, new { @class = "text number-box" }) đến @Html.TextBoxFor(m => m.MaxAlleyWidth, new { @class = "text number-box" }) m</td>
+                    <td class="filter-label">Số lần rẽ</td>
+                    <td>@Html.TextBoxFor(m => m.MinAlleyTurns, new { @class = "text number-box" }) đến @Html.TextBoxFor(m => m.MaxAlleyTurns, new { @class = "text number-box" })</td>
+                    <td class="filter-label">KcMT</td>
+                    <td>@Html.TextBoxFor(m => m.MinDistanceToStreet, new { @class = "text number-box" }) đến @Html.TextBoxFor(m => m.MaxDistanceToStreet, new { @class = "text number-box" }) m</td>
+                </tr>
+                }
+                <!-- gp-apartment -->
+                @if (Model.TypeGroupCssClass == "gp-apartment")
+                {
+                <tr>
+                    <td class="filter-label">DT căn hộ</td>
+                    <td>@Html.TextBoxFor(m => m.MinAreaUsable, new { @class = "text number-box" }) đến @Html.TextBoxFor(m => m.MaxAreaUsable, new { @class = "text number-box" }) m<sup>2</sup></td>
+                    <td class="filter-label">Căn hộ thuộc tầng</td>
+                    <td>@Html.TextBoxFor(m => m.MinApartmentFloorTh, new { @class = "text number-box" }) đến @Html.TextBoxFor(m => m.MaxApartmentFloorTh, new { @class = "text number-box" }) </td>
+                    <td class="filter-label"></td>
+                    <td></td>
+                    <td class="filter-label"></td>
+                    <td></td>
+                </tr>
+                }
+                <tr>
+                    <td class="filter-label">Hướng</td>
+                    <td>
+                        @Html.ListBoxFor(m => m.DirectionIds,
+                        new MultiSelectList(Model.Directions.Select(a => new { a.Name, a.Id }).ToList(), "Id", "Name", Model.DirectionIds)
+                        , new { Class = "select-box multiselect", placeholder = "Tất cả các Hướng" })
+                    </td>
+                    <td class="filter-label">Pháp lý</td>
+                    <td>
+                        @Html.DropDownListFor(m => m.LegalStatusId,
+                        Model.LegalStatus.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.LegalStatusId,
+                            Text = s.Name,
+                            Value = s.Id.ToString()
+                        }),
+                        T("-- Tất cả --").ToString(), new { Class = "select-box" })
+                    </td>
+                    <td class="filter-label">Số PN</td>
+                    <td>@Html.TextBoxFor(m => m.MinBedrooms, new { @class = "text number-box" }) đến @Html.TextBoxFor(m => m.MaxBedrooms, new { @class = "text number-box" })</td>
+                    <td class="filter-label">Số WC</td>
+                    <td>@Html.TextBoxFor(m => m.MinBathrooms, new { @class = "text number-box" }) đến @Html.TextBoxFor(m => m.MaxBathrooms, new { @class = "text number-box" })</td>
+                </tr>
+                <tr>
+                    @if (Model.StatusCssClass == "st-estimate")
+                    {
+                    <td class="filter-label">Đánh giá</td>
+                    <td>
+                        <select class="select-box" name="@Html.NameOf(m => m.PriceEstimatedRatingPoint)">
+                            <option value="">-- Vui lòng chọn --</option>
+                            <option value="1">Không chính xác</option>
+                            <option value="2">Không có ý kiến</option>
+                            <option value="3">Chấp nhận được</option>
+                            <option value="4">Chính xác</option>
+                            <option value="5">Rất chính xác</option>
+                        </select>
+                    </td>
+                    }
+                    else
+                    {
+                    <td class="filter-label">Nội thất</td>
+                    <td>
+                        @Html.DropDownListFor(m => m.InteriorId,
+                        Model.Interiors.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.InteriorId,
+                            Text = s.Name,
+                            Value = s.Id.ToString()
+                        }),
+                        T("-- Tất cả --").ToString(), new { Class = "select-box" })
+                    </td>
+                    }
+                </tr>
+            </tbody>
+        </table>
+
+    </fieldset>
+    
+    <fieldset class="bulk-actions left">
+        <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Tìm kiếm")</button>
+    </fieldset>
+    
+}    
+@using (Script.Foot())
+{
+<script type="text/javascript">
+    function getStreetByProvince() {
+        var slcStreet = $("#StreetId");
+        $.ajax({
+            type: "get",
+            dataType: "JSON",
+            traditional: true,
+            url: "/RealEstate.Admin/Home/GetStreetsByProvinceForJson",
+            data: {
+                provinceId: $("#ProvinceId").val(),
+                selectedStreetId: $("#SelectedStreetId").val()
+            },
+            success: function (response) {
+                slcStreet.empty().append("<option value=''></option>");
+                $.each(response.list, function (i, item) { slcStreet.append("<option value=" + item.Value + ">" + item.Text + "</option>"); });
+                slcStreet.val($("#SelectedStreetId").val());
+                slcStreet.change().combobox('refresh');
+            },
+            error: function (request, status, error) {
+                slcStreet.empty().append("<option value=''></option>").change().combobox('refresh');
+            }
+        });
+    }
+    $(function () {
+        if ($("#StreetId").children().length <= 1) {
+            // Get all Streets of HCM
+            getStreetByProvince()
+        }
+    });
+</script>
+<script type="text/javascript">
+    if ($('#GroupApproved').val() == "Approved") $('.local-section-b-s-duy-t-c-a-group-kh-c').addClass('selected').siblings().removeClass('selected');
+    if ($('#StatusId').val() == 29) $('.local-section-b-s-ch-duy-t').addClass('selected').siblings().removeClass('selected');
+    if ($('#AdsHighlightRequest').is(':checked')) $('.local-section-b-s-ng-v-i-p').addClass('selected').siblings().removeClass('selected');
+    if ($('#AdsGoodDealRequest').is(':checked')) $('.local-section-b-s-ng-v-i-p').addClass('selected').siblings().removeClass('selected');
+    if ($('#AdsVIPRequest').is(':checked')) $('.local-section-b-s-ng-v-i-p').addClass('selected').siblings().removeClass('selected');
+    if ($('#AdsRequest').is(':checked')) $('.local-section-b-s-ng-v-i-p').addClass('selected').siblings().removeClass('selected');
+</script>
+}

@@ -1,0 +1,411 @@
+﻿@model RealEstate.ViewModels.LocationApartmentEditViewModel
+
+@{
+    Script.Require("BootstrapCombobox");
+    Script.Require("jQueryUI_Autocomplete");
+    Style.Require("jQueryUI_Orchard");
+
+    Script.Require("jQueryUI_DatePicker");
+    Script.Require("Common").AtFoot();
+}
+<!-- Navigation -->
+
+@*<ul class="nav nav-tabs">
+    <!-- Property -->
+    <li class="active"><a href="#property" data-toggle="tab">Info</a></li>
+    <!-- Map -->
+    <li><a href="#map" data-toggle="tab">Map</a></li>
+</ul>
+
+<div class="tab-content">
+    <!-- Property -->
+    <div class="tab-pane active" id="property">*@
+<div class="form-editor">
+
+<!-- Vị trí Dự án / Chung cư -->
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-center header-bg-green">
+                <div class="header-left header-bg-green">
+                    <div class="header-left-triangle"></div>
+                </div>
+                <h1>Vị trí Dự án / Chung cư</h1>
+                <div class="header-right"></div>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="form-horizontal pull-left">
+            <!-- Province -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Tỉnh / Thành Phố:")</label>
+                <div class="controls">
+                    @Html.DropDownListFor(m => m.ProvinceId,
+                    Model.Provinces.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.ProvinceId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }), "-- Tỉnh / Thành Phố --", new { Class = "combobox" + (Model.IsRestrictedLocations ? " restricted" : ""), userid = WorkContext.CurrentUser.Id })
+                    @Html.ValidationMessageFor(m => m.ProvinceId, "*")
+                </div>
+            </div>
+            <!-- District -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Quận / Huyện:")</label>
+                <div class="controls">
+                    @Html.DropDownListFor(m => m.DistrictId,
+                    Model.Districts.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.DistrictId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }), "-- Quận / Huyện --", new { Class = "combobox" })
+                    @Html.ValidationMessageFor(m => m.DistrictId, "*")
+                </div>
+            </div>
+            <!-- Ward -->
+            <div class="control-group">
+                <label class="control-label">@T("Phường / Xã:")</label>
+                <div class="controls">
+                    @Html.DropDownListFor(m => m.WardId,
+                    Model.Wards.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.WardId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }), "-- Phường / Xã --", new { Class = "combobox" })
+                    @Html.ValidationMessageFor(m => m.WardId, "*")
+                </div>
+            </div>
+            <!-- Street -->
+            <div class="control-group">
+                <label class="control-label">@T("Đường / Phố:")</label>
+                <div class="controls">
+                    @Html.DropDownListFor(m => m.StreetId,
+                    Model.Streets.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.StreetId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }), "-- Đường / Phố --", new { Class = "combobox" })
+                    @Html.ValidationMessageFor(m => m.StreetId, "*")
+                </div>
+            </div>
+            <!-- AddressNumber -->
+            <div class="control-group">
+                <label class="control-label">@T("Số nhà / Địa chỉ chung cư:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.AddressNumber, new { maxlength = 250, @class = "text text-box" })
+                </div>
+            </div>
+            <!-- Hight light -->
+            <div class="control-group">
+                <label class="control-label">@T("")</label>
+                <div class="controls">
+                    <label class="w130">@Html.CheckBoxFor(m => m.IsHighlight) @T("Dự án nổi bật")</label>
+                    @T("Chọn ngày hết hạn")
+                    @Html.TextBoxFor(m => m.HighlightExpiredTime, new { @class = "text date-box date-box-full", @placholder = "Ngày hết hạn" })
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </article>
+    <footer></footer>
+</article>
+
+<!-- Đặc điểm Dự án / Chung cư -->
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-center header-bg-green">
+                <div class="header-left header-bg-green">
+                    <div class="header-left-triangle"></div>
+                </div>
+                <h1>Đặc điểm Dự án / Chung cư</h1>
+                <div class="header-right"></div>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="form-horizontal pull-left">
+            <!-- Name -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Tên dự án / chung cư:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.Name, new { maxlength = 250, @class = "text text-box-medium" })
+                </div>
+            </div>
+            <!-- ShortName -->
+            <div class="control-group">
+                <label class="control-label">@T("Tên ngắn gọn:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.ShortName, new { maxlength = 250, @class = "text text-box-medium" })
+                </div>
+            </div>
+            <!-- Block -->
+            <div class="control-group">
+                <label class="control-label">@T("Block (nếu có):")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.Block, new { maxlength = 250, @class = "text text-box-medium" })
+                </div>
+            </div>
+            <!-- Floors -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Chung cư có bao nhiêu tầng:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.Floors, new { @class = "text number-box-ext" })
+                </div>
+            </div>
+            <!-- PriceAverage -->
+            <div class="control-group">
+                <label class="control-label">@T("Giá trung bình / m2:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.PriceAverage, new { @class = "text number-box-ext" }) (triệu đồng / m2)
+                </div>
+            </div>
+            <!-- DistanceToCentral -->
+            <div class="control-group">
+                <label class="control-label">@T("Khoảng cách đến trung tâm:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.DistanceToCentral, new { maxlength = 250, @class = "text text-box-medium" })
+                </div>
+            </div>
+            <!-- Description -->
+            <div class="control-group">
+                <label class="control-label">@T("Điểm nổi bật so với nơi khác:")</label>
+                <div class="controls">
+                    @Html.TextAreaFor(m => m.Description, 5, 40, new { maxlength = 1000, @class = "text text-box-medium" })
+                    <p class="disabled">Tối đa 1000 ký tự.</p>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </article>
+    <footer></footer>
+</article>
+
+<!-- Thông tin Chủ đầu tư -->
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-center header-bg-green">
+                <div class="header-left header-bg-green">
+                    <div class="header-left-triangle"></div>
+                </div>
+                <h1>Thông tin Chủ đầu tư</h1>
+                <div class="header-right"></div>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="form-horizontal pull-left">
+            <!-- Investors -->
+            <div class="control-group">
+                <label class="control-label">@T("Chủ đầu tư:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.Investors, new { maxlength = 250, @class = "text text-box-medium" })
+                </div>
+            </div>
+            <!-- CurrentBuildingStatus -->
+            <div class="control-group">
+                <label class="control-label">@T("Hiện trạng:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.CurrentBuildingStatus, new { maxlength = 250, @class = "text text-box-medium" })
+                    <p class="disabled">(đã bàn giao hay đang xây dựng..thời gian bàn giao căn hộ)</p>
+                </div>
+            </div>
+            <!-- ManagementFees -->
+            <div class="control-group">
+                <label class="control-label">@T("Phí quản lý:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.ManagementFees, new { maxlength = 250, @class = "text text-box-medium" })
+                    <p class="disabled">(phí gửi xe, vệ sinh, bảo vệ….)</p>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </article>
+    <footer></footer>
+</article>
+
+<!-- Thông tin Xây dựng -->
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-center header-bg-green">
+                <div class="header-left header-bg-green">
+                    <div class="header-left-triangle"></div>
+                </div>
+                <h1>Thông tin Xây dựng</h1>
+                <div class="header-right"></div>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="form-horizontal pull-left">
+            
+            <!-- AreaTotal -->
+            <div class="control-group">
+                <label class="control-label">@T("Diện tích khuôn viên:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.AreaTotal, new { @class = "text number-box-ext" })
+                    m<sup>2</sup>
+                </div>
+            </div>
+            <!-- AreaConstruction -->
+            <div class="control-group">
+                <label class="control-label">@T("Diện tích sàn xây dựng:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.AreaConstruction, new { @class = "text number-box-ext" })
+                    m<sup>2</sup>
+                </div>
+            </div>
+            <!-- AreaGreen -->
+            <div class="control-group">
+                <label class="control-label">@T("Diện tích công viên / cây xanh:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.AreaGreen, new { @class = "text number-box-ext" })
+                    m<sup>2</sup>
+                </div>
+            </div>
+            <!-- TradeFloors -->
+            <div class="control-group">
+                <label class="control-label">@T("Số tầng thương mại:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.TradeFloors, new { @class = "text number-box-ext" })
+                </div>
+            </div>
+            <!-- AreaTradeFloors -->
+            <div class="control-group">
+                <label class="control-label">@T("Diện tích sàn thương mại:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.AreaTradeFloors, new { @class = "text number-box-ext" })
+                    m<sup>2</sup>
+                </div>
+            </div>
+            <!-- Basements -->
+            <div class="control-group">
+                <label class="control-label">@T("Số tầng hầm:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.Basements, new { @class = "text number-box-ext" })
+                </div>
+            </div>
+            <!-- AreaBasements -->
+            <div class="control-group">
+                <label class="control-label">@T("Diện tích tầng hầm:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.AreaBasements, new { @class = "text number-box-ext" })
+                    m<sup>2</sup>
+                </div>
+            </div>
+            <!-- Elevators -->
+            <div class="control-group">
+                <label class="control-label">@T("Số lượng thang máy:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.Elevators, new { @class = "text number-box-ext" })
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal pull-left">
+            <ul style="padding-left:60px;">
+            @{
+                var rIndex = 0;
+            }
+            @foreach (var r in Model.Advantages)
+            {
+                <li><input type="hidden" value="@r.Advantage.Id"
+                    name="@Html.FieldNameFor(m => m.Advantages[rIndex].Advantage.Id)"/>
+                    <label for="@Html.FieldNameFor(m => m.Advantages[rIndex].IsChecked)">
+                        <input type="checkbox" value="true"
+                            name="@Html.FieldNameFor(m => m.Advantages[rIndex].IsChecked)"
+                            id="@Html.FieldNameFor(m => m.Advantages[rIndex].IsChecked)"
+                            @if (r.IsChecked)
+                            {<text>checked="checked"</text>}/>
+                        @string.Format("{0} {1}", r.Advantage.Name, String.Format("({0:+0;-0;}%)", r.Advantage.AddedValue))
+                    </label>
+                    @{rIndex++;}
+                </li>
+            }
+            </ul>
+        </div>
+        <div class="clearfix"></div>
+    </article>
+    <footer></footer>
+</article>
+
+<!-- Hình ảnh -->
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-center header-bg-green">
+                <div class="header-left header-bg-green">
+                    <div class="header-left-triangle"></div>
+                </div>
+                <h1>Hình ảnh</h1>
+                <div class="header-right"></div>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="form-horizontal pull-left">
+            <!-- Images -->
+            <div class="control-group">
+                <label class="control-label">@T("Hình ảnh:")</label>
+                <div class="controls">
+                    @Html.Partial("UploadImages", String.Empty) @*// String.Empty or uploadHandleUrl*@
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </article>
+</article>
+
+<!-- GalleryManager -->
+@Html.Partial("GalleryManager", new RealEstate.ViewModels.PropertyImagesViewModel { Images = Model.Files, EnableEditImages = true })
+
+</div>
+    @*</div>
+        <!-- Map -->
+        <div class="tab-pane" id="map"></div>
+    </div>*@
+@if (String.IsNullOrEmpty(Model.ReturnUrl))
+{
+    @Html.ActionLink(T("Back").ToString(), "Index", new { }, new { @class = "button primaryAction", name = "submit.Back" })
+}
+else
+{
+    <a href="@Model.ReturnUrl" class="button primaryAction" name="submit.Back">Back</a>
+}
+    
+<script type="text/javascript">
+    $(function () {
+        $('[name="submit.SaveReturn"],[name="submit.Back"]').insertAfter('fieldset.save-button button[name="submit.Save"]').css('margin-left', '4px');
+        var cache = {};
+        $("#Name").autocomplete({
+            minLength: 2,
+            source: function (request, response) {
+                var term = request.term;
+                if (term in cache) {
+                    response(cache[term]);
+                    return;
+                }
+                $.get("/RealEstate.Admin/Home/SearchApartmentsForJson", { term: request.term }, function (data, textStatus) {
+                    cache[term] = data.list;
+                    response(data.list);
+                }, "json");
+            }
+        });
+        // #map
+        $('.content-item-map').appendTo('#map');
+        $('a[href="#map"]').on('shown.bs.tab', function () {   // When tab is displayed...
+            if (typeof map != 'undefined') {
+                //var map = googleMaps[0],
+                center = map.getCenter();
+                google.maps.event.trigger(map, 'resize');         // fixes map display
+                map.setCenter(center);                            // centers map correctly
+            }
+        });
+    });
+</script>

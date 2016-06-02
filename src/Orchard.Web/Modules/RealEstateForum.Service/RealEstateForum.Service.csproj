@@ -1,0 +1,231 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\JetBrains.ReSharper.SDK.8.2.1158\build\JetBrains.ReSharper.SDK.Props" Condition="Exists('packages\JetBrains.ReSharper.SDK.8.2.1158\build\JetBrains.ReSharper.SDK.Props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{94B99959-2498-4A4E-9728-8A098D27A99B}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RealEstateForum.Service</RootNamespace>
+    <AssemblyName>RealEstateForum.Service</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>4.0</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <TargetFrameworkProfile />
+    <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Contrib.OnlineUsers">
+      <HintPath>..\Contrib.OnlineUsers\bin\Contrib.OnlineUsers.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Facebook">
+      <HintPath>..\..\bin\Facebook.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ImageResizer">
+      <HintPath>..\..\bin\ImageResizer.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Orchard.Users">
+      <HintPath>..\Orchard.Users\bin\Orchard.Users.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Piedone.Facebook.Suite">
+      <HintPath>..\Piedone.Facebook.Suite\bin\Piedone.Facebook.Suite.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Piedone.Facebook.Suite.Connect">
+      <HintPath>..\Piedone.Facebook.Suite.Connect\bin\Piedone.Facebook.Suite.Connect.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="RealEstate">
+      <HintPath>..\RealEstate\bin\RealEstate.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.ComponentModel.DataAnnotations">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\System.Web.Mvc.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Vandelay.Industries">
+      <HintPath>..\Vandelay.Industries\bin\Vandelay.Industries.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Web.config" />
+    <Content Include="Views\Web.config" />
+    <Content Include="Scripts\Web.config" />
+    <Content Include="Styles\Web.config" />
+    <Content Include="Module.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Orchard.Core">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Orchard.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Orchard.Framework">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Orchard.Framework.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Drivers\AdsPriceConfigPartDriver.cs" />
+    <Compile Include="Drivers\CommentLikePartDriver.cs" />
+    <Compile Include="Drivers\CommentPartDriver.cs" />
+    <Compile Include="Drivers\ForumFriendPartDriver.cs" />
+    <Compile Include="Drivers\FilterRulesPartDriver.cs" />
+    <Compile Include="Drivers\ForumPostPartDriver.cs" />
+    <Compile Include="Drivers\ForumPostStatusPartDriver.cs" />
+    <Compile Include="Drivers\ForumThreadPartDriver.cs" />
+    <Compile Include="Drivers\UnitInvestPartDriver.cs" />
+    <Compile Include="Drivers\PublishStatusPartDriver.cs" />
+    <Compile Include="Drivers\SupportOnlineConfigPartDriver.cs" />
+    <Compile Include="Handlers\AdsPriceConfigPartHandler.cs" />
+    <Compile Include="Handlers\CommentForumPartHandler.cs" />
+    <Compile Include="Handlers\CommentLikePartHandler.cs" />
+    <Compile Include="Handlers\ForumFriendPartHandler.cs" />
+    <Compile Include="Handlers\FilterRulesPartHandler.cs" />
+    <Compile Include="Handlers\ForumPostPartHandler.cs" />
+    <Compile Include="Handlers\ForumThreadPartHandler.cs" />
+    <Compile Include="Handlers\UnitInvestPartHandler.cs" />
+    <Compile Include="Handlers\PublishStatusPartHandler.cs" />
+    <Compile Include="Handlers\ForumPostStatusPartHandler.cs" />
+    <Compile Include="Handlers\SupportOnlineConfigPartHandler.cs" />
+    <Compile Include="Migrations.cs" />
+    <Compile Include="Models\AdsPriceConfigPart.cs" />
+    <Compile Include="Models\CommentForumPart.cs" />
+    <Compile Include="Models\CommentLikePart.cs" />
+    <Compile Include="Models\ForumFriendPart.cs" />
+    <Compile Include="Models\FilterRulesPart.cs" />
+    <Compile Include="Models\ForumPostPart.cs" />
+    <Compile Include="Models\ForumPostStatusPart.cs" />
+    <Compile Include="Models\ForumThreadPart.cs" />
+    <Compile Include="Models\UnitInvestPart.cs" />
+    <Compile Include="Models\PublishStatusPart.cs" />
+    <Compile Include="Models\SupportOnlineConfigPart.cs" />
+    <Compile Include="Permissions.cs" />
+    <Compile Include="Services\CommentService.cs" />
+    <Compile Include="Services\FileCacheService.cs" />
+    <Compile Include="Services\ForumFriendService.cs" />
+    <Compile Include="Services\ImportDataService.cs" />
+    <Compile Include="Services\PostAdminService.cs" />
+    <Compile Include="Services\PostForumFrontEndService.cs" />
+    <Compile Include="Services\ThreadAdminService.cs" />
+    <Compile Include="Services\UserForumService.cs" />
+    <Compile Include="ViewModels\AdsPriceConfigViewModel.cs" />
+    <Compile Include="ViewModels\CommentViewModel.cs" />
+    <Compile Include="ViewModels\OrchardTagsViewModel.cs" />
+    <Compile Include="ViewModels\PostAdminViewModel.cs" />
+    <Compile Include="ViewModels\PostForumFrontEndViewModel.cs" />
+    <Compile Include="ViewModels\SupportOnlineIndexConfigViewModel.cs" />
+    <Compile Include="ViewModels\ThreadAdminViewModel.cs" />
+    <Compile Include="ViewModels\ThreadForumFrontEndViewModel.cs" />
+    <Compile Include="ViewModels\UserFriendViewModel.cs" />
+    <Compile Include="ViewModels\UnitInvestViewModel.cs" />
+    <Compile Include="ViewModels\UserInfoViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target> -->
+  <Target Name="AfterBuild" DependsOnTargets="AfterBuildCompiler">
+    <PropertyGroup>
+      <AreasManifestDir>$(ProjectDir)\..\Manifests</AreasManifestDir>
+    </PropertyGroup>
+    <!-- If this is an area child project, uncomment the following line:
+    <CreateAreaManifest AreaName="$(AssemblyName)" AreaType="Child" AreaPath="$(ProjectDir)" ManifestPath="$(AreasManifestDir)" ContentFiles="@(Content)" />
+    -->
+    <!-- If this is an area parent project, uncomment the following lines:
+    <CreateAreaManifest AreaName="$(AssemblyName)" AreaType="Parent" AreaPath="$(ProjectDir)" ManifestPath="$(AreasManifestDir)" ContentFiles="@(Content)" />
+    <CopyAreaManifests ManifestPath="$(AreasManifestDir)" CrossCopy="false" RenameViews="true" />
+    -->
+  </Target>
+  <Target Name="AfterBuildCompiler" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(ProjectDir)\..\$(ProjectName)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>45979</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>
+          </IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://orchard.codeplex.com</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Import Project="packages\JetBrains.ReSharper.SDK.8.2.1158\build\JetBrains.ReSharper.SDK.Targets" Condition="Exists('packages\JetBrains.ReSharper.SDK.8.2.1158\build\JetBrains.ReSharper.SDK.Targets')" />
+</Project>

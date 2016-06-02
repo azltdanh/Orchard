@@ -1,0 +1,9 @@
+﻿@model dynamic
+@*
+    <div>[View Property]</div>
+    @Model.ContentItem.Id
+    <!-- LastUpdatedUser -->
+    <div><strong>Nguồn gần nhất:</strong> @Model.ViewModel.LastInfoFromUser.UserName - <strong>Sửa bởi:</strong> @Model.ViewModel.LastUpdatedUser.UserName <strong>ngày</strong> @String.Format("{0:dd/MM/yyyy}", Model.ViewModel.LastUpdatedDate)</div>
+    <!-- CreatedUser -->
+    <div><strong>Nguồn đầu tiên:</strong> @Model.ViewModel.FirstInfoFromUser.UserName - <strong>Tạo bởi:</strong> @Model.ViewModel.CreatedUser.UserName <strong>ngày</strong> @String.Format("{0:dd/MM/yyyy}", Model.ViewModel.CreatedDate)</div>
+*@

@@ -1,0 +1,220 @@
+﻿@model RealEstate.ViewModels.CustomerIndexViewModel
+@using RealEstate.ViewModels;
+@using RealEstate.Helpers;
+
+@{
+    Style.Require("Select2");
+    Script.Require("Select2");
+    Script.Require("Floatheader");
+    Script.Require("Common");
+    
+    Layout.Title = T("Customers").ToString();
+}
+    
+@if (Model.Options != null)
+{
+    @Html.Partial("Filter", Model.Options)
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{
+    if (Model.Options != null)
+    {
+    <div class="left">@Html.Raw(String.Format("Tìm được <strong>{0:#,0}</strong> kết quả ({1:#,0.##} giây)", Model.TotalCount, Model.TotalExecutionTime))</div>
+    <div class="right">
+        @if (AuthorizedFor(RealEstate.Permissions.BulkActionCustomers))
+        {
+        <fieldset class="bulk-actions">
+            <label for="publishActions" class="filter-label">@T("Tác vụ:")</label>
+            <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+            @switch (Model.Options.StatusCssClass)
+            {
+                case "st-pending":
+                case "st-approved":
+                case "st-invalid":
+                    @Html.SelectOption(Model.Options.BulkAction, CustomerBulkAction.None, T("").ToString())
+                        
+                    if (Model.Options.StatusCssClass == "st-approved")
+                    {
+                    @Html.SelectOption(Model.Options.BulkAction, CustomerBulkAction.Refresh, T("Làm mới tin").ToString())
+                    @Html.SelectOption(Model.Options.BulkAction, CustomerBulkAction.AddToAdsVIP, T("--> Tin VIP").ToString())
+                    @Html.SelectOption(Model.Options.BulkAction, CustomerBulkAction.RemoveAdsVIP, T("--> loại khỏi Tin VIP").ToString())
+                    }
+                    else
+                    {
+                    @Html.SelectOption(Model.Options.BulkAction, CustomerBulkAction.Approve, T("Duyệt tin").ToString())
+                    }
+                    @Html.SelectOption(Model.Options.BulkAction, CustomerBulkAction.NotApprove, T("Không hợp lệ").ToString())
+                    @Html.SelectOption(Model.Options.BulkAction, CustomerBulkAction.Delete, T("Xóa tin").ToString())
+                    break;
+
+                default:
+                    @Html.SelectOption(Model.Options.BulkAction, CustomerBulkAction.None, T("").ToString())
+                    @Html.SelectOption(Model.Options.BulkAction, CustomerBulkAction.StatusNew, T("Bình thường").ToString())
+                    @Html.SelectOption(Model.Options.BulkAction, CustomerBulkAction.StatusHigh, T("Cần mua gấp").ToString())
+                    @Html.SelectOption(Model.Options.BulkAction, CustomerBulkAction.StatusNegotiate, T("Đang thương lượng").ToString())
+                    @Html.SelectOption(Model.Options.BulkAction, CustomerBulkAction.StatusTrading, T("Chờ giao dịch").ToString())
+                    @Html.SelectOption(Model.Options.BulkAction, CustomerBulkAction.StatusBought, T("Đã mua").ToString())
+                    @Html.SelectOption(Model.Options.BulkAction, CustomerBulkAction.StatusOnhold, T("Tạm ngưng").ToString())
+                    @Html.SelectOption(Model.Options.BulkAction, CustomerBulkAction.StatusSuspended, T("Hết nhu cầu").ToString())
+                    @Html.SelectOption(Model.Options.BulkAction, CustomerBulkAction.StatusDoubt, T("Nghi cò").ToString())
+                    @Html.SelectOption(Model.Options.BulkAction, CustomerBulkAction.StatusBroker, T("Cò").ToString())
+                    @Html.SelectOption(Model.Options.BulkAction, CustomerBulkAction.StatusTrash, T("Chờ xóa").ToString())
+                    
+                    // PublishCustomer
+                    if (AuthorizedFor(RealEstate.Permissions.PublishCustomer))
+                    {
+                        @Html.SelectOption(Model.Options.BulkAction, CustomerBulkAction.Publish, T("--Publish ra trang chủ").ToString())
+                    }
+                    
+                    @Html.SelectOption(Model.Options.BulkAction, CustomerBulkAction.Delete, T("--Xóa khách hàng").ToString())
+                    @Html.SelectOption(Model.Options.BulkAction, CustomerBulkAction.UpdateNegotiateStatus, T("--Cập nhật KH đang thương lượng").ToString())
+                   break;
+            }
+            </select>
+            <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+            @Html.Hidden("ReturnUrl")
+        </fieldset>
+        }
+        @Html.ActionLink(T("Thêm KH mới").ToString(), "Create", new { AdsTypeId = Model.Options.AdsTypeId }, new { @class = "button primaryAction" })
+    </div>
+    }
+    
+    <fieldset>
+        
+        <table class="items fixed-table float-header">
+            <thead>
+                <tr>
+                    <th scope="col" class="w20"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.Customers)" /></th>
+                    <th scope="col" class="w58">@T("Id")</th>
+                    <th scope="col" class="w100">@T("Khách hàng")</th>
+                    @*<th scope="col" class="w100">@T("Tình trạng")</th>*@
+                    <th scope="col" class="p36">@T("Mục đích & Yêu cầu")</th>
+                    <th scope="col" class="p20">@T("Nhà đã xem")</th>
+                    <th scope="col" class="w60">@T("NV dẫn")</th>
+                    <th scope="col" class="w60">@T("Ngày")</th>
+                    <th scope="col" class="w52">@T("User")</th>
+                </tr>
+            </thead>
+            <tbody>
+            @{var index = 0;}
+            @foreach (var entry in Model.Customers)
+            {
+                var item = entry.Customer;
+            <tr class="@(Model.Options != null && item.LastUpdatedDate < Model.Options.NeedUpdateDate ? "bg-new" : "")">
+                <td>
+                    <input type="hidden" value="@Model.Customers[index].Customer.Id" name="@Html.NameOf(m => m.Customers[index].Customer.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.Customers[index].IsChecked)"/>
+                </td>
+                <td class="">
+                    <!-- Published -->
+                    @if (item.Published)
+                    {
+                        <a href="@Url.Action("RequirmentDetail", "PropertySearch", new { area = "RealEstate.FrontEnd", id = item.Id })" title="Xem trên web" target="_blank">
+                        @if (item.AdsExpirationDate > DateTime.Now)
+                        {
+                            <span title="BĐS đang hiện trên trang chủ" class="left ui-icon icon-label-green" style="margin-top:3px;"></span>
+                        }
+                        else
+                        {
+                            <span title="BĐS hết hạn trên trang chủ" class="left ui-icon icon-label-red" style="margin-top:3px;"></span>
+                        }
+                        </a>
+                    }
+                    
+                    <!-- Id -->
+                    @if (entry.IsEditable)
+                    {
+                        @Html.ActionLink(item.Id.ToString(), "Edit", new { Id = item.Id, returnUrl = HttpContext.Current.Request.Url }, new { Class = "" })
+                    }
+                    else
+                    {
+                        @item.Id
+                    }
+                    <!-- UserGroup -->
+                    @if (item.UserGroup != null)
+                    {
+                        <div><small class="small">@item.UserGroup.ShortName</small></div>
+                    }
+                </td>
+                <td>
+                    @if (entry.ShowContactPhone)
+                    {
+                        <a data-toggle="tooltip" href="@Url.Action("AjaxGetCustomerContactPhone", "Home", new { item.Id })"
+                           class="ui-icon icon-phone @(DateTime.Now.Subtract(item.LastCallDate ?? DateTime.Now.AddDays(-2)).TotalHours< 24 ? "icon-phone-recently" : "icon-phone-available")"
+                           title="@(item.LastCallDate.HasValue ? "Gọi " + ((DateTime)item.LastCallDate).TimeAgo() + " bởi <strong>" + item.LastCallUser.UserName + "</strong>" : "Check as Called")"></a>
+                    }
+                    <span>@item.ContactName</span>
+                </td>
+                @*<td class="@item.Status.CssClass">
+                    @item.Status.Name
+                </td>*@
+                <td>
+                    <div class="@item.Status.CssClass">@item.Status.Name</div>
+                    @if (entry.Purposes.Any())
+                    { <div><strong>Mục đích: </strong>@string.Join(", ", entry.Purposes.Select(r => r.Name).ToArray())</div> }
+                    @if (!string.IsNullOrEmpty(item.Note))
+                    { <div><strong>Ghi chú: </strong><span class="st-negotiate">@item.Note</span></div> }
+                    @Html.Partial("ViewCustomerRequirements", entry.Requirements)
+                </td>
+                <td>
+                    @Html.Partial("ViewCustomerProperties", item.Properties)
+                </td>
+                <td>
+                    @Html.Partial("ViewCustomerServedUsers", item.Properties)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.CreatedDate, "ShortDate")
+                    <!-- AdsVIP -->
+                    @if (item.AdsVIP && item.AdsVIPExpirationDate > DateTime.Now)
+                    {<span title="Tin VIP" class="icon-ads-vip"></span> }
+                </td>
+                <td>
+                    <div data-toggle="tooltip">@item.CreatedUser.UserName</div>
+                    <div data-tooltip-content="" style="display:none">
+                        <div>Sửa bởi <strong>@item.LastUpdatedUser.UserName</strong> ngày @string.Format("{0:dd/MM/yy}", item.LastUpdatedDate)</div>
+                        <div>Tạo bởi <strong>@item.CreatedUser.UserName</strong> ngày @string.Format("{0:dd/MM/yy}", item.CreatedDate)</div>
+                    </div>
+                </td>
+            </tr>
+                    index++;
+            }
+            </tbody>
+        </table>
+        
+        @Display(Model.Pager)
+
+    </fieldset>
+}
+<script type="text/javascript">
+    if ($('#StatusId').val() == 132823) $('.local-section-k-h-ch-duy-t').addClass('selected').siblings().removeClass('selected');
+</script>
+
+<script type="text/javascript">
+    $(function () {
+        $(".icon-phone-available, .icon-phone-recently").click(function () {
+
+            var obj = $(this);
+            $.ajax({
+                type: "post",
+                dataType: "JSON",
+                url: $(this).attr("href"),
+                data: {
+                    __RequestVerificationToken: antiForgeryToken
+                },
+                success: function (results) {
+                    if (results.success) {
+                        $(obj).removeClass("icon-phone-available").addClass("icon-phone-recently").attr("title", "Vừa mới gọi bởi " + results.userName);
+                        //if ($.fn.tooltip) $(obj).tooltip('destroy').tooltip();
+                        alert("Khách hàng: " + results.contactName + "\nĐiện thoại: " + results.contactPhone);
+                    }
+                    else
+                        alert(results.message);
+                },
+                error: function (request, status, error) {
+                }
+            });
+            return false;
+        });
+    });
+</script>

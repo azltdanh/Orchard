@@ -1,0 +1,35 @@
+﻿@model RealEstateForum.Service.ViewModels.SupportOnlineEditViewModel
+@using Orchard.Environment.Descriptor.Models
+@{
+    Script.Require("realEstate.MiniForum.Tinymce");
+    var shellDescriptor = WorkContext.Resolve<ShellDescriptor>();
+}
+<script>
+    var mediaPickerEnabled = 'false';
+    var mediaLibraryEnabled = @(shellDescriptor.Features.Any(x => x.Name == "Orchard.MediaLibrary") ? "true" : "false");
+</script>
+<fieldset>
+    @Html.LabelFor(m => m.NumberPhone, T("Nhập số điện thoại:"))
+    @Html.TextArea("NumberPhone", (string)Model.NumberPhone, 5, 5, new Dictionary<string, object> {
+	{"class", "html tinymce"}})
+    @Html.ValidationMessageFor(m => m.NumberPhone, "*")
+</fieldset>
+
+<fieldset>
+    @Html.LabelFor(m => m.SkypeNick, T("Nick Skype: dùng ký tự \",\" để ngăn cách nhiều nick "))
+    @Html.TextBoxFor(m => m.SkypeNick, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.SkypeNick, "*")
+</fieldset>
+
+<fieldset>
+    @Html.LabelFor(m => m.YahooNick, T("Nick Yahoo: dùng ký tự \",\" để ngăn cách nhiều nick"))
+    @Html.TextBoxFor(m => m.YahooNick, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.YahooNick, "*")
+</fieldset>
+
+
+    <script type="text/javascript">
+        $(function () {
+            $('[name="submit.SaveReturn"],[name="submit.Back"]').insertAfter('fieldset.save-button button[name="submit.Save"]').css('margin-left', '4px');
+        });
+    </script>

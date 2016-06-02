@@ -1,0 +1,95 @@
+﻿@model List<PropertyDisplayEntry>
+@using RealEstate.ViewModels;
+@using RealEstate.Helpers;
+
+    <ul class="list-properties-highlight">
+        @foreach (var entry in Model)
+        {
+            var item = entry.Property;
+            var index = Model.IndexOf(entry);
+            <li class="col-lg-12 col-md-12 col-sm-12 col-xs-12@(index == 0 ? " first" : "")@(index == Model.Count - 1 ? " last" : "")">
+                <div class="media" data-id="@item.Id">
+                    <a class="pull-left" href="@Url.Action("RealEstateDetail", "PropertySearch", new { area = "RealEstate.FrontEnd", id = item.Id, title = item.DisplayForUrl })">
+                        <img alt="@item.DisplayForTitle.StripHtml()" src="@entry.DefaultImgUrl?width=100" class="img-thumbnail img-responsive" />
+                        <div class="property-id text-center text-bold text-green">
+                            Mã tin: @item.Id
+                        </div>
+                    </a>
+                    <div class="media-body@(item.IsAuthenticatedInfo == true ? " bg-authenticated" : "")">
+                        <div class="block-ellipsis block-ellipsis-2">
+                            <a class="@((item.AdsVIP && item.AdsVIPExpirationDate >= DateTime.Now && item.UserGroup.Id == Convert.ToInt32(entry.DomainGroup)) ? "vip-" + item.SeqOrder : "") link-visited" href="@Url.Action("RealEstateDetail", new { id = item.Id, title = item.DisplayForUrl })" title="@item.DisplayForTitle.StripHtml()">
+                                <strong>@Html.Raw(item.DisplayForTitle)</strong>
+                            </a>
+                            <i class="@(item.AdsVIP && item.AdsVIPExpirationDate >= DateTime.Now && item.UserGroup.Id == Convert.ToInt32(entry.DomainGroup) ? "icon_vip_" + item.SeqOrder : "")"></i>
+                        </div>
+                        <div class="block-ellipsis block-ellipsis-4">
+                            @if (!String.IsNullOrEmpty(item.Title))
+                            {
+                                @item.DisplayForLocationFullAddress
+                            }
+                            @Html.Raw(item.DisplayForAreaConstructionLocationInfo)
+                            <div class="link-view-detail"><a href="@Url.Action("RealEstateDetail", new { id = item.Id, title = item.DisplayForUrl })" title="Xem chi tiết">>> Click xem chi tiết</a></div>
+                        </div>
+                        <div class="text-ellipsis">
+                            @if (!item.PriceNegotiable && !item.IsExcludeFromPriceEstimation && item.PriceEstimatedInVND != null && item.PriceProposedInVND > 0 && item.PriceEstimatedInVND > item.PriceProposedInVND && item.AdsType != null && item.AdsType.CssClass == "ad-selling")
+                            {
+                                <strong class="text-success">
+                                    Đã định giá:
+                                    @if (item.PriceEstimatedInVND > item.PriceProposedInVND)
+                                    {
+                                        <span> @String.Format("{0:#,0.##} {1}", item.PriceEstimatedInVND, item.PaymentMethod.ShortName)</span>
+                                    }
+                                    else if (item.PriceEstimatedByStaff > item.PriceProposedInVND)
+                                    {
+                                        <span> @String.Format("{0:#,0.##} {1}", item.PriceEstimatedByStaff, item.PaymentMethod.ShortName)</span>
+                                    }
+                                    -
+                                    <strong class="text-error" title="@(item.Province != null ? item.Province.Name : item.OtherProvinceName)">
+                                        @if (item.Province != null)
+                                        { @item.Province.Name }
+                                        else
+                                        { @item.OtherProvinceName}
+                                    </strong>
+
+                                </strong>
+
+                            }
+                            <div>
+                                <strong class="text-danger">@item.DisplayForPriceProposed</strong>
+                                @if (!item.PriceNegotiable && !item.IsExcludeFromPriceEstimation && item.PriceEstimatedInVND != null && item.PriceProposedInVND > 0 && item.PriceEstimatedInVND > item.PriceProposedInVND && item.AdsType != null && item.AdsType.CssClass == "ad-selling")
+                                {
+                                    <span>- </span>
+                                    if (item.PriceEstimatedInVND > item.PriceProposed)
+                                    {
+                                        <strong class="text-info">Rẻ hơn: @String.Format("{0:#,0} %", (item.PriceEstimatedInVND - item.PriceProposed) * 100 / item.PriceEstimatedInVND)</strong>
+                                    }
+                                    else if (item.PriceEstimatedByStaff > item.PriceProposed)
+                                    {
+                                        <strong class="text-info">Rẻ hơn: @String.Format("{0:#,0} %", (item.PriceEstimatedByStaff - item.PriceProposed) * 100 / item.PriceEstimatedByStaff)</strong>
+                                    }
+                                }
+                                else
+                                {
+                                    <text>-
+                                        <strong class="text-error">
+                                            @if (item.Province != null)
+                                            { @item.Province.Name }
+                                            else
+                                            { @item.OtherProvinceName}
+                                        </strong>
+                                    </text>
+                                }
+                            </div>
+                            <a href="@Url.Action("RealEstateDetail", new { id = item.Id, title = item.DisplayForUrl })" class="text-info"><i class="icon_silk_image"></i>Vị trí BĐS</a>
+                            <a href="@Url.Action("RealEstateDetail", new { id = item.Id, title = item.DisplayForUrl })" class="text-info"><i class="icon_silk_comments"></i>Bình luận BĐS</a>
+                            @if (item.AdsExpirationDate < DateTime.Now)
+                            { <strong class="text-muted">(Tin quá hạn)</strong>  }
+                        </div>
+
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+
+<div class="clearfix"></div>

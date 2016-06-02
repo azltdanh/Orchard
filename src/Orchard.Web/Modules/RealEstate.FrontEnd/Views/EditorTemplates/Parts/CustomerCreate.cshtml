@@ -1,0 +1,375 @@
+﻿@model RealEstate.FrontEnd.ViewModels.CustomerFrontEndCreateViewModel
+@using RealEstate.ViewModels;
+@{
+    Style.Require("BootstrapCombobox");
+    Script.Require("BootstrapCombobox");
+
+    Script.Require("BootstrapMultiselect");
+
+    Script.Require("FrontEnd.Property.Filter");
+    Script.Require("jqueryValidate");
+}
+
+<div class="form-editor">
+
+    <!-- Yêu cầu BĐS -->
+    <article class="content-item">
+        <header>
+            <div class="header-wrapper">
+                <div class="header-title">
+                    <div class="header-title-left">
+                        <div class="header-title-triangle"></div>
+                    </div>
+                    <h2 class="header-title-text">Yêu cầu khách hàng</h2>
+                    <div class="header-title-right"></div>
+                </div>
+                <div class="header-msg text-ellipsis">
+                    <span class="text-success">Các mục có dấu (<span class="text-error">*</span>) là bắt buộc nhập</span>
+                </div>
+            </div>
+        </header>
+        <article>
+            <div class="row">
+                <div class="col-lg-9 col-md-9 col-sm-9">
+                    <div class="form-horizontal" id="divrequirement">
+                        <!-- AdsType -->
+                        <div class="form-group">
+                            <label class="control-label col-lg-4 col-md-4 col-sm-4"><span class="text-error">*</span> Loại giao dịch:</label>
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                @Html.DropDownListFor(m => m.AdsTypeCssClass,
+                                Model.AdsTypes.Select(s => new SelectListItem
+                                {
+                                    Selected = s.CssClass == Model.AdsTypeCssClass,
+                                    Text = s.Name,
+                                    Value = s.CssClass
+                                }), "Chọn loại tin", new { Class = "form-control", required = "required" })
+                                @Html.ValidationMessageFor(m => m.AdsTypeCssClass, "*")
+                            </div>
+                        </div>
+
+                        <!-- TypeGroup -->
+                        <div class="form-group">
+                            <label class="control-label col-lg-4 col-md-4 col-sm-4"><span class="text-error">*</span> Loại BĐS:</label>
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                @Html.DropDownListFor(m => m.TypeGroupCssClass,
+                                Model.TypeGroups.Select(s => new SelectListItem
+                                {
+                                    Selected = s.CssClass == Model.TypeGroupCssClass,
+                                    Text = s.Name,
+                                    Value = s.CssClass
+                                }), "Chọn loại BĐS", new { Class = "form-control", required = "required" })
+                                @Html.ValidationMessageFor(m => m.TypeGroupCssClass, "*")
+                            </div>
+                        </div>
+
+                        <!-- Province -->
+                        <div class="form-group">
+                            <label class="control-label col-lg-4 col-md-4 col-sm-4"><span class="text-error">*</span> Tỉnh / Thành Phố:</label>
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                @Html.DropDownListFor(m => m.ProvinceId,
+                                Model.Provinces.Select(s => new SelectListItem
+                                {
+                                    Selected = s.Id == Model.ProvinceId,
+                                    Text = s.Name,
+                                    Value = s.Id.ToString()
+                                }), "Chọn tất cả Tỉnh / TP", new { Class = "form-control combobox", required = "required" })
+                                @Html.ValidationMessageFor(m => m.ProvinceId, "*")
+                            </div>
+                        </div>
+
+                        <!-- Districts -->
+                        <div class="form-group">
+                            <label class="control-label col-lg-4 col-md-4 col-sm-4">Quận / Huyện:</label>
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                @Html.ListBoxFor(m => m.DistrictIds,
+                                new MultiSelectList(Model.Districts.Select(a => new { a.Name, a.Id }).ToList(), "Id", "Name", Model.DistrictIds)
+                                , new { Class = "form-control multiselect" })
+                            </div>
+                        </div>
+
+                        <!-- Wards -->
+                        <div class="form-group">
+                            <label class="control-label col-lg-4 col-md-4 col-sm-4">Phường / Xã:</label>
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                @Html.ListBoxFor(m => m.WardIds,
+                                new MultiSelectList(Model.Wards.Select(a => new { a.Name, a.Id }).ToList(), "Id", "Name", Model.WardIds)
+                                , new { Class = "form-control multiselect" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-lg-4 col-md-4 col-sm-4">Tên dự án / chung cư:</label>
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                @Html.ListBoxFor(m => m.ApartmentIds,
+                                    new MultiSelectList(Model.Apartments.Select(a => new { a.Name, a.Id }).ToList(), "Id", "Name", Model.ApartmentIds)
+                                    , new { Class = "select-box multiselect" })
+                                @Html.ValidationMessageFor(m => m.ApartmentIds, "*")
+
+                                @Html.TextBoxFor(m => m.OtherProjectName, new { @class = "form-control", style = "display:none;", placeholder = "Tên dự án / Chung cư" })
+                                @Html.ValidationMessageFor(m => m.OtherProjectName, "*")
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2">
+                                <label class="checkbox checkbok-different">@Html.CheckBoxFor(m => m.ChkOtherProjectName, new { tabindex = "-1" }) Khác</label>
+                            </div>
+                        </div>
+
+                        <!-- Streets -->
+                        <div class="form-group">
+                            <label class="control-label col-lg-4 col-md-4 col-sm-4">Đường / Phố:</label>
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                @Html.ListBoxFor(m => m.StreetIds,
+                                new MultiSelectList(Model.Streets.Select(a => new { a.Name, a.Id }).ToList(), "Id", "Name", Model.StreetIds)
+                                , new { Class = "form-control multiselect" })
+                            </div>
+                        </div>
+                         
+                        <!-- ApartmentFloor -->
+                        <div class="form-group">
+                            <label class="control-label col-lg-4 col-md-4 col-sm-4">Vị trí tầng:</label>
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                <select id="ApartmentFloorThRange" name="ApartmentFloorThRange" class="form-control">
+                                    <option value="" disabled="disabled" selected="selected" class="hide disabled">Chọn vị trí tầng</option>
+                                    <option value="All">Bất kỳ tầng nào</option>
+                                    <option value="ApartmentFloorTh1To3">Từ tầng 1 đến tầng 3</option>
+                                    <option value="ApartmentFloorTh4To7">Từ tầng 4 đến tầng 7</option>
+                                    <option value="ApartmentFloorTh8To12">Từ tầng 8 đến tầng 12</option>
+                                    <option value="ApartmentFloorTh12">Từ tầng 12 trở lên</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Location -->
+                        <div class="form-group">
+                            <label class="control-label col-lg-4 col-md-4 col-sm-4">Vị trí BĐS:</label>
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                <select id="AlleyTurnsRange" name="AlleyTurnsRange" class="form-control">
+                                    <option value="" disabled="disabled" selected="selected" class="collapse disabled">Mặt Tiền / Ngõ Hẻm</option>
+                                    <option value="All">Tất cả các vị trí</option>
+                                    <option value="AllWalk">Mặt Tiền</option>
+                                    <option value="Alley6">Hẻm >= 6m</option>
+                                    <option value="Alley5">Hẻm >= 5m</option>
+                                    <option value="Alley4">Hẻm >= 4m</option>
+                                    <option value="Alley3">Hẻm >= 3m</option>
+                                    <option value="Alley2">Hẻm >= 2m</option>
+                                    <option value="Alley">Hẻm >= 1m</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Area -->
+                        <div class="form-group">
+                            <label class="control-label col-lg-4 col-md-4 col-sm-4">Diện tích tối thiểu:</label>
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(model => model.MinArea, new { Class = "form-control AutoFloat7", placeholder = "Diện tích tối thiểu" })
+                                    <span class="input-group-addon">m<sup>2</sup></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-4 col-md-4 col-sm-4">Chiều ngang tối thiểu:</label>
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(model => model.MinWidth, new { Class = "form-control AutoFloat7", placeholder = "Chiều ngang tối thiểu" })
+                                    <span class="input-group-addon">m</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-4 col-md-4 col-sm-4">Chiều dài tối thiểu:</label>
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(model => model.MinLength, new { Class = "form-control AutoFloat7", placeholder = "Chiều dài tối thiểu" })
+                                    <span class="input-group-addon">m</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Floors -->
+                        <div class="form-group">
+                            <label class="control-label col-lg-4 col-md-4 col-sm-4">Số lầu tối thiểu:</label>
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                @Html.TextBoxFor(model => model.MinFloors, new { Class = "form-control AutoInt4", placeholder = "Số lầu tối thiểu" })
+                            </div>
+                        </div>
+
+                        <!-- Bedrooms -->
+                        <div class="form-group">
+                            <label class="control-label col-lg-4 col-md-4 col-sm-4">Số Phòng Ngủ Tối Thiểu:</label>
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                @Html.TextBoxFor(m => m.MinBedrooms, new { Class = "form-control AutoInt4", placeholder = "Số Phòng Ngủ tối thiểu" })
+                            </div>
+                        </div>
+
+                        <!-- Directions -->
+                        <div class="form-group">
+                            <label class="control-label col-lg-4 col-md-4 col-sm-4">Hướng BĐS:</label>
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                @Html.ListBoxFor(m => m.DirectionIds,
+                                new MultiSelectList(Model.Directions.Select(a => new { a.Name, a.Id }).ToList(), "Id", "Name", Model.DirectionIds)
+                                , new { Class = "form-control multiselect" })
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="form-inline col-lg-3 col-md-3 col-sm-3">
+                    <label>Mục đích yêu cầu:</label>
+                    @{
+                        var rIndex = 0;
+                    }
+                    <ul class="list-unstyled last">
+                        @foreach (var r in Model.Purposes)
+                        {
+                            <li>
+                                <label class="checkbox" for="@Html.FieldNameFor(m => m.Purposes[rIndex].IsChecked)">
+                                    <input type="hidden" value="@r.Purpose.Id" name="@Html.FieldNameFor(m => m.Purposes[rIndex].Purpose.Id)"/>
+                                    <input type="checkbox" value="true"
+                        name="@Html.FieldNameFor(m => m.Purposes[rIndex].IsChecked)"
+                        id="@Html.FieldNameFor(m => m.Purposes[rIndex].IsChecked)"
+                        @if (r.IsChecked)
+                        {<text>checked="checked"</text>}/>
+                                    @string.Format("{0}", r.Purpose.Name)
+                                    @{rIndex++;}
+                                </label>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </article>
+        <footer>
+        </footer>
+    </article>
+
+    <!-- Thời hạn đăng tin -->
+    <article class="content-item">
+        <header>
+            <div class="header-wrapper">
+                <div class="header-title">
+                    <div class="header-title-left">
+                        <div class="header-title-triangle"></div>
+                    </div>
+                    <h2 class="header-title-text">Thời hạn đăng tin</h2>
+                    <div class="header-title-right"></div>
+                </div>
+                <div class="header-msg text-ellipsis">
+                    <span class="text-success">Các mục có dấu (<span class="text-error">*</span>) là bắt buộc nhập</span>
+                </div>
+            </div>
+        </header>
+        <article>
+            <div class="form-horizontal">
+
+                <!-- AdsExpirationDate -->
+                <div class="form-group">
+                    <label class="control-label col-lg-4 col-md-4 col-sm-4">Thời hạn đăng tin:</label>
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <select id="AdsExpirationDateValue" name="AdsExpirationDateValue" class="form-control">
+                            <option value="1">10 ngày </option>
+                            <option value="2">20 ngày </option>
+                            <option value="3">30 ngày </option>
+                            <option value="4">60 ngày </option>
+                            <option value="5" selected="selected">90 ngày </option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- PriceProposed -->
+                <div class="form-group">
+                    <label class="control-label col-lg-4 col-md-4 col-sm-4">Giá:</label>
+                    <div class="col-lg-8 col-md-8 col-sm-8">
+                        <table>
+                            <tr>
+                                <td>@Html.TextBoxFor(m => m.MinPrice, new { Class = "form-control AutoFloat7", placeholder = "Giá từ" })</td>
+                                <td>@Html.TextBoxFor(m => m.MaxPrice, new { Class = "form-control AutoFloat7", placeholder = "đến" })</td>
+                                <td width="30%">
+                                    @Html.DropDownListFor(m => m.PaymentMethodCssClass,
+                                Model.PaymentMethods.Select(s => new SelectListItem
+                                {
+                                    Selected = s.CssClass == Model.PaymentMethodCssClass,
+                                    Text = s.Name,
+                                    Value = s.CssClass
+                                }), new { Class = "form-control" })
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Note -->
+                <div class="form-group" id="NoteTr">
+                    <label class="control-label col-lg-4 col-md-4 col-sm-4">Yêu cầu khác:</label>
+                    <div class="col-lg-8 col-md-8 col-sm-8">
+                        @Html.TextAreaFor(m => m.Note, new { Class = "form-control", placeholder = "Chỉ nhập không quá 500 ký tự", maxlength = "500" })
+                        <p class="help-block">Tối đa <strong>500</strong> ký tự. Đang còn <span id="charsNote">500</span> ký tự.</p>
+                    </div>
+                </div>
+
+            </div>
+        </article>
+        <footer>
+        </footer>
+    </article>
+
+    <!-- Thông tin liên hệ -->
+    <article class="content-item">
+        <header>
+            <div class="header-wrapper">
+                <div class="header-title">
+                    <div class="header-title-left">
+                        <div class="header-title-triangle"></div>
+                    </div>
+                    <h2 class="header-title-text">Thông tin liên hệ</h2>
+                    <div class="header-title-right"></div>
+                </div>
+                <div class="header-msg text-ellipsis">
+                    <span class="text-success">Các mục có dấu (<span class="text-error">*</span>) là bắt buộc nhập</span>
+                </div>
+            </div>
+        </header>
+        <article>
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="control-label col-lg-4 col-md-4 col-sm-4"><span class="text-error">*</span> Họ Tên:</label>
+                    <div class="col-lg-8 col-md-8 col-sm-8">
+                        @Html.TextBoxFor(m => m.Name, new { Class = "form-control", required = "required", placeholder = "Nhập họ và tên bạn" })
+                        @Html.ValidationMessageFor(m => m.Name, "*")
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-lg-4 col-md-4 col-sm-4"><span class="text-error">*</span> Số điện thoại:</label>
+                    <div class="col-lg-8 col-md-8 col-sm-8">
+                        @Html.TextBoxFor(m => m.Phone, new { Class = "form-control", required = "required", placeholder = "Nhập số điện thoại của bạn" })
+                        @Html.ValidationMessageFor(m => m.Phone, "*")
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-lg-4 col-md-4 col-sm-4">Email:</label>
+                    <div class="col-lg-8 col-md-8 col-sm-8">
+                        @Html.TextBoxFor(m => m.Email, new { Class = "form-control", placeholder = "Nhập địa chỉ Email" })
+                        @Html.ValidationMessageFor(m => m.Email, "*")
+                    </div>
+                </div>
+            </div>
+        </article>
+        <footer>
+        </footer>
+    </article>
+
+</div>
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        $(document).ready(function() {
+            //AdsTypeCssClass
+            $("#AdsTypeCssClass").change(function() {
+                if ($(this).val() == "ad-selling" || $(this).val() == "ad-leasing") {
+                    $('#overlay').show();
+                    window.location.href = "/dang-tin?AdsTypeCssClass=" + $(this).val();
+                }
+            });
+        });
+    </script>
+}

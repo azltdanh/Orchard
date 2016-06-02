@@ -1,0 +1,55 @@
+﻿@model RealEstate.UserControlPanel.Models.UserProfileInfomationPart
+
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left">
+                    <div class="header-title-triangle"></div>
+                </div>
+                <h2 class="header-title-text">Thông tin cá nhân</h2>
+                <div class="header-title-right"></div>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="form-horizontal">
+            <div class="control-group">
+                <label class="control-label">Địa chỉ</label>
+                <div class="controls">
+                    @Html.TextAreaFor(model => model.Address)
+                    @Html.ValidationMessageFor(model => model.Address)
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Số điện thoại</label>
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.Phone)
+                    @Html.ValidationMessageFor(model => model.Phone)
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Tên công ty</label>
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.CompanyName)
+                    @Html.ValidationMessageFor(model => model.CompanyName)
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Ngày sinh</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.DateOfBirth,String.Format("{0:dd/MM/yyyy}", Model.DateOfBirth), new { Class = "date-box" })
+                    @Html.ValidationMessageFor(model => model.DateOfBirth)
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Website</label>
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.Website)
+                    @Html.ValidationMessageFor(model => model.Website)
+                </div>
+            </div>
+        </div>
+    </article>
+</article>
+<div class="spacer"></div>

@@ -1,0 +1,38 @@
+﻿@using RealEstate.UserControlPanel.Models;
+@using RealEstate.UserControlPanel.ViewModels;
+
+@{
+    var countDisplayAll = (int)Model.countDisplayAll;
+    var countView = (int)Model.countView;
+    var countEstimate = (int)Model.countEstimate;
+    var countNotDisplay = (int)Model.countNotDisplay;
+    var countPending = (int)Model.countPending;
+    var countStopPublished = (int)Model.countStopPublished;
+    var countInvalid = (int)Model.countInvalid;
+    var countDeleted = (int)Model.countDeleted;
+    var countDraft = (int)Model.countDraft;
+    var countExchange = (int)Model.countExchange;
+}
+@using (Html.BeginFormAntiForgeryPost())
+{
+<div class="layout-right-container">
+    <div class="right_main">
+        <ul class="sidebar-content arrow-left">
+            <li class="items">@Html.ActionLink("Tất cả", "Index", "User", new { area = "RealEstate.UserControlPanel", returnstatus = "all" }, new { Class = "display_all" }) (<span id="count_displayall">@countDisplayAll</span>)</li>
+            <li class="items">@Html.ActionLink("Đang hiển thị", "Index", "User", new { area = "RealEstate.UserControlPanel", returnstatus = "view" }, new { Class = "view" }) (<span id="count_view">@countView</span>)</li>
+            <li class="items">@Html.ActionLink("BĐS định Giá", "Index", "User", new { area = "RealEstate.UserControlPanel", returnstatus = "estimate" }, new { Class = "estimate" }) (<span id="count_estimate">@countEstimate</span>)</li>
+            <li class="items">@Html.ActionLink("BĐS trao đổi", "Index", "User", new { area = "RealEstate.UserControlPanel", returnstatus = "exchange" }, new { Class = "exchange" }) (<span id="count_exchange">@countExchange</span>)</li>
+            <li class="items">@Html.ActionLink("Hết hạn hiển thị", "Index", "User", new { area = "RealEstate.UserControlPanel", returnstatus = "notdisplay" }, new { Class = "notdisplay" }) (<span id="count_notdisplay">@countNotDisplay</span>)</li>
+            <li class="items">@Html.ActionLink("Đang chờ duyệt", "Index", "User", new { area = "RealEstate.UserControlPanel", returnstatus = "pending" }, new { Class = "pending" }) (<span id="count_pending">@countPending</span>)</li>
+            <li class="items">@Html.ActionLink("Tin chưa hợp lệ", "Index", "User", new { area = "RealEstate.UserControlPanel", returnstatus = "invalid" }, new { Class = "invalid" }) (<span id="count_invalid">@countInvalid</span>)</li>
+            @*<div class="items">@Html.ActionLink("Tin chưa trả phí", "Index", "User", new { Status = "unpaid" }, new { Class = "unpaid" }) (<span id="count_unpaid">0</span>)</div>*@
+            <li class="items">@Html.ActionLink("Ngừng đăng", "Index", "User", new { area = "RealEstate.UserControlPanel", returnstatus = "stop" }, new { Class = "stop" }) (<span id="count_stoppublished">@countStopPublished</span>)</li>
+            <li class="items">@Html.ActionLink("Tin đang soạn", "Index", "User", new { area = "RealEstate.UserControlPanel", returnstatus = "draft" }, new { Class = "draft" }) (<span id="count_draft">@countDraft</span>)</li>
+            <li class="items">@Html.ActionLink("Đã xóa", "Index", "User", new { area = "RealEstate.UserControlPanel", returnstatus = "del" }, new { Class = "del" })  (<span id="count_deleted">@countDeleted</span>)</li>
+            <li class="items">@Html.ActionLink("Lịch sử giao dịch", "PaymentHistory", "User", new { area = "RealEstate.UserControlPanel"}, new { })</li>
+            <li class="items">@Html.ActionLink("Nạp tiền vào tài khoản", "CardPayment", "User", new { area = "RealEstate.UserControlPanel" }, new {  })</li>
+        </ul>
+    </div>
+</div>
+}
+

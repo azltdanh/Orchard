@@ -1,0 +1,61 @@
+﻿
+
+<div id="menuHomePage" class="menu-home-page">
+    <ul class="media-list media-list-condensed">
+        @if (WorkContext.CurrentUser != null)
+        {
+            <li class="media">
+                <span id="menufriendsendmessage">
+                    <a rel="nofollow" data-toggle="modal" href="#messageModal" data-useridmessage="0" data-usernamesendmessage="username" class="ClassSendMessage" data-displayname="ds">
+                        <i class="icon_silk_comment"></i>Gửi tin nhắn cho <strong id="nameMessage"></strong>
+                    </a>
+                </span>
+            </li>
+        }
+        <li class="media">
+            <a class="replace-user" href="@Url.Action("ViewFriendForUser", "UserFriend", new {Area ="RealEstateForum.FrontEnd", id =  "_id_" , username = "_username_" })" title="Danh sách bạn">
+                <i class="icon_rev_group"></i> Danh sách bạn
+            </a>
+            <span class="pull-right">(<strong id="wg-listfriend">0</strong>)</span>
+        </li>
+        <li class="media">
+            <a class="replace-user" href="@Url.Action("AlbumForUser", "PhotoAlbum", new { Area = "RealEstateForum.FrontEnd", id = "_id_", username = "_username_" })" title="Photo Album">
+                <i class="icon_rev_image"></i> Photo Album
+            </a>
+            <span class="pull-right">(<strong id="wg-photoalbum">0</strong>)</span>
+        </li>
+        <li class="media">
+            <a class="replace-user" href="@Url.Action("MusicAlbumForUser", "MusicAlbum", new { Area = "RealEstateForum.FrontEnd", userId = "_id_", username = "_username_" })" title="music Album">
+                <i class="icon_rev_music"></i> Music Album
+            </a>
+            <span class="pull-right">(<strong id="wg-musicalbum">0</strong>)</span>
+        </li>
+        <li class="media">
+            <a class="replace-user" href="#" title="Video Album">
+                <i class="icon_rev_film"></i> Video Album
+            </a>
+            <span class="pull-right">(<strong id="wg-videoalbum">0</strong>)</span>
+        </li>
+        <li class="media">
+            <a class="replace-user" href="@Url.Action("ResultFilter", "PropertySearch", new { area = "RealEstate.FrontEnd", Create_Id = "_id_" })" title="Danh sách BĐS">
+                <i class="icon_rev_house"></i> Danh sách BĐS
+            </a>
+        </li>
+    </ul>
+</div>
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        $(function () {
+            var UserId = $("#userId").val();
+            var UserName = $("#userNameSelect").val();
+            if (UserId > 0) {
+                $('a.replace-user').each(function () {
+                    $(this).attr('href', $(this).attr('href').replace('_id_', UserId).replace('_username_', UserName))
+                })
+                $('#menufriendsendmessage .ClassSendMessage').attr('data-UserNameSendMessage', UserName);
+                $('#menufriendsendmessage .ClassSendMessage').attr('data-UserIdMessage', UserId);
+            }
+        });
+    </script>
+}

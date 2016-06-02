@@ -1,0 +1,484 @@
+﻿@using System.Globalization
+@model RealEstate.ViewModels.LocationApartmentCartIndexViewModel
+
+@{
+    Script.Require("Floatheader");
+    Script.Require("Common");
+
+
+    Layout.Title = T(Model.LocationApartment.Name).ToString();
+    var color = new Dictionary<int, string>();
+    var title = new Dictionary<int, string>();
+    color[21] = "#018a3a"; title[21] = "Chưa hoàn chỉnh";
+    color[22] = "#018a3a"; title[22] = "Đủ thông tin";
+    color[23] = "#fefb00"; title[23] = "Đang thương lượng";
+    color[24] = "#fea500"; title[24] = "Chờ giao dịch";
+    color[25] = "#c61b21"; title[25] = "Đã giao dịch";
+    color[26] = "#9B9898"; title[26] = "Tạm ngưng";
+    color[30] = "#3e0055"; title[30] = "Không liên lạc được";
+    color[139164] = "#ffa691"; title[139164] = "Người đăng đã xóa";
+    color[27] = "#f40000"; title[27] = "Chờ xóa";
+    color[28] = "#c61b21"; title[28] = "Đã xóa";
+
+    bool isManageApartmentCart = AuthorizedFor(RealEstate.Permissions.ManageApartmentCart);
+}
+<div>
+    @if (isManageApartmentCart)
+    {
+        <fieldset class="bulk-actions right">
+            @if (Model.LocationApartmentBlocks.Any())
+            {
+                @Html.ActionLink(T("Xóa toàn bộ giỏ hàng").ToString(), "ApartmentCartDelete", new { apartmentId = Model.LocationApartment.Id, returnUrl = HttpContext.Current.Request.Url }, new { @class = "button primaryAction", itemprop = "RemoveUrl UnsafeUrl" })
+            }
+
+            @Html.ActionLink(T("Thêm mới giỏ hàng").ToString(), "ApartmentCartCreate", new { apartmentId = Model.LocationApartment.Id, returnUrl = HttpContext.Current.Request.Url }, new { @class = "button primaryAction" })
+        </fieldset>
+    }
+    <h2>@Model.LocationApartment.Name</h2>
+</div>
+@using (Html.BeginFormAntiForgeryPost()) { }
+
+<div class="color-guide">
+    <p class="color-item"><span class="st-new">&nbsp;&nbsp;&nbsp;</span> => Đang bán (@Model.CountSelling)</p>
+    <p class="color-item"><span class="st-onhold">&nbsp;&nbsp;&nbsp;</span> => Giữ chỗ (@Model.CountOnHold)</p>
+    <p class="color-item"><span class="st-onhold-mine">&nbsp;&nbsp;&nbsp;</span> => Giữ chỗ của tôi</p>
+    <p class="color-item"><span class="st-negotiate">&nbsp;&nbsp;&nbsp;</span> => Đặt cọc giữ chỗ (@Model.CountNegotiate)</p>
+    <p class="color-item"><span class="st-trading">&nbsp;&nbsp;&nbsp;</span> => Đặt cọc mua bán (@Model.CountTrading)</p>
+    <p class="color-item"><span class="st-sold">&nbsp;&nbsp;&nbsp;</span> => Đã giao dịch (@Model.CountSold)</p>
+    @*<p class="color-item"><span style="background: #3e0055">&nbsp;&nbsp;&nbsp;</span> => Không liên lạc được</p>*@
+    @*<p class="color-item"><span style="background: #f40000">&nbsp;&nbsp;&nbsp;</span> - Chờ Xóa </p>*@
+    @*<p class="color-item"><span style="background: #c61b21">&nbsp;&nbsp;&nbsp;</span> - Xóa  </p>*@
+    <a href="@Url.Action("SafeDownload", "LocationApartmentAdmin", new { id = Model.LocationApartment.Id })" class="right" target="_blank"><i class="ui-icon icon-mime-xls"></i></a>
+</div>
+
+<div>
+    @foreach (var item in Model.LocationApartmentBlocks.Where(item => item.Properties.Any(r => r.GroupInApartmentBlock != null)))
+    {
+        <div class="block-name"><strong>@item.ApartmentBlockPart.BlockName</strong></div>
+
+        foreach (var groupAp in item.GroupInApartmentBlockParts)
+        {
+            <div class="apartment-item">
+                <!-- Từng Group trong block-->
+                <div style="margin: 20px 0;">
+                    <strong>
+                        Nhóm @groupAp.ApartmentGroupPosition
+                        @if (isManageApartmentCart)
+                        {
+                            <a href="@Url.Action("ApartmentCartGroupApartmentDelete", "LocationApartmentAdmin", new { groupFloorPosition = groupAp.ApartmentGroupPosition, apartmentId = Model.LocationApartment.Id, apartmentBlockId = item.ApartmentBlockPart.Id })" class="button primaryAction" itemprop="RemoveUrl UnsafeUrl">Xóa và tạo lại nhóm mới</a>
+                        }
+                    </strong>
+                </div>
+                @if (isManageApartmentCart)
+                {
+                    <div>
+                        <a href="javascript:;" class="btnUpdateSeqOrder">Cập nhật thứ tự cho nhóm</a>
+                        <div class="contentSeqorder" style="display:none;">
+                            <input type="text" value="@groupAp.SeqOrder" class="SeqOrderValue text-small" /> <button class="SeqOrderButton" data-groupid="@groupAp.Id">Save</button>
+                        </div>
+                    </div>
+                }
+                <br />
+                <table class="apartment-cart-table">
+                    <tbody>
+                        @for (int i = groupAp.FloorFrom; i <= groupAp.FloorTo; i++)
+                        {
+                            <!-- Từng từng trong group-->
+                           // int stepFirst = groupAp.ApartmentPerFloor % 2 != 0 ? (groupAp.ApartmentPerFloor / 2) + 1 : groupAp.ApartmentPerFloor / 2;
+                            //int stepSecond = groupAp.ApartmentPerFloor - stepFirst;
+                            <tr>
+                                <td rowspan="2">
+                                    <div class="floor-th">
+                                        Tầng @i
+                                    </div>
+                                </td>
+                                @for (int j = 1; j <= groupAp.ApartmentPerFloor; j += 2)
+                                {
+                                            <!--A-3.1 => Tên A, tầng 3, vị trí 1-->
+                                            <!--Từng căn trong tầng-->
+                                    var property = item.Properties.FirstOrDefault(r =>
+                                                r.ApartmentBlock != null && r.ApartmentBlock.Id == item.ApartmentBlockPart.Id &&
+                                                r.GroupInApartmentBlock.Id == groupAp.Id &&
+                                                r.ApartmentFloorTh != null && r.ApartmentFloorTh == i &&
+                                                r.ApartmentPositionTh == j);
+                                    // Phải có vị trí của căn hộ: ApartmentPositionTh
+                                    <td class="@property.Status.CssClass @(property.Status.CssClass == "st-onhold" && property.LastUpdatedUser.Id == WorkContext.CurrentUser.Id ? "st-onhold-mine" : "")" title="@(property != null ? title[property.Status.Id] : "")">
+                                        @if (property != null)
+                                        {
+
+                                            if (AuthorizedFor(RealEstate.Permissions.EditProperty))
+                                            {
+                                                @Html.ActionLink(property.ApartmentNumber, "Edit", "PropertyAdmin", new { property.Id, returnUrl = HttpContext.Current.Request.Url }, new { Class = "ui-icon icon-edit right", title = "Chỉnh sửa BĐS" })
+
+                                            }
+                                            
+                                            if (property.Status.CssClass == "st-new" || property.Status.CssClass == "st-selling")
+                                            {
+                                                <a href="#" class="action-book-reservation" pid="@property.Id" data-toggle="tooltip">@property.ApartmentNumber</a>
+                                            }
+                                            else if (property.Status.CssClass == "st-onhold" && property.LastUpdatedUser.Id == WorkContext.CurrentUser.Id)
+                                            {
+                                                <a href="#" class="action-cancel-reservation" pid="@property.Id" data-toggle="tooltip">@property.ApartmentNumber</a>
+                                            }
+                                            else
+                                            {
+                                                <span pid="@property.Id" data-toggle="tooltip">@property.ApartmentNumber</span>
+                                            }
+                                             
+                                            <div data-tooltip-content="" style="display: none">
+                                                <div>
+                                                    <em><strong>Mã tin:</strong></em>
+                                                    <span>@property.Id</span>
+                                                </div>
+                                                <div>
+                                                    <em>
+                                                        <strong>Diện tích:</strong>
+                                                    </em> @property.Area m<sup>2</sup>
+                                                </div>
+                                                <div>
+                                                    <em>
+                                                        <strong>Diện tích thông thủy:</strong>
+                                                    </em> @property.ApartmentBlockInfoPartRecord.RealAreaUse m<sup>2</sup>
+                                                </div>
+                                                <div>
+                                                    <em>
+                                                        <strong>Số phòng ngủ:</strong>
+                                                    </em> @property.Bedrooms
+                                                </div>
+                                                <div>
+                                                    <em>
+                                                        <strong>Đơn giá:</strong>
+                                                    </em> @property.PriceProposed @(property.PaymentMethod != null ? property.PaymentMethod.ShortName : "")  / @(property.PaymentUnit != null ? property.PaymentUnit.ShortName : "")
+                                                </div>
+                                                <div>
+                                                    <em>
+                                                        <strong>Tổng giá:</strong>
+                                                    </em> @string.Format("{0:0.000}", property.PriceProposedInVND) Tỷ
+                                                </div>
+
+                                                @if (property.Status.CssClass == "st-onhold")
+                                                {
+                                                    <div>
+                                                        <em><strong>Người giữ chỗ:</strong></em>
+                                                        <span>
+                                                            @property.LastUpdatedUser.UserName
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <em><strong>Hết hạn vào:</strong></em>
+                                                        <span>
+                                                            @(property.StatusChangedDate != null ? ((DateTime)property.StatusChangedDate).ToLocalTime().AddHours(2).ToString() : "")
+                                                        </span>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div>
+                                                        <em><strong>Người sửa cuối:</strong></em>
+                                                        <span>@property.LastUpdatedUser.UserName</span>
+                                                    </div>
+                                                }
+
+                                                @if (!string.IsNullOrEmpty(property.Note))
+                                                {
+                                                    <div>
+                                                        <em><strong>Ghi chú:</strong></em>
+                                                        <span>@property.Note</span>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    </td>
+                                }
+                            </tr>
+
+                            <tr>
+                                @for (int j = 2; j <= groupAp.ApartmentPerFloor; j += 2)
+                                {
+                                            <!--A-3.1 => Tên A, tầng 3, vị trí 1-->
+                                            <!--Từng căn trong tầng-->
+                                    var property = item.Properties.FirstOrDefault(r =>
+                                                r.ApartmentBlock != null && r.ApartmentBlock.Id == item.ApartmentBlockPart.Id &&
+                                                r.GroupInApartmentBlock.Id == groupAp.Id &&
+                                                r.ApartmentFloorTh != null && r.ApartmentFloorTh == i &&
+                                                r.ApartmentPositionTh == j);
+                                    // Phải có vị trí của căn hộ: ApartmentPositionTh
+                                    <td class="@property.Status.CssClass @(property.Status.CssClass == "st-onhold" && property.LastUpdatedUser.Id == WorkContext.CurrentUser.Id ? "st-onhold-mine" : "")" title="@(property != null ? title[property.Status.Id] : "")">
+                                        @if (property != null)
+                                        {
+                                            if (AuthorizedFor(RealEstate.Permissions.EditProperty))
+                                            {
+                                                @Html.ActionLink(property.ApartmentNumber, "Edit", "PropertyAdmin", new { property.Id, returnUrl = HttpContext.Current.Request.Url }, new { Class = "ui-icon icon-edit right", title = "Chỉnh sửa BĐS" })
+
+                                            }
+                                            
+                                            if (property.Status.CssClass == "st-new" || property.Status.CssClass == "st-selling")
+                                            {
+                                                <a href="#" class="action-book-reservation" pid="@property.Id" data-toggle="tooltip">@property.ApartmentNumber</a>
+                                            }
+                                            else if (property.Status.CssClass == "st-onhold" && property.LastUpdatedUser.Id == WorkContext.CurrentUser.Id)
+                                            {
+                                                <a href="#" class="action-cancel-reservation" pid="@property.Id" data-toggle="tooltip">@property.ApartmentNumber</a>
+                                            }
+                                            else
+                                            {
+                                                <span pid="@property.Id" data-toggle="tooltip">@property.ApartmentNumber</span>
+                                            }
+                                                
+                                            <div data-tooltip-content="" style="display: none">
+                                                <div>
+                                                    <em><strong>Mã tin:</strong></em>
+                                                    <span>@property.Id</span>
+                                                </div>
+                                                <div>
+                                                    <em>
+                                                        <strong>Diện tích:</strong>
+                                                    </em> @property.Area m<sup>2</sup>
+                                                </div>
+                                                <div>
+                                                    <em>
+                                                        <strong>Diện tích thông thủy:</strong>
+                                                    </em> @property.ApartmentBlockInfoPartRecord.RealAreaUse m<sup>2</sup>
+                                                </div>
+                                                <div>
+                                                    <em>
+                                                        <strong>Số phòng ngủ:</strong>
+                                                    </em> @property.Bedrooms
+                                                </div>
+                                                <div>
+                                                    <em>
+                                                        <strong>Đơn giá:</strong>
+                                                    </em> @property.PriceProposed @(property.PaymentMethod != null ? property.PaymentMethod.ShortName : "")  / @(property.PaymentUnit != null ? property.PaymentUnit.ShortName : "")
+                                                </div>
+                                                <div>
+                                                    <em>
+                                                        <strong>Tổng giá:</strong>
+                                                    </em> @Html.DisplayFor(model => property.PriceProposedInVND, "Double") Tỷ
+                                                </div>
+
+                                                @if (property.Status.CssClass == "st-onhold")
+                                                {
+                                                    <div>
+                                                        <em><strong>Người giữ chỗ:</strong></em>
+                                                        <span>
+                                                            @property.LastUpdatedUser.UserName
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <em><strong>Hết hạn vào:</strong></em>
+                                                        <span>
+                                                            @(property.StatusChangedDate != null ? ((DateTime)property.StatusChangedDate).ToLocalTime().AddHours(2).ToString() : "")
+                                                        </span>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div>
+                                                        <em><strong>Người sửa cuối:</strong></em>
+                                                        <span>@property.LastUpdatedUser.UserName</span>
+                                                    </div>
+                                                }
+
+                                                @if (!string.IsNullOrEmpty(property.Note))
+                                                {
+                                                    <div>
+                                                        <em><strong>Ghi chú:</strong></em>
+                                                        <span>@property.Note</span>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        <div class="clearfix"></div>
+    }
+</div>
+<script type="text/javascript">
+    $('.btnUpdateSeqOrder').click(function () {
+        $(this).siblings(".contentSeqorder").slideToggle("slow", function () {
+            // Animation complete.
+        });
+    });
+
+    $('.SeqOrderButton').click(function () {
+        var $that = $(this);
+        var seqOrder = $(this).siblings('.SeqOrderValue').val();
+        if (seqOrder != null && seqOrder != '') {
+            $.ajax({
+                type: "post",
+                dataType: "JSON",
+                url: "/RealEstate.Admin/Home/AjaxUpdateSeqOrderGroupApartment",
+                data: {
+                    seqOrder: seqOrder, groupApartmentId: $that.data('groupid'),
+                    __RequestVerificationToken: antiForgeryToken
+                },
+                success: function (response) {
+                    if (response.status)
+                        alert('Đã update thành công!');
+                    else {
+                        alert(response.message);
+                    }
+                },
+                error: function (request, status, error) {
+                }
+            });
+        }
+    });
+
+
+    // AjaxBookReservationApartment
+    $('.apartment-cart-table').on('click', '.action-book-reservation', function () {
+        var anchor = $(this);
+        var cell = anchor.closest('td');
+
+        if (confirm('Bạn muốn đặt giữ chỗ căn hộ ' + anchor.text() + '?')) {
+            $.ajax({
+                type: "post",
+                dataType: "",
+                url: "/RealEstate.Admin/Home/AjaxBookReservationApartment",
+                data: {
+                    id: anchor.attr("pid"),
+                    __RequestVerificationToken: antiForgeryToken
+                },
+                success: function (results) {
+                    if (results.success) {
+                        alert(results.message);
+                        cell.fadeOut(function () {
+                            anchor.removeClass('action-book-reservation').addClass('action-cancel-reservation');
+                            cell.addClass(results.status).addClass('st-onhold-mine');
+                            cell.fadeIn();
+                        });
+                    }
+                    else
+                        alert(results.message);
+                },
+                error: function (request, status, error) {
+                    console.log(error)
+                }
+            });
+        }
+        return false;
+    });
+
+    // AjaxCancelReservationApartment
+    $('.apartment-cart-table').on('click', '.action-cancel-reservation', function () {
+        var anchor = $(this);
+        var cell = anchor.closest('td');
+
+        if (confirm('Bạn muốn HỦY giữ chỗ căn hộ ' + anchor.text() + '?')) {
+            $.ajax({
+                type: "post",
+                dataType: "",
+                url: "/RealEstate.Admin/Home/AjaxCancelReservationApartment",
+                data: {
+                    id: anchor.attr("pid"),
+                    __RequestVerificationToken: antiForgeryToken
+                },
+                success: function (results) {
+                    if (results.success) {
+                        alert(results.message);
+                        cell.fadeOut(function () {
+                            anchor.removeClass('action-cancel-reservation').addClass('action-book-reservation');
+                            cell.removeClass('st-onhold').removeClass('st-onhold-mine').addClass(results.status);
+                            cell.fadeIn();
+                        });
+                    }
+                    else
+                        alert(results.message);
+                },
+                error: function (request, status, error) {
+                    console.log(error)
+                }
+            });
+        }
+        return false;
+    });
+
+</script>
+<style>
+    
+    .color-guide {
+        border: 1px solid #ccc;
+        padding: 5px;
+    }
+
+    .color-item {
+        display: inline-block;
+        margin-right: 5px;
+    }
+
+    .block-name {
+        margin-top: 10px;
+    }
+
+    .apartment-item {
+        width: 60%;
+        float: left;
+        margin-bottom: 20px;
+    }
+
+        .apartment-item:nth-child(2n) {
+            margin-right: 20px;
+        }
+
+    .apartment-cart-table {
+        width: 100%;
+        border: 1px solid #ccc;
+    }
+
+        .apartment-cart-table td {
+            border: 1px solid #ccc;
+            text-align: center;
+            color: #FFFFFF;
+        }
+
+            .apartment-cart-table td a {
+                color: #fff;
+                display: block;
+            }
+
+            .apartment-cart-table td.st-new,
+            .color-item .st-new {
+                background-color: #018A3A;
+            }
+
+            .apartment-cart-table td.st-selling,
+            .color-item .st-selling {
+                background-color: #018A3A;
+            }
+
+            .apartment-cart-table td.st-onhold,
+            .color-item .st-onhold {
+                background-color: #9B9898;
+            }
+
+            .apartment-cart-table td.st-onhold-mine, .apartment-cart-table td.st-onhold-mine a,
+            .color-item .st-onhold-mine {
+                background: #e6f1c9;
+                border: 1px solid #cfe493;
+                color: #062232;
+            }
+
+            .apartment-cart-table td.st-negotiate,
+            .color-item .st-negotiate {
+                background-color: #FEFB00;
+            }
+
+            .apartment-cart-table td.st-trading,
+            .color-item .st-trading {
+                background-color: #FEA500;
+            }
+
+            .apartment-cart-table td.st-sold,
+            .color-item .st-sold {
+                background-color: #C61B21;
+            }
+            .floor-th {color: #000;}
+
+</style>

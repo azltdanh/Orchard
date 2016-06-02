@@ -1,0 +1,45 @@
+﻿@using RealEstateForum.Service.ViewModels
+@model TopicForumFrontEndViewModel
+
+@{
+    if (Model.Metas != null && !string.IsNullOrEmpty(Model.Metas["Title"]))
+    {
+        SetMeta("keywords", Model.Metas["Keywords"]);
+        SetMeta("Description", Model.Metas["Description"]);
+        Layout.Title = Model.Metas["Title"];
+    }
+    {
+        SetMeta("keywords", "Diễn đàn bất động sản, dien dan bat dong san");
+        SetMeta("Description", Model.TopicInfo.TopicName);
+        Layout.Title = Model.TopicInfo.TopicName;
+    }
+}
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left">
+                    <div class="header-title-triangle"></div>
+                </div>
+                <h2 class="header-title-text">@Model.TopicInfo.TopicName</h2>
+                <div class="header-title-right"></div>
+            </div>
+        </div>
+    </header>
+    <article>
+        @if (Model.TopicInfo.ListPostItem != null)
+        {
+            <div class="pager-top"></div>
+            
+            @Html.Partial("ListPost.Media", Model.TopicInfo)
+            
+            <div class="pager-bottom">
+                @Display(Model.Pager)
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-success">Không có bài viết nào được tìm thấy.</div>
+        }
+    </article>
+</article>

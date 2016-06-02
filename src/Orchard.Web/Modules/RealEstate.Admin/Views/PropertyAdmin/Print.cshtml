@@ -1,0 +1,65 @@
+﻿@model List<RealEstate.ViewModels.PropertyEntry>
+           
+@{
+    Script.Require("jQuery");
+    Script.Require("TimeAgo");
+    ViewBag.Title = "Print";
+}
+<script type="text/javascript">
+    $(function () {
+        $("abbr.timeago").timeago();
+    });
+</script>
+<h2>Print</h2>
+<ol class="print-list">
+@foreach (var entry in Model)
+{
+    var item = entry.PropertyPart;
+    <abbr class="timeago" title="@String.Format("{0:s}", item.LastExportedDate)">@String.Format("{0:dd/MM/yyyy HH:mm:ss}", item.LastExportedDate)</abbr>
+    if (item.LastExportedUser != null) { <span class="timeago">bởi <strong>@item.LastExportedUser.UserName</strong></span> }
+    <li>
+    <div class="print-title">
+        <b>
+        <!--Bán nhà-->
+        @item.AdsType.Name @item.Type.Name
+        @item.DisplayForLocation
+        @(item.Street != null ? item.Street.Name : item.OtherStreetName)
+        @(item.District != null ? item.District.Name : item.OtherDistrictName),        
+        @Html.Raw(item.DisplayForAreaTotal),
+        @Html.DisplayFor(model => item.Floors, "Floors"),
+        @Html.DisplayFor(model => item.PriceProposed, "Double")
+        @item.PaymentMethod.ShortName
+        </b>
+    </div>
+    <div class="print-content">
+        <div>
+            @item.AdsType.Name @item.Type.Name 
+            @item.DisplayForLocation
+            đường 
+            @(item.Street != null ? item.Street.Name : item.OtherStreetName), 
+            @(item.Ward != null ? item.Ward.Name : item.OtherWardName), 
+            @(item.District != null ? item.District.Name : item.OtherDistrictName),
+            @(item.Province != null ? item.Province.ShortName : item.OtherProvinceName)
+        </div>
+        <div>
+            Diện tích @Html.Raw(item.DisplayForAreaTotal),
+            @if (!String.IsNullOrEmpty(item.DisplayForAreaLegal))
+            {
+                <text>Diện tích hợp quy hoạch @Html.Raw(item.DisplayForAreaLegal)</text>
+            }
+        </div>
+        <div>
+            @Html.DisplayFor(model => item.Floors, "Floors")@(item.HaveBasement ? ", có tầng hầm" : "")@(item.HaveMezzanine ? ", có lửng" : "")@(item.HaveTerrace ? ", có sân thượng" : "")@(item.HaveSkylight ? ", có giếng trời" : "")@(item.HaveGarage ? ", có gara" : "")@(item.HaveGarden ? ", có sân vườn" : "")@(item.HaveElevator ? ", có thang máy" : "")@(item.HaveSwimmingPool ? ", có bể bơi" : "")
+        </div>
+        <div>
+            Giá @item.AdsType.Name.ToLower() @string.Format("{0:#,0.##} {1} / {2}", item.PriceProposed, item.PaymentMethod.Name, item.PaymentUnit.Name)
+        </div>
+        <div>
+            LH: @entry.DisplayForContact
+        </div>
+        <div>Xem thêm nhiều BĐS giá rẻ tại <a href="http://www.dinhgianhadat.vn">www.dinhgianhadat.vn</a></div>
+    </div>
+    <hr />
+    </li>
+}
+</ol>

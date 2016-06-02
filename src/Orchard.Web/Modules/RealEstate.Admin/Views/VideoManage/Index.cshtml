@@ -1,0 +1,105 @@
+﻿@model RealEstate.ViewModels.VideoManageIndexViewModel
+@using RealEstate.ViewModels;
+
+@{
+    Script.Require("Common");
+    Layout.Title = T("Quản lý Video").ToString();
+}
+@if (Model.Options != null)
+{
+    @Html.Partial("Filter", Model.Options)
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{
+    if (Model.Options != null)
+    {
+        <div class="left">@Html.Raw(String.Format("Tìm được <strong>{0:#,0}</strong> kết quả", Model.TotalCount))</div>
+        <div class="right">
+                <fieldset class="bulk-actions">
+                    <label for="publishActions" class="filter-label">@T("Tác vụ:")</label>
+                    <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+                        @Html.SelectOption(Model.Options.BulkAction, VideoManageBulkAction.Delete, T("Xóa Video").ToString())
+                        @Html.SelectOption(Model.Options.BulkAction, VideoManageBulkAction.Enable, T("Enable Video").ToString())
+                        @Html.SelectOption(Model.Options.BulkAction, VideoManageBulkAction.Disable, T("Disable Video").ToString())
+                        @Html.SelectOption(Model.Options.BulkAction, VideoManageBulkAction.Publish, T("Publish Video").ToString())
+                        @Html.SelectOption(Model.Options.BulkAction, VideoManageBulkAction.UnPublish, T("UnPublish Video").ToString())
+                    </select>
+                    <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+                    @Html.Hidden("ReturnUrl")
+                </fieldset>
+            <div class="manage">@Html.ActionLink(T("Thêm mới video").ToString(), "Create", new { returnUrl = HttpContext.Current.Request.Url }, new { @class = "button primaryAction" })</div>
+        </div>
+    }
+    <fieldset>
+        <table class="items fixed-table float-header">
+            <thead>
+                <tr>
+                    <th scope="col" class="w20 align-center"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.VideoManages)" /></th>
+                    <th scope="col" class="w130">@T("Tiêu đề")</th>
+                    <th scope="col" class="w130">@T("Keyword")</th>
+                    <th scope="col" class="w240">@("Mô tả")</th>
+                    <th scope="col" class="w50">@T("Publish")</th>
+                    <th scope="col" class="w50">@T("Enabble")</th>
+                    <th scope="col" class="w50">@T("SeqOrder")</th>
+                    <th scope="col" class="w50">@T("Image")</th>
+                    <th scope="col" >@T("Video Id")</th>
+                    <th scope="col" class="w130">@T("Action")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.VideoManages)
+            {
+                var item = entry.VideoManagePart;
+                <tr>
+                    <td>
+                        <input type="hidden" value="@Model.VideoManages[index].VideoManagePart.Id" name="@Html.NameOf(m => m.VideoManages[index].VideoManagePart.Id)" />
+                        <input type="checkbox" value="true" name="@Html.NameOf(m => m.VideoManages[index].IsChecked)" />
+                    </td>
+                    <td>
+                        @item.Title
+                    </td>
+                    <td>
+                        @item.Keyword
+                    </td>
+                    <td>
+                        @item.Description
+                    </td>
+                    <td>
+                        @item.Publish
+                    </td>
+                    <td>
+                        @item.Enable
+                    </td>
+                    <td>
+                        @item.SeqOrder
+                    </td>
+
+                    <td>
+                        @item.Image
+                    </td>
+                    
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.YoutubeId))
+                        {
+                            <a href="https://www.youtube.com/watch?v=@item.YoutubeId" target="_blank">@item.YoutubeId</a>
+                        }
+                    </td>
+                    <td>
+                        @Html.ActionLink(T("Edit").ToString(), "Edit", new { item.Id }) |
+                        @Html.ActionLink(T("Delete").ToString(), "Delete", new { item.Id }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                    </td>
+                </tr>
+                index++;
+            }
+        </table>
+
+        @Display(Model.Pager)
+
+    </fieldset>
+}
+<style>
+    td {
+        vertical-align: middle;
+    }
+</style>

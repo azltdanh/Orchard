@@ -1,0 +1,106 @@
+﻿@model RealEstate.ViewModels.LocationApartmentRelationEditViewModel
+@using Orchard.ContentManagement;
+@{
+    Script.Require("BootstrapCombobox");
+    Script.Require("Common");
+}
+
+<span id="Id" style="display:none;">@Model.Id</span>
+
+<table class="filter-table">
+    <tr>
+        <td></td>
+        <td>@Html.LabelFor(m => m.ProvinceId, T("Tỉnh / Thành phố"))</td>
+        <td>
+            @Html.DropDownListFor(m => m.ProvinceId,
+            Model.Provinces.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.ProvinceId,
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }), "-- Tỉnh / Thành Phố --", new { Class = "combobox ajax-validate-relation" + (Model.IsRestrictedLocations ? " restricted" : ""), userid = WorkContext.CurrentUser.Id })
+            @Html.ValidationMessageFor(m => m.ProvinceId, "*")
+        </td>
+        <td>@Html.LabelFor(m => m.DistrictId, T("Quận / Huyện"))</td>
+        <td>
+            @Html.DropDownListFor(m => m.DistrictId,
+            Model.Districts.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.DistrictId,
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }), "-- Quận / Huyện --", new { Class = "combobox ajax-validate-relation" })
+            @Html.ValidationMessageFor(m => m.DistrictId, "*")
+        </td>
+        <td class="align-right">@Html.LabelFor(m => m.ApartmentId, T("Chung cư"))</td>
+        <td>
+            @Html.DropDownListFor(m => m.ApartmentId,
+            Model.Apartments.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.ApartmentId,
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }), "-- Chung cư --", new { Class = "combobox ajax-validate-relation" })
+            @Html.ValidationMessageFor(m => m.ApartmentId, "*")
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>@Html.LabelFor(m => m.RelatedValue, T("Tương đương"))</td>
+        <td>
+            @Html.TextBoxFor(m => m.RelatedValue, new { @class = "text-small" }) %
+            @Html.ValidationMessageFor(m => m.RelatedValue, "*")
+        </td>
+    </tr>
+    <tr>
+        <td>@T("Related")&nbsp;</td>
+        <td>@Html.LabelFor(m => m.RelatedProvinceId, T("Tỉnh / Thành phố"))</td>
+        <td>
+            @Html.DropDownListFor(m => m.RelatedProvinceId,
+            Model.RelatedProvinces.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.RelatedProvinceId,
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }), "-- Tỉnh / Thành Phố --", new { Class = "combobox ajax-validate-relation" + (Model.IsRestrictedLocations ? " restricted" : ""), userid = WorkContext.CurrentUser.Id })
+            @Html.ValidationMessageFor(m => m.RelatedProvinceId, "*")
+        </td>
+        <td>@Html.LabelFor(m => m.RelatedDistrictId, T("Quận / Huyện"))</td>
+        <td>
+            @Html.DropDownListFor(m => m.RelatedDistrictId,
+            Model.RelatedDistricts.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.RelatedDistrictId,
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }), "-- Quận / Huyện --", new { Class = "combobox ajax-validate-relation" })
+            @Html.ValidationMessageFor(m => m.RelatedDistrictId, "*")
+        </td>
+        <td class="align-right">@Html.LabelFor(m => m.RelatedApartmentId, T("Chung cư"))</td>
+        <td>
+            @Html.DropDownListFor(m => m.RelatedApartmentId,
+            Model.RelatedApartments.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.RelatedApartmentId,
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }), "-- Chung cư --", new { Class = "combobox ajax-validate-relation" })
+            @Html.ValidationMessageFor(m => m.RelatedApartmentId, "*")
+        </td>
+    </tr>
+</table>
+<br />
+    @if (String.IsNullOrEmpty(Model.ReturnUrl))
+    {
+        @Html.ActionLink(T("Back").ToString(), "Index", new { }, new { @class = "button primaryAction", name = "submit.Back" })
+    }
+    else
+    {
+        <a href="@Model.ReturnUrl" class="button primaryAction" name="submit.Back">Back</a>
+    }
+    
+    <script type="text/javascript">
+        $(function () {
+            $('[name="submit.SaveReturn"],[name="submit.Back"]').insertAfter('fieldset.save-button button[name="submit.Save"]').css('margin-left', '4px');
+        });
+    </script>

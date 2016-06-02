@@ -1,0 +1,18 @@
+﻿@{
+    Layout.Title = T("EstimateAll").ToString();
+}
+
+<script type="text/javascript">
+
+    $(function () {
+        // Messages Toggle
+        if ($('#messages .zone-messages').height() > 45) {
+            $('#messages').append('<div class="messages-toggle icon-expand"></div>')
+            $('#messages .messages-toggle').click(function () {
+                $(this).toggleClass('icon-collapse');
+                $('#messages').toggleClass('expand');
+            })
+        }
+    });
+
+</script>

@@ -1,0 +1,108 @@
+﻿@using RealEstate.FrontEnd.ViewModels;
+@using RealEstate.Models;
+@using RealEstate.ViewModels;
+@{
+    PlanningMapIndexOptions model = Model.ViewModel;
+    Style.Require("BootstrapCombobox");
+    Script.Require("BootstrapCombobox");
+    Script.Require("jqueryValidate");
+}
+<div class="header-msg hidden-xs">
+    <span class="text-success">Hiện chỉ hỗ trợ xem quy hoạch tại một số quận thuộc <strong>TP. HCM</strong></span>
+</div>
+<div class="block-map-planning">
+    @using (Html.BeginFormAntiForgeryPost("ban-do-quy-hoach", FormMethod.Post, new { enctype = "multipart/form-data", id = "frmPlanningMap", Class = "formvalidate" }))
+    {
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="control-label col-lg-8 col-md-8 col-sm-8">
+                    <span class="text-danger">*</span> Tỉnh / Thành phố:</label>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    @Html.DropDownListFor(m => model.ProvinceId,
+                        model.Provinces.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == model.ProvinceId,
+                            Text = s.Name,
+                            Value = s.Id.ToString()
+                        }), new { required = true, Class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-lg-8 col-md-8 col-sm-8">
+                    <span class="text-danger">*</span> Quận / Huyện:</label>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    @Html.DropDownListFor(m => model.DistrictId,
+                        model.Districts.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == model.DistrictId,
+                            Text = s.Name,
+                            Value = s.Id.ToString()
+                        }), "-- Quận / Huyện --", new { required = true, Class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-lg-8 col-md-8 col-sm-8">
+                    <span class="text-danger">*</span> Phường / Xã:</label>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    @Html.DropDownListFor(m => model.WardId,
+                        model.Wards.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == model.WardId,
+                            Text = s.Name,
+                            Value = s.Id.ToString()
+                        }), "-- Phường / Xã --", new { required = true, Class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-lg-8 col-md-8 col-sm-8"></label>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <button type="submit" class="btn btn-warning" value="Định giá">
+                        Xem quy hoạch</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+            if ($.fn.validate) {
+                var validator = $('#frmPlanningMap').validate({});
+                $('#frmPlanningMap').submit(function() {
+                    if ($(this).valid()) $('input[name^=autocomplete]').prop('disabled', true);
+                });
+            }
+            $("#frmPlanningMap select[id$=DistrictId]").unbind('change').change(function() {
+
+                var slcWard = $("#" + this.id.replace("DistrictId", "WardId"), $(this).closest('form'));
+
+                if ($(this).val() > 0) {
+                    if (slcWard.length > 0) {
+                        slcWard.children("option:first").text("[Loading..]");
+                        $.ajax({
+                            type: "get",
+                            dataType: "",
+                            url: "/RealEstate.FrontEnd/PlanningMap/GetWardsForJson",
+                            data: {
+                                districtId: $(this).val()
+                            },
+                            success: function(response) {
+                                slcWard.empty().append("<option value=''>-- Phường / Xã --</option>");
+                                $.each(response.list, function(i, item) { slcWard.append("<option value=" + item.Value + ">" + item.Text + "</option>"); });
+                                slcWard.change();
+                            },
+                            error: function(request, status, error) {
+                                slcWard.empty().append("<option value=''>-- Phường / Xã --</option>").change();
+                            }
+                        });
+                    }
+                } else {
+                    slcWard.empty().append("<option value=''>-- Phường / Xã --</option>").change();
+                }
+                return false;
+            });
+        });
+    </script>
+}

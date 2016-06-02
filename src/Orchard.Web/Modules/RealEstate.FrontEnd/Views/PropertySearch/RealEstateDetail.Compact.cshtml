@@ -1,0 +1,38 @@
+﻿@model RealEstate.ViewModels.PropertyDisplayEntry
+@using RealEstate.Helpers;
+@{ 
+    var item = Model.Property;
+}
+<div class="media row content-item-details">
+    <div class="pull-left col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <a href="@Url.Action("RealEstateDetail", "PropertySearch", new { area = "RealEstate.FrontEnd", id = item.Id, title = item.DisplayForUrl })">
+            <img alt="@item.DisplayForTitle.StripHtml()" src="@Model.DefaultImgUrl?width=250" class="media-object img-thumbnail img-responsive" />
+        </a>
+    </div>
+    <div class="media-body col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <div class="text-muted">Loại tin: @item.AdsType.Name | Loại BĐS: @item.Type.Name</div>
+
+        <h2 class="media-heading @(item.IsAuthenticatedInfo == true ? " bg-authenticated-right" : "")">
+            <a href="@Url.Action("RealEstateDetail", "PropertySearch", new { area = "RealEstate.FrontEnd", id = item.Id, title = item.DisplayForUrl })">
+                @Html.Raw(item.DisplayForTitle)
+            </a>
+           <span class="text-danger">@item.DisplayForPriceProposed</span>
+        </h2>
+
+        @if (!String.IsNullOrEmpty(item.Title))
+        {
+            <p class="text-infoblue"><strong>Địa chỉ: @item.DisplayForLocationFullAddress</strong></p>
+        }
+         
+        <div class="content-item-property-description-detail">
+            <p><strong>@Html.Raw(item.DisplayForAreaConstructionLocationInfo)</strong></p>
+            <p><strong>@item.Content</strong></p>
+            <p><strong class="text-success">
+    @(item.IsOwner == true ? "(Tin chính chủ)" : "")
+    @(item.NoBroker == true ? "(Miễn trung gian)" : "")
+    @(item.IsAuction == true ? "Đây là BĐS bán phát mãi (Đấu giá), giá rao trên đây là giá khởi điểm" : "")
+</strong></p>
+            <p class="text-infoblue"><strong>Liên hệ: @Model.DisplayForContact @(item.PublishContact ? item.ContactEmail : "")</strong></p>
+        </div>
+    </div>
+</div>

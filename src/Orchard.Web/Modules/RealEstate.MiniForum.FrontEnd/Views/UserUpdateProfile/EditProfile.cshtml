@@ -1,0 +1,27 @@
+﻿@{ 
+    Layout.Title = T("Thay đổi thông tin cá nhân").ToString();
+}
+
+<style>
+    .primary {
+        background-color:#ffffff;
+        padding:10px;
+        border-radius:5px;
+    }
+    .edit-item-secondary {
+        display:none;
+    }
+    .secondary {
+        display:none;
+    }
+</style>
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Post, new { enctype = "multipart/form-data", @class = "box-info-user no-padding" }))
+{
+    @Html.ValidationSummary()
+    // Model is a Shape, calling Display() so that it is rendered using the most specific template for its Shape type
+    @Display(Model);
+    <div class="form-group">
+        <button value="submit.Save" name="submit.Save" id="save-profile" type="submit" class="btn btn-primary" shape-id="7">Lưu thông tin</button>
+    </div> 
+}
+

@@ -1,0 +1,10 @@
+﻿Name: RealEstate.MiniForum
+AntiForgery: enabled
+Author: The Orchard Team
+Website: http://orchardproject.net
+Version: 1.0
+OrchardVersion: 1.7.2
+Description: Description for the module
+Features:
+    RealEstate.MiniForum:
+        Description: Mini forum about RealEstate news.

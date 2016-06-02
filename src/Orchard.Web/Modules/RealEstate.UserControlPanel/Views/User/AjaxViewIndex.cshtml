@@ -1,0 +1,240 @@
+﻿@model RealEstate.FrontEnd.ViewModels.UserPropertyIndexViewModel
+@using RealEstate.Models;
+@using RealEstate.ViewModels;
+@using RealEstate.Services;
+@using RealEstate.Helpers;
+
+<div id="listproperty">
+
+    @if (Model.Properties.Count > 0)
+    {
+        <table class="table table-bordered table-condensed table-striped" id="content_detail">
+            <thead>
+                <tr>
+                    <th class="col1">
+                        <input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.Properties)" /></th>
+                    <th class="col2" colspan="4">
+                        @if (Model.Options.ReturnStatus != null && Model.Options.ReturnStatus != "del")
+                        {
+                            if (Model.Options.ReturnStatus != "userproperty") 
+                            { 
+                                <a href="javascript:ajaxExcuteCollection(1)" class="text-danger"><i class="icon_silk_bin_empty"></i>Xóa Tin</a>
+                            }
+                            if (Model.Options.ReturnStatus == "view")
+                            {
+                                <a href="javascript:ajaxExcuteCollection(3)"><i class="icon_silk_delete"></i>Ngừng Đăng</a>
+                            }
+                            @*<a href="javascript:ajaxExcuteCollection(2)"><i class="icon_silk_add"></i>Làm Mới</a>*@
+                            if (Model.Options.ReturnStatus == "notdisplay")
+                            {
+                                <a href="javascript:ajaxExcuteCollection(4);"><i class="icon_silk_accept"></i>Tiếp tục đăng</a>
+                            }
+                            if (Model.Options.ReturnStatus == "stop")
+                            {
+                                <a href="javascript:ajaxExcuteCollection(4);"><i class="icon_silk_accept"></i>Đăng Lại</a>
+                            }
+                            if (Model.Options.ReturnStatus == "userproperty")
+                            {
+                                <a href="javascript:ajaxExcuteCollection(7);"><i class="icon_silk_accept"></i>Xóa tin theo dõi</a>
+                            }
+                        }
+                        else if (Model.Options.ReturnStatus != "userproperty")
+                        {
+                            <a href="javascript:ajaxExcuteCollection(5)" class="text-danger"><i class="icon_silk_bin_empty"></i>Xóa Tin</a>
+                        }
+                        @if (Model.Options.ReturnStatus != null && Model.Options.ReturnStatus == "del")
+                        {
+                            <a href="javascript:ajaxExcuteCollection(6)"><i class="icon_silk_accept"></i> khôi phục</a>
+                        }
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @{var index = 0;}
+                @foreach (var entry in Model.Properties)
+                {
+                    var item = entry.Property;
+
+                    <tr class="bds-items">
+                        <td>
+                            <input type="hidden" value="@item.Id"/>
+                            <input type="checkbox" id="@Html.NameOf(m => m.Properties[index].IsChecked)" value="true"/>
+                        </td>
+                        <td>
+                            <strong>@(item.Province != null ? (String.IsNullOrEmpty(item.Province.ShortName) ? item.Province.Name : item.Province.ShortName) : "")</strong>
+
+                            @if (item.Status.CssClass == "st-approved" && item.AdsExpirationDate < DateTime.Now)
+                            {
+                                <div class="small text-error">
+                                    tin quá hạn
+                                </div>
+                            }
+                            else if (item.Status.CssClass == "st-approved" && item.AdsExpirationDate > DateTime.Now)
+                            {
+                                <div class="small text-success">
+                                    @(item.Published ? "đang hiển thị" : "tin ngừng đăng")
+                                </div>
+                            }
+                            else if (item.Status.CssClass == "st-pending")
+                            {
+                                <div class="small text-warning">
+                                    đang chờ duyệt
+                                </div>
+                            }
+                            @if (item.Status.CssClass == "st-approved" && item.AdsVIP && item.AdsVIPExpirationDate >= DateTime.Now && item.SeqOrder != null)
+                            {
+                                <i class="@("icon_vip_" + item.SeqOrder)"></i>
+                            }
+                        </td>
+                        <td>
+                            <strong class="text-green">@item.Id</strong>
+                        </td>
+                        <td>
+                            @switch (item.Status.CssClass)
+                            {
+                                case "st-pending":
+                                case "st-selling":
+                                case "st-approved":
+                                    <a href="@Url.Action("RealEstateDetail", "PropertySearch", new { area = "RealEstate.FrontEnd", id = item.Id, title = item.DisplayForUrl })">
+                                        <strong>@Html.Raw(item.DisplayForTitleWithPriceProposed)</strong>
+                                    </a>
+                                    break;
+                                default:
+                                    @Html.Raw(item.DisplayForTitleWithPriceProposed)
+                                    break;
+                            }
+                            <div class="clear"></div>
+                            <div class="pull-left">
+                                <!-- AdsRequest -->
+                                @if (item.AdsGoodDealRequest == true || item.AdsVIPRequest == true || item.AdsHighlightRequest == true)
+                                {
+                                    List<string> request = new List<string>();
+                                    if (item.AdsHighlightRequest == true) { request.Add("Nổi bật"); }
+                                    if (item.AdsGoodDealRequest == true) { request.Add("Giá rẻ"); }
+                                    if (item.AdsVIPRequest == true) { request.Add("Giao dịch gấp"); }
+                                    <span title="BĐS yêu cầu đăng quảng cáo @String.Join(", ", request)" class="icon_silk_coins"></span>
+                                }
+                                <!-- AdsHighlight -->
+                                @if (item.AdsHighlight && item.AdsHighlightExpirationDate > DateTime.Now)
+                                {<span title="BĐS nổi bật đến @String.Format("{0:dd/MM/yyyy}", item.AdsHighlightExpirationDate)" class="icon_silk_star"></span> }
+                                <!-- AdsGoodDeal -->
+                                @if (item.AdsGoodDeal && item.AdsGoodDealExpirationDate > DateTime.Now)
+                                {<span title="BĐS giá rẻ đến @String.Format("{0:dd/MM/yyyy}", item.AdsGoodDealExpirationDate)" class="icon-ads-hot"></span> }
+                                <!-- AdsVIP -->
+                                @if (item.AdsVIP && item.AdsVIPExpirationDate > DateTime.Now)
+                                {<span title="BĐS giao dịch gấp đến @String.Format("{0:dd/MM/yyyy}", item.AdsVIPExpirationDate)" class="icon-ads-vip"></span> }
+                            </div>
+                            @if (!string.IsNullOrEmpty(item.Note)) {<div class="text-error">Chú ý: @item.Note</div>}
+                            <div class="text-right">
+                                @if (item.Status.CssClass == "st-trashed")
+                                {
+                                    <a href="@Url.Action("AjaxTrashedDeleted", "User", new { area = "RealEstate.UserControlPanel", pId = entry.Property.Id })"><i class="icon_silk_delete"></i>Xóa</a>
+                                    // RePost
+                                    <a href="@Url.Action("AjaxStartPublished", "User", new { area = "RealEstate.UserControlPanel", pId = entry.Property.Id})"><i class="icon_silk_accept"></i>Khôi phục</a>
+                                }
+                                else
+                                {
+                                    if (item.CreatedUser.Id == WorkContext.CurrentUser.Id) {
+                                        if (entry.PropertyExchange != null)
+                                        {
+                                            <a href="@Url.Action("Edit", "Home", new { area = "RealEstate.FrontEnd", id = entry.Property.Id })"><i class="icon_silk_page_white_edit"></i>Chỉnh Sửa</a>
+                                            if (entry.PropertyExchange.Customer != null )
+                                            {
+                                                var requriement = entry.PropertyExchange.Customer.Requirements.FirstOrDefault();
+                                                if (requriement != null)
+                                                {
+                                                    <a href="@Url.Action("RequirementExchangeEdit", "PropertyExchange", new {area = "RealEstate.FrontEnd", groupId = requriement.GroupId, id = entry.PropertyExchange.Id})"><i class="icon_silk_page_white_edit"></i>Chỉnh Sửa yêu cầu trao đổi</a>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <a href="@Url.Action("RequirementExchangeCreate", "PropertyExchange", new { area = "RealEstate.FrontEnd", pId = entry.Property.Id })"><i class="icon_silk_add"></i>Thêm yêu cầu trao đổi</a>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            // Edit
+                                            if (item.Type != null)
+                                            {
+                                                if (item.Status.CssClass == "st-estimate")
+                                                {
+                                                    <a href="@Url.Action("Edit", "Estimate", new { area = "RealEstate.FrontEnd", entry.Property.Id })"><i class="icon_silk_page_white_edit"></i>Chỉnh Sửa</a>
+                                                }
+                                                else
+                                                {
+                                                    <a href="@Url.Action("Edit", "Home", new { area = "RealEstate.FrontEnd", entry.Property.Id })"><i class="icon_silk_page_white_edit"></i>Chỉnh Sửa</a>
+                                                }
+                                            }
+                                        }
+
+                                        // Delete
+                                        <a href="@Url.Action("AjaxDelete", "User", new { area = "RealEstate.UserControlPanel", pId = entry.Property.Id})" class="text-danger"><i class="icon_silk_bin_empty"></i>Xóa</a>
+                                    
+                                        if (item.Status.CssClass == "st-approved")
+                                        {
+                                            DateTime now = DateTime.Now;
+                                            // Tin hết hạn
+                                            if (item.AdsExpirationDate < now)
+                                            {
+                                                // ContinuePost
+                                                @*<a href="@Url.Action("AjaxStartPublished", "User", new { area = "RealEstate.UserControlPanel", pId = entry.Property.Id })" class="text-success"><i class="icon_silk_accept"></i>Tiếp tục đăng tin</a>*@
+                                                <a href="@Url.Action("Edit", "Home", new { area = "RealEstate.FrontEnd", entry.Property.Id })"><i class="icon_silk_accept"></i>Tiếp tục đăng tin</a>
+                                            }
+                                            else
+                                            {
+                                                if (item.Published == true)
+                                                {
+                                                    // Refresh
+                                                    if (item.Status.CssClass != "st-estimate")
+                                                    {
+                                                        <a href="@Url.Action("AjaxRefresh", "User", new { area = "RealEstate.UserControlPanel", acId = entry.Property.Id })" class="text-success"><i class="icon_silk_add"></i>Làm Mới</a>
+                                                    }
+                                                    // StopPublished
+                                                    <a href="@Url.Action("AjaxStopPublished", "User", new { area = "RealEstate.UserControlPanel", pId = entry.Property.Id })" class="text-success"><i class="icon_silk_delete"></i>Ngừng Đăng</a>
+                                                    if (!item.AdsVIPRequest && !item.AdsVIP || (item.AdsVIP && item.AdsVIPExpirationDate < DateTime.Now))
+                                                    {
+                                                        <a href="javascript:;" class="ajax-postvip text-success" data-url="@Url.Action("AjaxPostVIP", "User", new { area = "RealEstate.UserControlPanel", Id = entry.Property.Id })"><i class="icon_silk_coins"></i>Đăng VIP</a>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    // Published
+                                                     @*<a href="@Url.Action("AjaxStartPublished", "User", new { area = "RealEstate.UserControlPanel", pId = entry.Property.Id })" class="text-success"><i class="icon_silk_accept"></i>Đăng Lại</a>*@
+                                                    <a href="@Url.Action("Edit", "Home", new { area = "RealEstate.FrontEnd", entry.Property.Id })"><i class="icon_silk_accept"></i>Tiếp tục đăng tin</a>
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            </div>
+                        </td>
+                        <td class="lastupdate text-ellipsis">
+                            @Html.Raw(String.Format("{0:dd/MM/yyyy<br> hh:mm tt}", item.LastUpdatedDate))
+                        </td>
+                    </tr>
+                                index++;
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div>Không có tài sản nào</div>
+    }
+    <footer class="link-view-more" id="pagingajax_viewindex">
+        @Display(Model.Pager)
+    </footer>
+</div>
+<script>
+    $(function () {
+        $('.selectAll').change(function () { $('input:checkbox[id^=' + this.value + ']').attr('checked', this.checked).change(); });
+        $('.ajax-postvip').click(function () {
+            var url = $(this).data('url');
+            $.get(url, function (data) {
+                $("#post-vip-modal").html(data);
+                $('#PostVIPModal').modal('show');
+            });
+        });
+    });
+</script>

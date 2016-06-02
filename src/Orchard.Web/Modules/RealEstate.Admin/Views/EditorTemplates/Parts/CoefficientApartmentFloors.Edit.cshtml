@@ -1,0 +1,11 @@
+﻿@model RealEstate.ViewModels.CoefficientApartmentFloorsEditViewModel
+<fieldset>
+    @Html.LabelFor(m => m.Floors, T("Floors"))
+    @Html.TextBoxFor(m => m.Floors, new { @class = "text-small" })
+    @Html.ValidationMessageFor(m => m.Floors, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.CoefficientApartmentFloors, T("CoefficientApartmentFloors"))
+    @Html.TextBoxFor(m => m.CoefficientApartmentFloors, new { @class = "text-small" })
+    @Html.ValidationMessageFor(m => m.CoefficientApartmentFloors, "*")
+</fieldset>

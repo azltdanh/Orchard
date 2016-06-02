@@ -1,0 +1,100 @@
+﻿@model RealEstate.ViewModels.LocationStreetCreateViewModel
+@{
+    Script.Require("BootstrapCombobox");
+}
+@using (Script.Head())
+{
+<script type="text/javascript">
+//<![CDATA[
+    var antiForgeryToken = '@Html.AntiForgeryTokenValueOrchard()';
+//]]>
+</script>
+}
+
+<fieldset>
+    <legend>@T("LocationStreet File")</legend>
+    <span class="hint">Please use the <a href="@Url.Content("~/Media/streetfile.csv")" target="_blank">locationstreet file template</a></span>
+    <input type="file" name="locationStreetFile" />
+</fieldset>
+
+<fieldset>
+    @Html.LabelFor(m => m.ProvinceId, T("Province"))
+    @Html.DropDownListFor(m => m.ProvinceId,
+    Model.Provinces.Select(s => new SelectListItem
+    {
+        Selected = s.Id == Model.ProvinceId,
+        Text = s.Name,
+        Value = s.Id.ToString()
+    }), "-- Select --", new { Class = "combobox" })
+    @Html.ValidationMessageFor(m => m.ProvinceId, "*")
+</fieldset>   
+<fieldset>
+    @Html.LabelFor(m => m.DistrictId, T("District"))
+    @Html.DropDownListFor(m => m.DistrictId,
+    Model.Districts.Select(s => new SelectListItem
+    {
+        Selected = s.Id == Model.DistrictId,
+        Text = s.Name,
+        Value = s.Id.ToString()
+    }), "-- Select --", new { Class = "combobox" })
+    @Html.ValidationMessageFor(m => m.DistrictId, "*")
+</fieldset>   
+@*<fieldset>
+        @Html.LabelFor(m => m.WardId, T("Ward"))
+        @Html.DropDownListFor(m => m.WardId,
+        Model.Wards.Select(s => new SelectListItem
+        {
+            Selected = s.Id == Model.WardId,
+            Text = s.Name,
+            Value = s.Id.ToString()
+        }), "-- Select --", new { Class = "combobox" })
+        @Html.ValidationMessageFor(m => m.WardId, "*")
+    </fieldset>*@
+@*<fieldset>
+        @Html.CheckBoxFor(m => m.IsRelatedStreet, new { style = "float:left;" })
+        @Html.LabelFor(m => m.IsRelatedStreet, T("Nhập Đoạn đường"))
+    </fieldset>
+    <fieldset id="isRelatedStreet" style="display:none;">
+        @Html.LabelFor(m => m.StreetId, T("Street"))
+        @Html.DropDownListFor(m => m.StreetId,
+        Model.Streets.Select(s => new SelectListItem
+        {
+            Selected = s.Id == Model.StreetId,
+            Text = s.Name,
+            Value = s.Id.ToString()
+        }), "-- Select --", new { Class = "combobox" })
+        Số nhà từ
+        @Html.TextBoxFor(m => m.FromNumber, new { @class = "text number-box" })
+        đến
+        @Html.TextBoxFor(m => m.ToNumber, new { @class = "text number-box" })
+        @Html.ValidationMessageFor(m => m.StreetId, "*")
+        @Html.ValidationMessageFor(m => m.FromNumber, "*")
+        @Html.ValidationMessageFor(m => m.ToNumber, "*")
+    </fieldset>
+    <fieldset id="isNewStreet">
+        @Html.LabelFor(m => m.Name, T("Name"))
+        @Html.TextBoxFor(m => m.Name, new { @class = "textMedium" })
+        @Html.ValidationMessageFor(m => m.Name, "*")
+    </fieldset>*@
+
+<fieldset>
+    @Html.CheckBoxFor(m => m.IsEnabled, new { style = "float:left;" })
+    @Html.LabelFor(m => m.IsEnabled, T("IsEnabled"))
+</fieldset>
+@*<fieldset>
+    @Html.LabelFor(m => m.StreetWidth, T("StreetWidth"))
+    @Html.TextBoxFor(m => m.StreetWidth, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.StreetWidth, "*")
+</fieldset>
+<fieldset>
+    @Html.CheckBoxFor(m => m.IsOneWayStreet, new { style = "float:left;" })
+    @Html.LabelFor(m => m.IsOneWayStreet, T("IsOneWayStreet"))
+</fieldset>*@
+
+    @Html.ActionLink(T("Back").ToString(), "Index", new { }, new { @class = "button primaryAction", name = "submit.Back" })
+    
+    <script type="text/javascript">
+        $(function () {
+            $('[name="submit.SaveReturn"],[name="submit.Back"]').insertAfter('fieldset.save-button button[name="submit.Save"]').css('margin-left', '4px');
+        });
+    </script>

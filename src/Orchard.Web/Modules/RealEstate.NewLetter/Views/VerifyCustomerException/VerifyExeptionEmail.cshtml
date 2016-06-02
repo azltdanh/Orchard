@@ -1,0 +1,55 @@
+﻿@model RealEstate.NewLetter.ViewModels.CustomerExceptionVerify
+
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-center">
+                <div class="header-left">
+                    <div class="header-left-triangle"></div>
+                </div>
+                    <h1>@Html.TitleForPage(T("Xác nhận từ chối nhận email từ dinhgianhadat.vn").ToString())</h1>
+                <div class="header-right"></div>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="form-horizontal form-horizontal-4 none_margin alert alert-success">
+            <p class="text-green">Lưu ý: Nếu bạn chọn <b>"Đồng ý" </b> dưới đây có nghĩa là bạn đã ngưng nhận kết quả tìm kiếm bất động sản của chúng tôi!</p>
+        </div>
+    </article>
+    <article>
+
+            @using (Html.BeginFormAntiForgeryPost())
+            { 
+                @Html.ValidationSummary()
+                <div class="form-horizontal">
+                    <div class="control-group">
+                        <label class="control-label" style="padding-top:0;">@T("Email:")</label>
+                        <div class="controls form-inline">
+                            @Model.EmailException
+                            @Html.HiddenFor(c=>c.Code)
+                        </div>
+                    </div>
+                    <div class="control-group">
+                    <label class="control-label">&nbsp;</label>
+                    <div class="controls form-inline">
+                        <input type="submit" class="btn" value="Đồng ý" />
+                    </div>
+                    </div>
+                </div>
+            }
+    
+    </article>
+</article>
+
+<script type="text/javascript">
+    $(function () {
+        $('[name="submit.SaveReturn"],[name="submit.Back"]').insertAfter('fieldset.save-button button[name="submit.Save"]').css('margin-left', '4px');
+    });
+</script>
+<style>
+    .edit-item-secondary.group {
+        display:none;
+    }
+</style>
+ 

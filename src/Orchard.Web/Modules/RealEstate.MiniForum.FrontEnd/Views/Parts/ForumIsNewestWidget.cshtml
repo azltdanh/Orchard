@@ -1,0 +1,6 @@
+﻿@{
+    List<RealEstateForum.Service.ViewModels.PostItem> posts = Model.ViewModel;
+}
+<div class="media post-newest">
+    @Html.Partial("ListPostTopics.Compact", posts)
+</div>

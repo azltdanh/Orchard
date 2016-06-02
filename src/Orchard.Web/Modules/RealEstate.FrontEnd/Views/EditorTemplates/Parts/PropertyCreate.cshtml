@@ -1,0 +1,107 @@
+﻿@model RealEstate.FrontEnd.ViewModels.PropertyFrontEndCreateBaseViewModel
+@{
+    Style.Require("BootstrapCombobox");
+    Script.Require("BootstrapCombobox");
+    Script.Require("FrontEnd.Property.Edit");
+    Layout.Title = T("Đăng tin").ToString();
+}
+
+<!-- form-editor -->
+<div class="form-editor">
+
+    <!-- Loại BĐS -->
+    <article class="content-item">
+        <header>
+            <div class="header-wrapper">
+                <div class="header-title">
+                    <div class="header-title-left">
+                        <div class="header-title-triangle"></div>
+                    </div>
+                    <h2 class="header-title-text">Loại hình bất động sản</h2>
+                    <div class="header-title-right"></div>
+                </div>
+                <div class="header-msg text-ellipsis">
+                    <span class="text-success">Các mục có dấu (<span class="text-error">*</span>) là bắt buộc nhập</span>
+                </div>
+            </div>
+        </header>
+        <article>
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="control-label col-lg-4 col-md-4 col-sm-4"><span class="text-error">*</span> Loại giao dịch:</label>
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        @{
+                            var adsTypes = Model.AdsTypes.Select(r => new SelectListItem
+                            {
+                                Text = r.Name,
+                                Value = r.CssClass
+                            }).ToList();//
+
+                            adsTypes.Insert(4, new SelectListItem() { Text = "BĐS trao đổi", Value = "ad-exchange" });
+                        }
+                        @Html.DropDownListFor(m => m.AdsTypeCssClass,
+                            adsTypes.Select(s => new SelectListItem
+                            {
+                                Selected = s.Value == Model.AdsTypeCssClass,
+                                Text = s.Text,
+                                Value = s.Value
+                            }), "-- Vui lòng chọn -- ", new { Class = "form-control", required = "required" })
+                    </div>
+                </div>
+                <div class="form-group divTypeGroup collapse">
+                    <label class="control-label col-lg-4 col-md-4 col-sm-4"><span class="text-error">*</span> Nhóm BĐS:</label>
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        @Html.DropDownListFor(m => m.TypeGroupCssClass,
+                            Model.TypeGroups.Select(s => new SelectListItem
+                            {
+                                Selected = s.CssClass == Model.TypeGroupCssClass,
+                                Text = s.Name,
+                                Value = s.CssClass
+                            }), "-- Vui lòng chọn --", new { Class = "form-control", required = "required" })
+                    </div>
+                </div>
+                <div class="form-group divType collapse">
+                    <label class="control-label col-lg-4 col-md-4 col-sm-4"><span class="text-error">*</span> Loại BĐS:</label>
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        @Html.DropDownListFor(m => m.TypeId,
+                            Model.Types.Select(s => new SelectListItem
+                            {
+                                Selected = s.Id == Model.TypeId,
+                                Text = s.Name,
+                                Value = s.Id.ToString()
+                            }), "-- Vui lòng chọn --", new { Class = "form-control", required = "required" })
+                    </div>
+                </div>
+                <div class="form-group divNext collapse">
+                    <div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4">
+                        <button value="submit.Next" name="submit.Next" id="submitNext" type="submit" class="btn btn-warning">Tiếp tục</button>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </article>
+</div>
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            if ($("#AdsTypeCssClass").val() != "" && $("#AdsTypeCssClass").val() != null) {
+                $(".divTypeGroup, .divType, .divNext").show();
+            }
+
+            $("#AdsTypeCssClass").change(function() {
+                if ($(this).val() == "ad-selling" || $(this).val() == "ad-leasing" || $(this).val() == "ad-exchange") {
+                    $(".divTypeGroup, .divType, .divNext").fadeIn();
+                    $("#submitNext").prop('disabled', false);
+                } else if ($(this).val() == "ad-buying" || $(this).val() == "ad-renting") {
+                    $('#overlay').show();
+                    $(".divTypeGroup, .divType, .divNext").fadeOut();
+                    $("#submitNext").prop('disabled', true);
+                    window.location.href = '@Url.Action("CreateCustomerRequirements", "Home", new {area = "RealEstate.FrontEnd"})?AdsTypeCssClass=' + $(this).val();
+                }
+            });
+
+        });
+    </script>
+}

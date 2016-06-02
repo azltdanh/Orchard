@@ -1,0 +1,37 @@
+﻿@using RealEstateForum.Service.ViewModels;
+@using Contrib.OnlineUsers.Models;
+@using Orchard.Users.Models;
+@using Orchard.ContentManagement
+@{
+    var model = Model.ViewModel;
+    UserPart UserPart = model.UserPart;
+    UserUpdateProfilePart UserUpdate = model.UserUpdateProfilePart;
+}
+@using (Script.Foot())
+{
+    Script.Require("realEstate.MiniForum.FrontEnd");
+}
+@if (WorkContext.CurrentUser != null)
+{
+    <div class="text-center user-avatar">
+        <h4 class="text-primary">
+            <a href="@Url.Action("MyPage", "PersonalPage", new { area = "RealEstate.MiniForum.FrontEnd" })" rel="nofollow">
+                <strong>@(!string.IsNullOrEmpty(UserUpdate.DisplayName) ? UserUpdate.DisplayName : UserPart.UserName.Split('@')[0])</strong>
+            </a>
+        </h4>
+        <div class="img-content">
+            @if (!String.IsNullOrEmpty(UserUpdate.Avatar))
+            {
+                <img src="@UserUpdate.Avatar" alt="@UserPart.UserName" class="img-responsive img-thumbnail" />
+            }
+            else
+            {
+                <div class="img-home-no-avatar"></div>
+            }
+        </div>
+        <h5>
+            <a rel="nofollow" href="@Url.Action("EditProfile", "UserUpdateProfile", new { area = "RealEstate.MiniForum.FrontEnd" })"><strong>Cập nhật thông tin</strong></a>
+        </h5>
+        <input type="hidden" value="@UserPart.Id" name="Title" id="userId" class="form-control">
+    </div>
+}

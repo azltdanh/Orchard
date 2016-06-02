@@ -1,0 +1,140 @@
+﻿@using RealEstate.ViewModels
+@model LocationApartmentDisplayOptions
+@{
+    Style.Require("BootstrapCombobox");
+    Script.Require("BootstrapCombobox");
+
+    Script.Require("jqueryValidate");
+}
+<article class="content-item block_filter scroll-filter">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left">
+                    <div class="header-title-triangle"></div>
+                </div>
+                <h2 class="header-title-text">So sánh dự án</h2>
+                <div class="header-title-right"></div>
+            </div>
+        </div>
+    </header>
+    <article>
+        @using (Html.BeginFormAntiForgeryPost(Url.Action("CompareApartment", "PropertySearch", new { area = "RealEstate.FrontEnd" }), FormMethod.Post, new { Class = "formvalidate" }))
+        {
+            <div id="CompareApartmentFilter" class="frm-compare">
+                @Html.ValidationSummary()
+                <div class="row">
+                    <div class="col-md-6 form-border-vertical">
+                        <div class="form-horizontal fw-80">
+                            <!-- Province -->
+                            <div class="form-group">
+                                <div class="col-lg-12">
+                                    @Html.DropDownListFor(m => Model.ApartmentProvinceId,
+                                        Model.Provinces.Select(r => new SelectListItem
+                                        {
+                                            Selected = r.Id == Model.ApartmentProvinceId,
+                                            Text = r.Name,
+                                            Value = r.Id.ToString()
+                                        }), T("Chọn tất cả Tỉnh / TP").ToString(), new { Class = "form-control combobox", required = "required" })
+                                    <label for="autocompleteApartmentProvinceId" class="text-error collapse"></label>
+                                </div>
+                            </div>
+
+                            <!-- Districts -->
+                            <div class="form-group ">
+                                <div class="col-lg-12">
+                                    @Html.DropDownListFor(m => Model.ApartmentDistrictId,
+                                        Model.Districts.Select(r => new SelectListItem
+                                        {
+                                            Selected = r.Id == Model.ApartmentDistrictId,
+                                            Text = r.Name,
+                                            Value = r.Id.ToString()
+                                        }), T("Chọn quận / huyện").ToString(), new { Class = "form-control combobox", required = "required" })
+                                    <label for="autocompleteApartmentDistrictId" class="text-error collapse"></label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-lg-12">
+                                    @Html.DropDownListFor(m => Model.ApartmentApartmentId,
+                                        Model.Apartments.Select(r => new SelectListItem
+                                        {
+                                            Selected = r.Id == Model.ApartmentApartmentId,
+                                            Text = r.Name,
+                                            Value = r.Id.ToString()
+                                        }), T("Chọn dự án").ToString(), new { Class = "form-control combobox", required = "required" })
+                                    <label for="autocompleteApartmentApartmentId" class="text-error collapse"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="vs">vs</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-horizontal fw-80">
+                            <!-- Province -->
+                            <div class="form-group">
+                                <div class="col-lg-12">
+                                    @Html.DropDownListFor(m => Model.WithApartmentProvinceId,
+                                        Model.Provinces.Select(r => new SelectListItem
+                                        {
+                                            Selected = r.Id == Model.WithApartmentProvinceId,
+                                            Text = r.Name,
+                                            Value = r.Id.ToString()
+                                        }), T("Chọn tất cả Tỉnh / TP").ToString(), new { Class = "form-control combobox", required = "required" })
+                                    <label for="autocompleteWithApartmentProvinceId" class="text-error collapse"></label>
+                                </div>
+                            </div>
+
+                            <!-- Districts -->
+                            <div class="form-group ">
+                                <div class="col-lg-12">
+                                    @Html.DropDownListFor(m => Model.WithApartmentDistrictId,
+                                        Model.WithDistricts.Select(r => new SelectListItem
+                                        {
+                                            Selected = r.Id == Model.WithApartmentDistrictId,
+                                            Text = r.Name,
+                                            Value = r.Id.ToString()
+                                        }), T("Chọn quận / huyện").ToString(), new { Class = "form-control combobox", required = "required" })
+                                    <label for="autocompleteWithApartmentDistrictId" class="text-error collapse"></label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-lg-12">
+                                    @Html.DropDownListFor(m => Model.WithApartmentApartmentId,
+                                        Model.WithApartments.Select(r => new SelectListItem
+                                        {
+                                            Selected = r.Id == Model.WithApartmentApartmentId,
+                                            Text = r.Name,
+                                            Value = r.Id.ToString()
+                                        }), T("Chọn dự án").ToString(), new { Class = "form-control combobox", required = "required" })
+                                    <label for="autocompleteWithApartmentApartmentId" class="text-error collapse"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 text-center">
+                        <button type="submit" class="btn btn-warning"><i class="icon-search"></i> So sánh</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </article>
+</article>
+@using (Script.Foot())
+{
+    <script>
+        $(function() {
+            $("#ApartmentProvinceId, #WithApartmentProvinceId, [name$=ProvinceId]").attr("data-msg-required", "Bạn phải chọn Tỉnh / Thành phố");
+            $("#ApartmentDistrictId, #WithApartmentDistrictId, [name$=DistrictId]").attr("data-msg-required", "Bạn phải chọn Quận / Huyện");
+            $("#ApartmentApartmentId, #WithApartmentApartmentId, [name$=ApartmentId]").attr("data-msg-required", "Bạn phải chọn dự án");
+            if ($.fn.validate) {
+                var validator = $(".formvalidate").validate({
+                    errorClass: 'text-error'
+                });
+            }
+        });
+    </script>
+}

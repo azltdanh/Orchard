@@ -1,0 +1,4 @@
+@if (!string.IsNullOrEmpty(Model))
+{
+    <div data-toggle="tooltip" title="@Model<div>@ViewBag.Email</div><div class=color-note>@ViewBag.Note</div>">@((Model.Length > 3) ? (Model.Substring(0, 3) + "..") : Model)</div>
+}

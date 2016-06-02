@@ -1,0 +1,10 @@
+﻿@{
+    int temp = ViewBag.ViewId;
+}
+@if (temp == 1)     {<button class="btn btn-default" disabled="disabled"><i class="glyphicon glyphicon-user text-green"></i> Bạn bè</button>}
+else if (temp == 2)
+{ <button class="btn btn-default" disabled="disabled"><i class="glyphicon glyphicon-user text-green"></i> Đã gửi yêu cầu</button>}
+else if (temp == 3)
+{ <a class="btn btn-default btn-acceptfriend" onclick="AjaxAcceptFriend(this)" data-userselect="@ViewBag.UserSelect"><i class="glyphicon glyphicon-user text-green"></i> Đồng ý kết bạn</a>}
+else if (temp == 4)
+{ <a class="btn btn-default btn-addfriend" onclick="AjaxAddFriend(this)" data-userselect="@ViewBag.UserSelect"><i class="glyphicon glyphicon-user text-green"></i> Kết bạn</a>}

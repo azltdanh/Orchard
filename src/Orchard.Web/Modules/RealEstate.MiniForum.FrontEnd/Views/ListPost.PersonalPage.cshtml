@@ -1,0 +1,176 @@
+﻿@using RealEstateForum.Service.ViewModels
+@using RealEstate.Helpers
+@model PersonalPageViewModel
+
+@if (Model.TotalCount > 0)
+{
+    List<PersonalPageEntry> lstPost = Model.ListPostHomePage;
+
+    foreach (var item in lstPost)
+    {
+        var postDetailInfo = item.PostItemInfo;
+        var urlUserProfile = (WorkContext.CurrentUser != null && item.UserInfo.Id == WorkContext.CurrentUser.Id) ?
+                                    Url.Action("MyPage", "PersonalPage", new { Area = "RealEstate.MiniForum.FrontEnd" })
+                                    :
+                                    Url.Action("FriendPage", "PersonalPage", new { Area = "RealEstate.MiniForum.FrontEnd", UserName = item.UserInfo.UserName.ToSlug(), UserId = item.UserInfo.Id });
+
+        string urlPostDetail = item.IsShareBlog && postDetailInfo != null && postDetailInfo.TopicShortName != "not"
+                            ? Url.Action("PostDetail", new { controller = "PostForumFrontEnd", area = "RealEstate.MiniForum.FrontEnd", Id = postDetailInfo.Id, title = postDetailInfo.DisplayForNameForUrl, ThreadShortName = postDetailInfo.ThreadShortName, TopicShortName = postDetailInfo.TopicShortName })
+                            : "#";
+
+        <article class="post-item media well well-sm" id="@("post-" + item.Id)">
+            <div class="row-blog-header">
+                <div class="blog-left">
+                    <img src="@item.UserInfo.Avatar?width=68" class="img-thumbnail" alt="@item.UserInfo.DisplayName" />
+                </div>
+                <div class="blog-right">
+                    <div class="row-blog-username">
+                        <a href="@urlUserProfile" class="text-bold" title="Trang cá nhân">@item.UserInfo.DisplayName</a>
+                        @if (item.IsShareBlog)
+                        {
+                            if (postDetailInfo != null && !string.IsNullOrEmpty(postDetailInfo.Title))
+                            {<span class="link-share">đã chia sẽ liên kết <a class="text-bold" href="@urlPostDetail">@postDetailInfo.Title</a></span> }
+                        }
+                        @if (WorkContext.CurrentUser != null && Model.IsAdminOrManagement)
+                        {<i class="icon_rev_cross pointer pull-right" onclick="PerDeletePost(@item.Id)" title="Xóa"></i>}
+                    </div>
+                    <div class="row-blog-timeago">@item.TimeAgo</div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            @if (item.IsShareBlog)
+            {
+                var url = "";
+                if(postDetailInfo != null && !string.IsNullOrEmpty(postDetailInfo.Title))
+                {
+                    url = postDetailInfo.DefaultImage;
+                }
+                
+                <div class="row-blog-content">
+                    <div class="blog-left-avatar">
+                        <a href="@urlPostDetail" title="@((postDetailInfo != null && !string.IsNullOrEmpty(postDetailInfo.Title)) ? postDetailInfo.Title : "")">
+                            <img class="img-thumbnail" src="@url?width=150" alt="@((postDetailInfo != null && !string.IsNullOrEmpty(postDetailInfo.Title)) ? postDetailInfo.Title : "")" />
+                        </a>
+                    </div>
+                    <div class="blog-right-content">
+                        <div class="row-blog-title">
+                            @if (postDetailInfo != null && !string.IsNullOrEmpty(postDetailInfo.Title))
+                            {
+                                <a href="@urlPostDetail" class="text-bold" title="@postDetailInfo.Title">@postDetailInfo.Title</a>
+                            }
+                        </div>
+                        <div class="row-blog-child-content media-body">
+                            @if (postDetailInfo != null && !string.IsNullOrEmpty(postDetailInfo.Content))
+                            {
+                                @Html.Raw(postDetailInfo.Content)
+                            }
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+            }
+            else
+            {
+                <div class="row-blog-main-content media-body">
+                    @Html.Raw(item.Content)
+                </div>
+            }
+            <div class="c-btn-reply" style="margin-bottom: 5px;">
+                @if (WorkContext.CurrentUser != null)
+                {
+                    <span><a href="javascript:PersonalPageShowReply(@item.Id,0)">Bình luận </a></span>
+                    <span><a href="javascript:;">Thích </a></span>
+                }
+            </div>
+            <div class="row-form-comment" id="form-reply-@item.Id">
+                @if (WorkContext.CurrentUser != null)
+                {
+                    <i class="icons-arrow-reply personalpage-post" id="arrow-@item.Id" style="display:none;"></i>
+                    <div class="form-background-comment">
+                        <textarea class="form-control" cols="12" id="@("replyContent_" + item.Id)" placeholder="Nội dung trả lời"></textarea>
+                        <div class="height-10"></div>
+                        <a class="btn btn-default btnReplyComent pull-right" onclick="PersonalPostComment(@item.Id,0)">Đăng</a>
+                        <div class="clearfix"></div>
+                    </div>
+                }
+            </div>
+            <div class="row-blog-comment">
+                @foreach (var c in item.PostComment.ListComment)
+                {
+                    var urlCommentUserProfile = (WorkContext.CurrentUser != null && c.UserInfo.Id == WorkContext.CurrentUser.Id) ?
+                        Url.Action("MyPage", "PersonalPage", new { Area = "RealEstate.MiniForum.FrontEnd" })
+                        :
+                        Url.Action("FriendPage", "PersonalPage", new { Area = "RealEstate.MiniForum.FrontEnd", UserName = c.UserInfo.UserName.ToSlug(), UserId = item.UserInfo.Id });
+                    <div class="row-comment-item" id="comment-@c.CommentId">
+                        <div class="c-comment-left c-content">
+                            <img src="@c.UserInfo.Avatar?width=68" class="img-thumbnail" />
+                        </div>
+                        <div class="c-comment-right">
+                            <div class="">
+                                <a href="@urlCommentUserProfile"><strong>@c.UserInfo.DisplayName</strong></a>
+                                @if (WorkContext.CurrentUser != null && Model.IsAdminOrManagement)
+                                {<i class="icon_rev_cross pointer pull-right" onclick="PerDeleteComment(@c.CommentId)" title="Xóa"></i>}
+                            </div>
+                            <div class="media-body">
+                                <div class="per-time">@c.TimeAgo</div>
+                                <div>@Html.Raw(c.Content)</div>
+                                <div class="c-btn-reply">
+                                    @if (WorkContext.CurrentUser != null)
+                                    {
+                                        <span><a href="javascript:PerShowSubReply(@c.CommentId)">Bình luận </a></span>
+                                        <span><a href="javascript:;">Thích </a></span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="row-form-subcomment" id="row-form-reply-@c.CommentId" style="display:none;">
+                            @if (WorkContext.CurrentUser != null)
+                            {
+                                <i class="icons-arrow-reply detail-post" id="arrow-@c.CommentId"></i>
+                                <div class="form-background reply-bottom">
+                                    <textarea class="form-control" cols="12" id="@("replyContent_" + c.CommentId)" placeholder="Nội dung trả lời"></textarea>
+                                    <div class="height-10"></div>
+                                    <a class="btn btn-default btnReplyComent pull-right" onclick="PerChildComment(this,'@item.Id','@c.CommentId')">Đăng</a>
+                                    <div class="clearfix"></div>
+                                </div>
+                            }
+                        </div>
+                        <div class="row-content-subcomment">
+                            @foreach (var s in c.ListSubComment)
+                            {
+                                var urlSubCommentUserProfile = (WorkContext.CurrentUser != null && s.UserInfo.Id == WorkContext.CurrentUser.Id) ?
+                                    Url.Action("MyPage", "PersonalPage", new { Area = "RealEstate.MiniForum.FrontEnd" })
+                                    :
+                                    Url.Action("FriendPage", "PersonalPage", new { Area = "RealEstate.MiniForum.FrontEnd", UserName = s.UserInfo.UserName.ToSlug(), UserId = item.UserInfo.Id });
+                                <i class="icons-arrow-reply detail-post" id="arrow-subcomment-@s.SubCommentId"></i>
+                                <div class="form-background reply-bottom" id="comment-@s.SubCommentId">
+                                    <div class="s-comment-left c-content">
+                                        <img src="@s.UserInfo.Avatar?width=50" class="img-thumbnail" />
+                                    </div>
+                                    <div class="s-comment-right">
+                                        <div>
+                                            <a href="@urlSubCommentUserProfile"><strong>@s.UserInfo.DisplayName</strong></a>
+                                            @if (WorkContext.CurrentUser != null && Model.IsAdminOrManagement)
+                                            {<i class="icon_rev_cross pointer pull-right" onclick="PerDeleteComment(@s.SubCommentId)" title="Xóa"></i>}
+                                        </div>
+                                        <div class="media-body">
+                                            <div class="c-btn-reply">
+                                                <span class="time">@s.TimeAgo</span>
+                                            </div>
+                                            <div>@s.SubCommentContent</div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            }
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="clearfix"></div>
+        </article>
+    }
+}

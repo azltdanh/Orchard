@@ -1,0 +1,183 @@
+﻿@using RealEstate.Helpers;
+@using RealEstate.ViewModels;
+@model LocationApartmentCompareDisplayViewModel
+@{
+    var apartment = Model.LocationApartments.LocationApartment;
+    var withapartment = Model.WithLocationApartments.LocationApartment;
+    Layout.Title = "So sánh chung cư " + apartment.Name + " vs " + withapartment.Name;
+}
+
+
+@Html.Partial("CompareApartment.Form", Model.Options)
+
+<article class="content-item location-apartment-content">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left">
+                    <div class="header-title-triangle"></div>
+                </div>
+                <h2 class="header-title-text">@apartment.Name vs @withapartment.Name</h2>
+                <div class="header-title-right"></div>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="row-dg">
+            <div class="dg-emty">&nbsp;</div>
+            <div class="dg-md border-vertical">
+                <div class="media row content-item-details">
+                    <div class="pull-left col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                        <!-- Images -->
+                        @Html.Partial("LocationApartmentDetail.Images", Model.LocationApartments)
+                    </div>
+                    <div class="media-body col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                        <div class="row">
+                            <div class="col-lg-12"><strong class="text-blue f-16"><a href="@Url.Action("LocationApartmentDetail", "PropertySearch", new { area = "RealEstate.FrontEnd", id = apartment.Id, title = apartment.Name.ToSlug() })" target="_blank">@apartment.Name</a></strong></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 "><strong class="text-info">Địa chỉ:</strong> @apartment.DisplayForLocationAddress</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 ">@(Html.Raw(!string.IsNullOrEmpty(apartment.Description) ? apartment.Description : "-"))</div>
+                        </div>
+                    </div>
+                </div>
+                <span class="vs">vs</span>
+            </div>
+            <div class="dg-md">
+                <div class="media row content-item-details">
+                    <div class="pull-left col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                        <!-- Images -->
+                        @Html.Partial("LocationApartmentDetail.Images", Model.WithLocationApartments)
+                    </div>
+                    <div class="media-body col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                        <div class="row">
+                            <div class="col-lg-12"><strong class="text-blue f-16"><a href="@Url.Action("LocationApartmentDetail", "PropertySearch", new { area = "RealEstate.FrontEnd", id = withapartment.Id, title = withapartment.Name.ToSlug() })" target="_blank">@withapartment.Name</a></strong></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 "><strong class="text-info">Địa chỉ:</strong> @withapartment.DisplayForLocationAddress</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 ">@(Html.Raw(!string.IsNullOrEmpty(withapartment.Description) ? withapartment.Description : "-"))</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="table-responsive table-compare">
+            <table class="table table-bordered border-none">
+
+                <tr>
+                    <td>Tên khác</td>
+                    <td>
+                        @(!string.IsNullOrEmpty(apartment.ShortName) ? apartment.ShortName : "-")
+                    </td>
+                    <td>
+                        @(!string.IsNullOrEmpty(withapartment.ShortName) ? withapartment.ShortName : "-")
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Khoảng cách đến trung tâm</td>
+                    <td>@(!string.IsNullOrEmpty(apartment.DistanceToCentral) ? apartment.DistanceToCentral : "-")</td>
+                    <td>@(!string.IsNullOrEmpty(withapartment.DistanceToCentral) ? withapartment.DistanceToCentral : "-")</td>
+                </tr>
+
+                <tr>
+                    <td>Chủ đầu tư</td>
+                    <td>@(!string.IsNullOrEmpty(apartment.Investors) ? apartment.Investors : "-")</td>
+                    <td>@(!string.IsNullOrEmpty(withapartment.Investors) ? withapartment.Investors : "-")</td>
+                </tr>
+
+                <tr>
+                    <td>Hiện trạng</td>
+                    <td>@(!string.IsNullOrEmpty(apartment.CurrentBuildingStatus) ? apartment.CurrentBuildingStatus : "-")</td>
+                    <td>@(!string.IsNullOrEmpty(withapartment.CurrentBuildingStatus) ? withapartment.CurrentBuildingStatus : "-")</td>
+                </tr>
+
+                <tr>
+                    <td>Phí pháp lý</td>
+                    <td>@(!string.IsNullOrEmpty(apartment.ManagementFees) ? apartment.ManagementFees : "-")</td>
+                    <td>@(!string.IsNullOrEmpty(withapartment.ManagementFees) ? withapartment.ManagementFees : "-")</td>
+                </tr>
+
+                <tr>
+                    <td>Số tầng:</td>
+                    <td>@apartment.Floors</td>
+                    <td>@withapartment.Floors</td>
+                </tr>
+
+                <tr>
+                    <td>Diện tích khuôn viên</td>
+                    <td>@Html.Raw(apartment.AreaTotal.HasValue ? apartment.AreaTotal.Value + " m<sup>2</sup>" : "-")</td>
+                    <td>@Html.Raw(withapartment.AreaTotal.HasValue ? withapartment.AreaTotal.Value + " m<sup>2</sup>" : "-")</td>
+                </tr>
+
+                <tr>
+                    <td>Diện tích sàn xây dựng</td>
+                    <td>@Html.Raw(apartment.AreaConstruction.HasValue ? apartment.AreaConstruction.Value + " m<sup>2</sup>" : "-") </td>
+                    <td>@Html.Raw(withapartment.AreaConstruction.HasValue ? withapartment.AreaConstruction.Value + " m<sup>2</sup>" : "-") </td>
+                </tr>
+
+                <tr>
+                    <td>Diện tích khuôn viên/cây xanh</td>
+                    <td>@Html.Raw(apartment.AreaGreen.HasValue ? apartment.AreaGreen + " m<sup>2</sup>" : "-")</td>
+                    <td>@Html.Raw(withapartment.AreaGreen.HasValue ? withapartment.AreaGreen + " m<sup>2</sup>" : "-")</td>
+                </tr>
+
+                <tr>
+                    <td>Số tầng thương mại</td>
+                    <td>@Html.Raw(apartment.TradeFloors.HasValue ? apartment.TradeFloors.Value.ToString() : "-")</td>
+                    <td>@Html.Raw(withapartment.TradeFloors.HasValue ? withapartment.TradeFloors.Value.ToString() : "-")</td>
+                </tr>
+
+                <tr>
+                    <td>Diện tích sàn thương mại</td>
+                    <td>@Html.Raw(apartment.AreaTradeFloors.HasValue ? apartment.AreaTradeFloors.Value + " m<sup>2</sup>" : "-") </td>
+                    <td>@Html.Raw(withapartment.AreaTradeFloors.HasValue ? withapartment.AreaTradeFloors.Value + " m<sup>2</sup>" : "-") </td>
+                </tr>
+
+                <tr>
+                    <td>Số tầng hầm</td>
+                    <td>@(apartment.Basements.HasValue ? apartment.Basements.Value.ToString() : "-")</td>
+                    <td>@(withapartment.Basements.HasValue ? withapartment.Basements.Value.ToString() : "-")</td>
+                </tr>
+
+                <tr>
+                    <td>Diện tích tầng hầm</td>
+                    <td>@Html.Raw(apartment.AreaBasements.HasValue ? apartment.AreaBasements + " m<sup>2</sup>" : "-")</td>
+                    <td>@Html.Raw(withapartment.AreaBasements.HasValue ? withapartment.AreaBasements + " m<sup>2</sup>" : "-")</td>
+                </tr>
+
+                <tr>
+                    <td>Số lượng thang máy</td>
+                    <td>@(apartment.Elevators.HasValue ? apartment.Elevators.Value.ToString() : "-")</td>
+                    <td>@(withapartment.Elevators.HasValue ? withapartment.Elevators.Value.ToString() : "-")</td>
+                </tr>
+
+                <tr>
+                    <td>Đặc điểm khác</td>
+                    <td>
+                        <ul class="list-unstyled last">
+                            @foreach (var entry in Model.LocationApartments.LocationApartmentAdvantages)
+                            {
+                                <li class="text-ellipsis"><i class="icon_silk_check"></i><strong> @entry.Name</strong></li>
+                            }
+                        </ul>
+                    </td>
+                    <td>
+                        <ul class="list-unstyled last">
+                            @foreach (var entry in Model.WithLocationApartments.LocationApartmentAdvantages)
+                            {
+                                <li class="text-ellipsis"><i class="icon_silk_check"></i><strong> @entry.Name</strong></li>
+                            }
+                        </ul>
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+    </article>
+</article>

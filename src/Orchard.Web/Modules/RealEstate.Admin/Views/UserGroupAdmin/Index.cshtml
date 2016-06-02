@@ -1,0 +1,184 @@
+﻿@model RealEstate.ViewModels.UserGroupIndexViewModel
+@using RealEstate.ViewModels;
+
+@{
+    Script.Require("Common");
+    Layout.Title = T("User Groups").ToString();
+}
+
+<style type="text/css">
+    .zebra {
+        background-color: #efefef;
+    }
+
+    img.flag {
+        height: 10px;
+        width: 15px;
+        padding-right: 10px;
+    }
+
+    .movie-result td {
+        vertical-align: top;
+    }
+
+    .movie-image {
+        width: 60px;
+    }
+
+    .movie-image img {
+        height: 80px;
+        width: 60px;
+    }
+
+    .movie-info {
+        padding-left: 10px;
+        vertical-align: top;
+    }
+
+    .movie-title {
+        font-size: 1.2em;
+        padding-bottom: 15px;
+    }
+
+    .movie-synopsis {
+        font-size: .8em;
+        color: #888;
+    }
+
+    .select2-highlighted .movie-synopsis {
+        font-size: .8em;
+        color: #eee;
+    }
+
+    .bigdrop.select2-container .select2-results {
+        max-height: 300px;
+    }
+
+    .bigdrop .select2-results {
+        max-height: 300px;
+    }
+</style>
+
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Get))
+{      
+    @Html.ValidationSummary()
+
+    <fieldset class="bulk-actions left">
+        <label for="filterGroupName">@T("Group Name:")</label>
+        @Html.TextBoxFor(m => m.Options.Search, new { @class = "text" })        
+        <label for="filterResults">@T("Filter:")</label>
+        <select id="filterResults" name="@Html.NameOf(m => m.Options.Filter)">
+            @Html.SelectOption(Model.Options.Filter, UserGroupFilter.All, T("All").ToString())
+        </select>
+        <label for="filterResults">@T("Sort by:")</label>
+        <select id="filterResults1" name="@Html.NameOf(m => m.Options.Order)">
+            @Html.SelectOption(Model.Options.Order, UserGroupOrder.Name, T("Name").ToString())
+            @Html.SelectOption(Model.Options.Order, UserGroupOrder.SeqOrder, T("SeqOrder").ToString())
+        </select>
+
+        <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+    </fieldset>
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{ 
+    @Html.ValidationSummary()
+
+    <div class="right">
+        <fieldset class="bulk-actions">
+            <label for="publishActions">@T("Actions:")</label>
+            <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+                @Html.SelectOption(Model.Options.BulkAction, UserGroupBulkAction.None, T("Choose action...").ToString())
+                @Html.SelectOption(Model.Options.BulkAction, UserGroupBulkAction.Enable, T("Enable").ToString())
+                @Html.SelectOption(Model.Options.BulkAction, UserGroupBulkAction.Disable, T("Disable").ToString())
+                @Html.SelectOption(Model.Options.BulkAction, UserGroupBulkAction.Delete, T("Delete").ToString())
+            </select>
+            <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+        </fieldset>
+        @Html.ActionLink(T("Add new User Group").ToString(), "Create", new { returnUrl = HttpContext.Current.Request.Url }, new { @class = "button primaryAction" })
+    </div>
+    
+    <fieldset>
+        <table class="items">
+            <thead>
+                <tr>
+                    <th scope="col"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.UserGroups)" /></th>
+                    <th scope="col">@T("Name")</th>
+                    <th scope="col">@T("ShortName")</th>
+                    <th scope="col">@T("Province")</th>
+                    <th scope="col">@T("GroupAdmin")</th>
+                    <th scope="col">@T("HostName")</th>
+                    <th scope="col">@T("Users")</th>
+                    <th scope="col">@T("SeqOrder")</th>
+                    <th scope="col">@T("IsEnabled")</th>
+                    <th scope="col">@T("Actions")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.UserGroups)
+            {
+                var group = entry.UserGroup;
+                var host = entry.HostName;
+            <tr>
+                <td>
+                    <input type="hidden" value="@Model.UserGroups[index].UserGroup.Id" name="@Html.NameOf(m => m.UserGroups[index].UserGroup.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.UserGroups[index].IsChecked)"/>
+                </td>
+                <td>
+                    @Html.ActionLink(group.Name, "Activities", new { group.Id, returnUrl = HttpContext.Current.Request.Url }) 
+                </td>
+                <td>
+                    @group.ShortName
+                </td>
+                <td>
+                    @if (group.DefaultProvince != null)
+                    {
+                        @group.DefaultProvince.Name
+                    }
+                </td>
+                <td>
+                    
+                    @if (AuthorizedFor(RealEstate.Permissions.ManageUsers))
+                    {
+                        if (group.GroupAdminUser != null)
+                        {
+                        <a href="@Url.Action("LoginAs", "Users", new { group.GroupAdminUser.Id })"><span class="ui-icon icon-user-go" title="Đăng nhập với @group.GroupAdminUser.UserName"></span></a>
+                        }
+                    }
+                    @if(group.GroupAdminUser != null)
+                    {
+                        @Html.ActionLink(group.GroupAdminUser.UserName, "Activities", "Users", new { group.GroupAdminUser.Id, ReturnUrl = Request.Url }, new { Class = "" })
+                    }
+                </td>
+                <td>
+                    @host.Name
+                </td>
+                <td>
+                    @if(group.GroupUsers != null) 
+                    {
+                        try
+                        {
+                            @group.GroupUsers.Count()
+                        }
+                        catch { }
+                    }
+                </td>               
+                <td>
+                    @group.SeqOrder 
+                </td>
+                <td>
+                    @group.IsEnabled 
+                </td>
+                <td>
+                    @Html.ActionLink(T("Edit").ToString(), "Activities", new { group.Id, returnUrl = HttpContext.Current.Request.Url }) |
+                    @Html.ActionLink(T("Delete").ToString(), "Delete", new { group.Id, returnUrl = HttpContext.Current.Request.Url }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                </td>
+            </tr>
+                    index++;
+            }
+        </table>
+
+        @Display(Model.Pager)
+
+    </fieldset>
+} 

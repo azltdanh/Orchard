@@ -1,0 +1,36 @@
+﻿@model RealEstate.ViewModels.AdsPaymentCreate
+@using RealEstate.ViewModels;
+@{
+    Style.Require("Select2");
+    Script.Require("Select2");
+
+    Script.Require("Common");
+}
+
+<fieldset class="add-payment">
+    <legend>@T("Thêm giao dịch")</legend>
+        <div>
+            @Html.LabelFor(m => m.ToUserId, @T("Người nhận"))
+            @*@Html.DropDownListFor(m => m.ToUserId,
+                        Model.Users.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.ToUserId,
+                            Text = s.UserName,
+                            Value = s.Id.ToString()
+                        }), new { Class = "combobox" })*@
+            @*@Html.TextBoxFor(m => m.ToUserId, new { @class = "text text-box select2-user", placeholder = "Username" })*@
+            <input type="text" class="text text-box select2-user" name="ToUserId" id="ToUserId" ,placeholder="Username" />
+            @Html.ValidationMessageFor(m => m.ToUserId, "*")
+        </div>
+        <div>
+            @Html.LabelFor(m => m.Amount, @T("Số tiền"))
+            @Html.EditorFor(m => m.Amount)
+            @Html.ValidationMessageFor(m => m.Amount, "*")
+        </div>
+        <div>
+            @Html.LabelFor(m => m.Note, @T("Ghi chú"))
+            @Html.TextAreaFor(m => m.Note)
+            @Html.ValidationMessageFor(m => m.Note, "*")
+        </div>
+</fieldset>
+

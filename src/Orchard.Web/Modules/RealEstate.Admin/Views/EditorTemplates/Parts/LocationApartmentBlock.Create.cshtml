@@ -1,0 +1,107 @@
+﻿@model RealEstate.ViewModels.LocationApartmentBlockCreateViewModel
+
+@{
+    Script.Require("BootstrapCombobox");
+    Script.Require("jQueryUI_Autocomplete");
+    Style.Require("jQueryUI_Orchard");
+}
+
+<div class="form-editor">
+
+<!-- Vị trí Dự án / Chung cư -->
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-center header-bg-green">
+                <div class="header-left header-bg-green">
+                    <div class="header-left-triangle"></div>
+                </div>
+                <h1>Block Dự án / Chung cư</h1>
+                <div class="header-right"></div>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="form-horizontal pull-left">
+            <!-- Apartment -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Dự án / Chung cư:")</label>
+                <div class="controls">
+                    @Html.DropDownListFor(m => m.ApartmentId,
+                    Model.LocationApartments.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.ApartmentId,
+                            Text = s.Name,
+                            Value = s.Id.ToString()
+                        }), "-- Chọn dự án --", new { Class = "combobox" })
+                    @Html.ValidationMessageFor(m => m.ApartmentId, "*")
+                </div>
+            </div>
+            <!-- BlockName -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Block Name:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(r=>r.BlockName, new { @class = "text text-box"})
+                    @Html.ValidationMessageFor(m => m.BlockName, "*")
+                </div>
+            </div>
+            <!-- ShortName -->
+            @*<div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Short Name:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(r => r.ShortName, new { @class = "text text-box" })
+                    @Html.ValidationMessageFor(m => m.ShortName, "*")
+                </div>
+            </div>*@
+            <!-- FloorTotal -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Số tầng:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(r=>r.FloorTotal, new { @class = "text text-box"})
+                    @Html.ValidationMessageFor(m => m.FloorTotal, "*")
+                </div>
+            </div>
+
+            <!-- FloorGroupTotal -->
+            @*<div class="control-group">
+                <label class="control-label">@T("Số nhóm tầng:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(r => r.FloorGroupTotal, new { @class = "text text-box" })
+                    @Html.ValidationMessageFor(m => m.FloorGroupTotal, "*")
+                </div>
+            </div>*@
+
+            <!-- PriceAverage -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Giá chuẩn cho block:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(r => r.PriceAverage, new { @class = "text text-box" }) (triệu)
+                    @Html.ValidationMessageFor(m => m.PriceAverage, "*")
+                </div>
+            </div>
+
+            <!-- ApartmentEachFloor -->
+            @*<div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Số căn hộ mỗi tầng:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(r => r.ApartmentEachFloor, new { @class = "text text-box" })
+                    @Html.ValidationMessageFor(m => m.ApartmentEachFloor, "*")
+                </div>
+            </div>*@
+
+            <!-- SeqOrder -->
+            @*<div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Sắp xếp:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(r=>r.SeqOrder, new { @class = "text text-box"})
+                    @Html.ValidationMessageFor(m => m.SeqOrder, "*")
+                </div>
+            </div>*@
+        </div>
+        <div class="clearfix"></div>
+    </article>
+    <footer></footer>
+</article>
+
+
+</div>

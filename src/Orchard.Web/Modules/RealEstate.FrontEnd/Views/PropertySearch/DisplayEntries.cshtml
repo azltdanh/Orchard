@@ -1,0 +1,66 @@
+﻿@model List<RealEstate.ViewModels.PropertyDisplayEntry>
+
+@foreach (var entry in Model)
+{
+    var item = entry.Property;
+    <div class="media content-item-property">
+        <div class="pull-right content-item-property-price">
+            <div class="header-wrapper header-color-blue">
+                <div class="header-title">
+                    <div class="header-title-left">
+                        <div class="header-title-triangle"></div>
+                    </div>
+                    <h2>Định giá: @String.Format("{0:#,0.##} {1}", item.PriceEstimatedInVND, item.PaymentMethod.ShortName)</h2>
+                    <div class="header-title-right"></div>
+                </div>
+            </div>
+            <div class="header-wrapper header-color-green">
+                <div class="header-title">
+                    <div class="header-title-left">
+                        <div class="header-title-triangle"></div>
+                    </div>
+                    <h2>@item.DisplayForPriceProposed</h2>
+                    <div class="header-title-right"></div>
+                </div>
+            </div>
+            <div class="header-wrapper header-color-orange last">
+                <div class="header-title">
+                    <div class="header-title-left">
+                        <div class="header-title-triangle"></div>
+                    </div>
+                    <h2 class="text-danger">Rẻ hơn: @String.Format("{0:#,0.##} %", (item.PriceProposed - item.PriceEstimatedInVND) * 100 / item.PriceProposed)</h2>
+                    <div class="header-title-right"></div>
+                </div>
+            </div>
+            <div class="content-item-property-price-info">
+                <div>Cập nhật ngày @String.Format("{0:dd/MM/yyyy}", item.LastUpdatedDate.ToLocalTime())</div>
+                <div>Lượt xem: 123</div>
+                <a href="#">Lưu tin này</a>
+            </div>
+        </div>
+        <a class="pull-left" href="#">
+            <img alt="image" src="/Modules/RealEstate.FrontEnd/Styles/images/hinh.png" class="img-thumbnail"/>
+        </a>
+        <div class="media-body@(item.IsAuthenticatedInfo == true? " bg-authenticated" : "")">
+            <div>
+                <a href="@Url.Action("RealEstateDetail", new { id = item.Id, title = item.DisplayForUrl })" title="@item.DisplayForTitle.StripHtml()"><strong>@Html.Raw(item.DisplayForTitle)</strong></a>
+            </div>
+            <div>
+                <strong>Vị trí:</strong>
+                @item.DisplayForLocationFullAddress
+            </div>
+            <div>
+                @Html.Raw(item.DisplayForAreaConstructionInfo)
+            </div>
+            <div>
+                @Html.ActionLink("Vị trí BĐS và tiện ích xung quanh", "RealEstateDetail", new { item.Id }, new { Class = "detail-tienich" })
+            </div>
+            <div>
+                <strong>Liên hệ:</strong>
+                @entry.DisplayForContact
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+}
+    

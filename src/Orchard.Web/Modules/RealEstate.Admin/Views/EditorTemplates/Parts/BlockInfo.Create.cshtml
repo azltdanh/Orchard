@@ -1,0 +1,73 @@
+﻿@model RealEstate.ViewModels.ApartmentBlockInfoCreateViewmodel
+
+<fieldset>
+    @Html.LabelFor(m => m.ApartmentName, T("Tên từng căn hộ"))
+    @Html.TextBoxFor(m => m.ApartmentName, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.ApartmentName, "*")
+    @Html.HiddenFor(r => r.ApartmentBlockId)
+</fieldset>
+<fieldset>
+    <label>Avatar</label>
+    <input type="file" name="AvatarFile" />
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.ApartmentArea, T("Diện tích (m2)"))
+    @Html.EditorFor(m => m.ApartmentArea)
+    @Html.ValidationMessageFor(m => m.ApartmentArea, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.RealAreaUse, T("Diện tích thông thủy(m2)"))
+    @Html.EditorFor(m => m.RealAreaUse)
+    @Html.ValidationMessageFor(m => m.RealAreaUse, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.ApartmentBedrooms, T("Số phòng ngủ"))
+    @Html.EditorFor(m => m.ApartmentBedrooms)
+    @Html.ValidationMessageFor(m => m.ApartmentBedrooms, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.ApartmentBathrooms, T("Số WC"))
+    @Html.EditorFor(m => m.ApartmentBathrooms)
+    @Html.ValidationMessageFor(m => m.ApartmentBathrooms, "*")
+</fieldset>
+@*<fieldset>
+    @Html.LabelFor(m => m.PriceAverage, T("Giá trung bình (triệu đồng/m2)"))
+    @Html.EditorFor(m => m.PriceAverage)
+    @Html.ValidationMessageFor(m => m.PriceAverage, "*")
+</fieldset>*@
+<fieldset>
+    @Html.LabelFor(m => m.OrtherContent, T("Nội dung khác"))
+    @Html.TextAreaFor(m => m.OrtherContent)
+    @Html.ValidationMessageFor(m => m.OrtherContent, "*")
+</fieldset>
+<!-- Images -->
+<div class="control-group">
+    <label class="control-label">@T("Hình ảnh:")</label>
+    <div class="controls">
+        <div class="upload-container">
+            <div class="upload">
+                <input type="file" name="files" id="file1" />
+                <span class="ui-icon icon-delete"></span>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                var currentImage = 1;
+                $("body").on("change", "input[name='files']", function () {
+                    currentImage = currentImage + 1;
+                    var htmlToAppend = '<div class="upload"><input type="file" name="files" id="file' + currentImage + '" /><span class="ui-icon icon-delete"></span></div>';
+                    $('.upload-container').append(htmlToAppend);
+                }).on("click", ".upload .icon-delete", function () {
+                    if ($(this).parent().siblings().length > 0) {
+                        $(this).parent().remove();
+                    }
+                });
+            });
+        </script>
+    </div>
+</div>
+<style>
+    .control-group{
+        margin-bottom: 30px;
+    }
+</style>

@@ -1,0 +1,174 @@
+﻿@using RealEstateForum.Service.ViewModels
+@model PostCreateAdminViewModel
+
+@{
+    //Script.Require("jQueryUI");
+    Script.Require("realEstate.MiniForum.Tinymce");
+    Script.Require("jQueryUI_DatePicker");
+
+    Script.Require("realEstate.MiniForum.Admin");
+
+    Script.Require("jQueryColorBox");
+    Style.Require("jQueryColorBox");
+    
+
+}
+
+<div class="control-group">
+    <div class="controls">
+        <label class="control-label" for="ThreadId">Chuyên mục</label>
+    </div>
+</div>
+<div class="control-group">
+    @Html.DropDownListFor(m => m.ThreadId,
+                    Model.ListThread.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.ThreadId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }), "-- Vui lòng chọn chuyên mục --")
+    @Html.ValidationMessageFor(m => m.ThreadId, "*")
+</div>
+<div class="control-group">
+    <div class="controls">
+        <label class="control-label" for="TopicId">Chuyên đề</label>
+    </div>
+</div>
+<div class="control-group">
+    @if (Model.ListTopic != null)
+    {
+        @Html.DropDownListFor(m => m.TopicId,
+                            Model.ListTopic.Select(s => new SelectListItem
+                            {
+                                Selected = s.Id == Model.TopicId,
+                                Text = s.Name,
+                                Value = s.Id.ToString()
+                            }), "-- Vui lòng chọn chuyên đề --")
+        @Html.ValidationMessageFor(m => m.TopicId, "*")
+    }
+    else
+    {
+        <select id="TopicId" name="TopicId">
+            <option>-- Vui lòng chọn chuyên đề --</option>
+        </select>
+    }
+</div>
+
+<div class="control-group">
+    <div class="controls">
+        <label class="control-label" for="Title">Tên bài viết </label>
+    </div>
+</div>
+<div class="control-group">
+    @Html.TextBoxFor(r => r.Title, new { @class = "textMedium" })
+    <span>Số ký tự còn lại: </span><strong id="charsTitle">100</strong>
+    @Html.ValidationMessageFor(r => r.Title, "*")
+</div>
+
+<div class="control-group">
+    <div class="controls">
+        <label class="control-label" for="Description">Trích dẫn mở đầu bài viết</label>
+    </div>
+</div>
+<div class="control-group">
+    @Html.TextAreaFor(r => r.Description, new { @class = "html tinymce", cols = 5, rows = 5 })
+    @Html.ValidationMessageFor(r => r.Description, "*")
+</div>
+
+<div class="control-group">
+    <div class="controls">
+        <label class="control-label" for="Content">Nội dung bài viết</label>
+    </div>
+</div>
+<div class="control-group">
+    @Html.TextAreaFor(r => r.Content, new { @class = "html tinymce", cols = 5, rows = 5 })
+    @Html.ValidationMessageFor(r => r.Content, "*")
+</div>
+<hr />
+<div class="control-group">
+    @Html.Partial("UploadImagePost.Partial")
+</div>
+<hr />
+<div class="control-group">
+    <div class="controls">
+        <label class="control-label" for="CssImage">Ảnh đại diện bài viết</label>
+    </div>
+</div>
+<div class="control-group">
+    <input type="file" name="CssImage" id="CssImage" />
+</div>
+<hr />
+<fieldset>
+    <legend></legend>
+    @Html.EditorFor(m => m.IsPinned, new { @class = "textMedium" })
+    <label for="IsPinned" class="control-inline">Ghim bài viết</label>
+</fieldset>
+
+<div id="TimeSetting">
+    <div class="control-group">
+        <div class="controls">
+            <label class="control-label" for="TimeExpiredPinned">Thời gian kết thúc ghim</label>
+        </div>
+    </div>
+    <div class="control-group">
+        @Html.TextBoxFor(r => r.TimeExpiredPinned, String.Format("{0:dd/MM/yyyy}", Model.TimeExpiredPinned), new { @class = "textMedium date-box" })
+        @Html.ValidationMessageFor(r => r.TimeExpiredPinned)
+    </div>
+</div>
+<hr />
+
+<div>
+    <div class="control-inline" style="margin-right: 30px;">
+        @Html.EditorFor(m => m.IsHeighLight, new { @class = "textMedium" })
+        <label for="IsHeighLight" class="control-inline">Bài viết nổi bật</label>
+    </div>
+    <div class="control-inline" style="margin-right: 30px;">
+        @Html.EditorFor(m => m.IsMarket, new { @class = "textMedium" })
+        <label for="IsMarket" class="control-inline">Bài viết thuộc tin tức thị trường</label>
+    </div>
+    <div class="control-inline">
+        @Html.EditorFor(m => m.IsProject, new { @class = "textMedium" })
+        <label for="IsProject" class="control-inline">Bài viết thuộc tin tức các dự án nổi bật</label>
+    </div>
+</div>
+<hr />
+
+<div class="control-group">
+    @for (int i = 0; i < Model.ListPublishStatus.Count(); i++)
+    {
+        <div class="control-inline" style="margin-right: 20px;">
+            <label class="radio">
+                <input type="radio" name="PublishStatusId" id="@("StatusId_" + i)" value="@Model.ListPublishStatus[i].Id" @(i == 0 ? "checked=\"checked\"" : "")>
+                @Model.ListPublishStatus[i].Value
+            </label>
+        </div>
+    }
+</div>
+<hr />
+
+<fieldset>
+    <legend></legend>
+    @Html.EditorFor(m => m.IsShareBlog, new { @class = "textMedium" })
+    <label for="IsShareBlog" class="control-inline">Chia sẻ lên blog cá nhân</label>
+</fieldset>
+<hr />
+
+@if (Model.HaveFacebookUserId)
+{
+    <fieldset>
+        <legend></legend>
+        <label>@Html.CheckBoxFor(m => m.AcceptPostToFacebok) Chia sẻ lên facebook</label>
+    </fieldset>
+<hr />
+}
+
+<div class="control-group">
+    @Html.DropDownListFor(m => m.StatusPostId,
+                        Model.ListPostStatus.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.StatusPostId,
+                            Text = s.Value.ToString(),
+                            Value = s.Id.ToString()
+                        }))
+</div>
+<hr />

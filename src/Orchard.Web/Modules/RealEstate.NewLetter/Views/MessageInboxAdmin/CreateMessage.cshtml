@@ -1,0 +1,96 @@
+﻿@using RealEstate.NewLetter.ViewModels;
+@using RealEstate.NewLetter.Models;
+@model MessageInboxCreateViewModel
+
+@{
+    Layout.Title = T("Soạn tin nhắn mới").ToString();
+
+    Script.Require("BootstrapCombobox");
+    Style.Require("jQueryUI_Orchard");
+
+    bool _hadEmail = !string.IsNullOrEmpty(Model.Email) ? true : false;
+}
+<script type="text/javascript">
+//<![CDATA[
+    var antiForgeryToken = '@Html.AntiForgeryTokenValueOrchard()';
+    //]]>
+</script>
+
+@using (Html.BeginFormAntiForgeryPost())
+{
+    <div class="form-horizontal">
+        <fieldset>
+            @Html.CheckBoxFor(m => m.IsChecked, new { style = "float:left;"})
+            @Html.LabelFor(m => m.IsChecked, T("Nhập địa chỉ Email"))
+        </fieldset>
+        <div class="control-group">
+            <label class="control-label">@T("Người nhận:")</label>
+            <div class="controls form-inline">
+                <span class="IsEmail" style="display:none;">
+                    @Html.TextBoxFor(m => m.Email, new { @class = "span6" })
+                </span>
+                <span class="IsUserSeleted">
+                    <select class="text select-box" name="UserReceive" id="UserReceive">
+                        <option>- Đang tải...</option>
+                    </select>
+                </span>
+
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">@T("Tiêu đề:")</label>
+            <div class="controls form-inline">
+                @Html.TextBoxFor(m => m.Title, new { @class = "span6" })
+                <input type="hidden" name="MsgTitle" id="MsgTitle" value="@Model.Title" />
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">@T("Nội dung:")</label>
+            <div class="controls form-inline">
+                @Html.TextAreaFor(userMessage => userMessage.Content, 10, 40, new { @class = "text textMedium span6" })
+                @Html.ValidationMessageFor(userMessage => userMessage.Content)
+            </div>
+        </div>
+    </div>
+    <button type="submit" name="submit.reply" value="@T("Gửi")">@T("Gửi")</button>
+}
+<script type="text/javascript">
+    $(function () {
+        $('#IsChecked').change(function () {
+            if ($(this).is(':checked')) {
+                $('.IsEmail').show();
+                $('.IsUserSeleted').hide();
+            }
+            else {
+                $('.IsEmail').hide();
+                $('.IsUserSeleted').show();
+            }
+        });
+        if ('@_hadEmail' == 'True') $('#IsChecked').attr('checked',true);
+        $('#IsChecked').change();
+        //
+        $.ajax({
+            type: "post",
+            dataType: "",
+            url: "/Admin/AjaxListUserForCombobox",
+            data: {
+                __RequestVerificationToken: antiForgeryToken
+            },
+            success: function (response) {
+                $('#UserReceive').empty().append("<option value=''>Vui lòng chọn</option>");
+                $.each(response.list, function (i, item) { $('#UserReceive').append("<option value=" + item.Value + ">" + item.Text + "</option>"); });
+                $('#UserReceive').change().combobox('refresh');
+            },
+            error: function (request, status, error) {
+                $('#UserReceive').empty().append("<option value=''></option>").change().combobox('refresh');
+            }
+        });
+    });
+</script>
+<style>
+    .span6 {
+        width: 300px;
+    }
+</style>

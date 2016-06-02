@@ -1,0 +1,34 @@
+﻿@model RealEstate.ViewModels.PaymentConfigCreateViewModel
+
+<fieldset>
+    @Html.LabelFor(m => m.Name, T("Tên"))
+    @Html.TextBoxFor(m => m.Name, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.Name, "*")
+</fieldset>
+
+<fieldset>
+    @Html.LabelFor(m => m.CssClass, T("CssClass"))
+    @Html.TextBoxFor(m => m.CssClass, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.CssClass, "*")
+</fieldset>
+
+<fieldset>
+    @Html.LabelFor(m => m.Description, T("Mô tả"))
+    @Html.TextAreaFor(m => m.Description, 10, 40, new { @class = "text textMedium span6" })
+    @Html.ValidationMessageFor(m => m.Description, "*")
+</fieldset>
+
+<fieldset>
+    @Html.LabelFor(m => m.Value, T("Giá trị"))
+    @Html.TextBoxFor(m => m.Value, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.Value, "*")
+</fieldset>
+
+<fieldset>
+    <label for="IsEnabled">@Html.EditorFor(m => m.IsEnabled, new { @class = "textMedium" }) Enabled</label>
+</fieldset>
+    <script type="text/javascript">
+        $(function () {
+            $('[name="submit.SaveReturn"],[name="submit.Back"]').insertAfter('fieldset.save-button button[name="submit.Save"]').css('margin-left', '4px');
+        });
+    </script>

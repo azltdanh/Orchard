@@ -1,0 +1,27 @@
+﻿@using RealEstate.Helpers
+@using RealEstateForum.Service.ViewModels;
+@{
+    var model = Model;
+    List<PostByTopicEntry> ListPost = model;
+}
+
+@if (ListPost.Count() > 0)
+{
+    <ul class="media-list media-list-condensed last">
+        @foreach (var item in ListPost)
+        {
+            var urlPageDetail = Url.Action("PostDetail", "PostForumFrontEnd", new { area = "RealEstate.MiniForum.FrontEnd", Id = item.Id, title = item.DisplayForNameForUrl, ThreadShortName = item.ThreadShortName, TopicShortName = item.TopicShortName });
+            <li>
+                @if (!String.IsNullOrEmpty(item.DefaultImage))
+                {
+                    <div class="box-image">
+                        <a href="@urlPageDetail" title="@item.Title">
+                            <img alt="@item.Title" src="@item.DefaultImage" class="img-responsive" />
+                        </a>
+                    </div>
+                }
+                @Html.ActionLink(item.Title, "PostDetail", new { controller = "PostForumFrontEnd", area = "RealEstate.MiniForum.FrontEnd", Id = item.Id, title = item.DisplayForNameForUrl, ThreadShortName = item.ThreadShortName, TopicShortName = item.TopicShortName }, new { })
+            </li>
+        }
+    </ul>
+}

@@ -1,0 +1,151 @@
+﻿@model RealEstate.ViewModels.GroupLocationsIndexViewModel
+@using RealEstate.Models;
+@using RealEstate.Services;
+@{
+    Script.Require("BootstrapCombobox");
+    Script.Require("Floatheader");
+    Layout.Title = T("Group Locations").ToString();
+}
+
+<div>
+    <span><strong>Group:</strong> @Model.Group.Name</span>
+    <span>&nbsp;&nbsp;-&nbsp;&nbsp;<strong>GroupAdmin:</strong> @Html.ActionLink(Model.Group.GroupAdminUser.UserName, "Activities", new { Area = "RealEstate.Admin", Controller = "Users", Id = Model.Group.GroupAdminUser.Id })</span>
+</div>
+
+<div class="spacer"></div>
+
+<ul class="nav nav-tabs">
+    <li><a href="@Url.Action("Edit", "UserGroupAdmin", new { Model.Group.Id })#general">General</a></li>
+    <li><a href="@Url.Action("Edit", "UserGroupAdmin", new { Model.Group.Id })#users">Users</a></li>
+    <li><a href="@Url.Action("Edit", "UserGroupAdmin", new { Model.Group.Id })#ips">IPs</a></li>
+    <li class="active">
+        @Html.ActionLink("Locations", "Locations", new { Model.Group.Id }, new { })
+    </li>
+</ul>
+
+<div class="spacer"></div>
+
+@using (Html.BeginFormAntiForgeryPost())
+{      
+    @Html.ValidationSummary()
+
+    <fieldset class="bulk-actions">
+        <table class="filter-table">
+            <thead>
+                <tr>
+                    <th>@Html.LabelFor(m => m.Options.ProvinceId, @T("Province:"))</th>
+                    <th>@Html.LabelFor(m => m.Options.DistrictId, @T("District:"))</th>
+                    <th>@Html.LabelFor(m => m.Options.WardId, @T("Ward:"))</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        @Html.DropDownListFor(m => m.Options.ProvinceId,
+                        Model.Options.Provinces.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.Options.ProvinceId,
+                            Text = s.Name,
+                            Value = s.Id.ToString()
+                        }), T("All").ToString(), new { Class = "combobox" })
+                    </td>
+                    <td>
+                        @Html.LabelFor(m => m.Options.DistrictId, @T("District:"))
+                        @Html.DropDownListFor(m => m.Options.DistrictId,
+                        Model.Options.Districts.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.Options.DistrictId,
+                            Text = s.Name,
+                            Value = s.Id.ToString()
+                        }), T("All").ToString(), new { Class = "combobox" })
+                    </td>
+                    <td>
+                        @Html.LabelFor(m => m.Options.WardId, @T("Ward:"))
+                        @Html.DropDownListFor(m => m.Options.WardId,
+                        Model.Options.Wards.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.Options.WardId,
+                            Text = s.Name,
+                            Value = s.Id.ToString()
+                        }), T("All").ToString(), new { Class = "combobox" })
+                    </td>
+                    <td>
+                        <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+                        <button type="submit" name="submit.Add" value="@T("Add")">@T("Add new Location")</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </fieldset>
+}
+
+<div class="spacer"></div>
+
+<table id="tblGroupLocations" class="items fixed-table float-header">
+    <thead>
+        <tr>
+            <th scope="col" class="w16"></th>
+            <th scope="col" class="">@T("Province")</th>
+            <th scope="col" class="">@T("District")</th>
+            <th scope="col" class="">@T("Ward")</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var entry in Model.GroupLocations)
+    {
+        <tr>
+            <td>
+                @Html.ActionLink(T("Remove").ToString(), "Remove", new { entry.Id }, new { Class = "ui-icon icon-delete", id = entry.Id })
+            </td>
+            <td>@(entry.LocationProvincePartRecord != null ? entry.LocationProvincePartRecord.Name : "")</td>
+            <td>@(entry.LocationDistrictPartRecord != null ? entry.LocationDistrictPartRecord.Name : "")</td>
+            <td>@(entry.LocationWardPartRecord != null ? entry.LocationWardPartRecord.Name : "")</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@Display(Model.Pager)
+
+<div class="spacer"></div>
+
+<script type="text/javascript">
+    $(function () {
+
+        $(".pagination .paginationRight a").each(function () {
+            $(this).attr("href", $(this).attr("href").replace("/ListGroupUsers/", "/Edit/"));
+        });
+
+        // Delete a GroupLocation
+        $("#tblGroupLocations .icon-delete").click(function () {
+            var tr = $(this).closest('tr');
+
+            if (confirm('Bạn muốn xóa thông tin này?')) {
+                $.ajax({
+                    type: "post",
+                    dataType: "",
+                    url: "/RealEstate.Admin/Home/AjaxDeleteGroupLocation",
+                    data: {
+                        id: $(this).attr("id"),
+                        __RequestVerificationToken: antiForgeryToken
+                    },
+                    success: function (results) {
+                        if (results.success) {
+                            $(tr).fadeOut('medium', function () {
+                                $(tr).remove();
+                            });
+                        }
+                        else
+                            alert(results.message);
+                    },
+                    error: function (request, status, error) {
+                    }
+                });
+            }
+            return false;
+        });
+
+    });
+
+</script>

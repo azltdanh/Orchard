@@ -1,0 +1,87 @@
+﻿@model RealEstate.ViewModels.PlanningMapEditViewModel
+@{
+    Script.Require("BootstrapCombobox");
+}
+<fieldset>
+    @Html.LabelFor(m => m.ProvinceId, T("Tỉnh / Thành phố"))
+    @Html.DropDownListFor(m => m.ProvinceId,
+    Model.Provinces.Select(s => new SelectListItem
+    {
+        Selected = s.Id == Model.ProvinceId,
+        Text = s.Name,
+        Value = s.Id.ToString()
+    }), "-- Tỉnh / Thành phố --", new { Class = "combobox" })
+    @Html.ValidationMessageFor(m => m.ProvinceId, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.DistrictId, T("Quận / Huyện"))
+    @Html.DropDownListFor(m => m.DistrictId,
+    Model.Districts.Select(s => new SelectListItem
+    {
+        Selected = s.Id == Model.DistrictId,
+        Text = s.Name,
+        Value = s.Id.ToString()
+    }), "-- Quận / Huyện --", new { Class = "combobox" })
+    @Html.ValidationMessageFor(m => m.DistrictId, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.WardId, T("Phường / Xã"))
+    @Html.DropDownListFor(m => m.WardId,
+    Model.Wards.Select(s => new SelectListItem
+    {
+        Selected = s.Id == Model.WardId,
+        Text = s.Name,
+        Value = s.Id.ToString()
+    }), "-- Phường / Xã --", new { Class = "combobox" })
+    @Html.ValidationMessageFor(m => m.WardId, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.ImagesPath, T("ImagesPath"))
+    @Html.TextBoxFor(m => m.ImagesPath, new { @class = "text large" })
+    @Html.ValidationMessageFor(m => m.ImagesPath, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.Width, T("Width"))
+    @Html.TextBoxFor(m => m.Width, new { @class = "text-small" }) px
+    @Html.ValidationMessageFor(m => m.Width, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.Height, T("Height"))
+    @Html.TextBoxFor(m => m.Height, new { @class = "text-small" }) px
+    @Html.ValidationMessageFor(m => m.Height, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.MinZoom, T("MinZoom"))
+    @Html.TextBoxFor(m => m.MinZoom, new { @class = "text-small" })
+    @Html.ValidationMessageFor(m => m.MinZoom, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.MaxZoom, T("MaxZoom"))
+    @Html.TextBoxFor(m => m.MaxZoom, new { @class = "text-small" })
+    @Html.ValidationMessageFor(m => m.MaxZoom, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.Ratio, T("Ratio"))
+    @Html.TextBoxFor(m => m.Ratio, new { @class = "text-small" })
+    @Html.ValidationMessageFor(m => m.Ratio, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.IsEnabled, T("IsEnabled"))
+    @Html.EditorFor(m => m.IsEnabled)
+    @Html.ValidationMessageFor(m => m.IsEnabled, "*")
+</fieldset>
+
+    @if (String.IsNullOrEmpty(Model.ReturnUrl))
+    {
+        @Html.ActionLink(T("Back").ToString(), "Index", new { }, new { @class = "button primaryAction", name = "submit.Back" })
+    }
+    else
+    {
+        <a href="@Model.ReturnUrl" class="button primaryAction" name="submit.Back">Back</a>
+    }
+    
+    <script type="text/javascript">
+        $(function () {
+            $('[name="submit.SaveReturn"],[name="submit.Back"]').insertAfter('fieldset.save-button button[name="submit.Save"]').css('margin-left', '4px');
+        });
+    </script>

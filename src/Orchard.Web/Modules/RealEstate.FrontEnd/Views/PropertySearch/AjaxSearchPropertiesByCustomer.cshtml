@@ -1,0 +1,9 @@
+﻿@model RealEstate.ViewModels.PropertyDisplayIndexViewModel
+
+<div class="pager-top">
+</div>
+@Html.Partial("ListProperties", Model.Properties)
+<div class="pager-bottom">
+    @Display(Model.Pager)
+</div>
+<div class="clearfix"></div>

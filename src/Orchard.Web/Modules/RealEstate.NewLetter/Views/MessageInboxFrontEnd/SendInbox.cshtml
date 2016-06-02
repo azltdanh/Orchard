@@ -1,0 +1,57 @@
+﻿@using RealEstate.NewLetter.ViewModels
+@model MessageInboxIndexViewModel
+
+@{
+    Layout.Title = T("Thư đã gửi").ToString();
+    Script.Require("FrontEnd.Common");
+    var hostName = WorkContext.HttpContext.Request.Url.Host;
+}
+
+
+<article class="content-item block_controlpanel">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left">
+                    <div class="header-title-triangle"></div>
+                </div>
+                <h2 class="header-title-text">Thư đã gửi</h2>
+                <div class="header-title-right"></div>
+            </div>
+        </div>
+    </header>
+    <article class="message-content">
+        <div class="table-responsive">
+            @if (Model.TotalCount > 0)
+            {
+                <table class="table table-condensed table-hover">
+                    <thead>
+                        <tr>
+                            <td class="thc-3">-</td>
+                            <td>-</td>
+                            <td class="thc-2">-</td>
+                            <td class="thc-1">-</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in Model.ListMessage)
+                        {
+                            var entry = item.MessagePart;
+                            <tr>
+                                <td><a href="@Url.Action("ViewMessage", "MessageInboxFrontEnd", new { area = "RealEstate.NewLetter", id = entry.Id})">@hostName<strong>@(item.ReplyCount > 0 ? "(" + item.ReplyCount + ")" : "")</strong></a></td>
+                                <td><a href="@Url.Action("ViewMessage", "MessageInboxFrontEnd", new { area = "RealEstate.NewLetter", id = entry.Id})">@(entry.Content.Length > 100 ? entry.Content.Substring(0, 100) + " ..." : entry.Content)</a></td>
+                                <td class="size-11">@String.Format("{0:g}", entry.DateSend)</td>
+                                <td><a onclick="AjaxDeleteMessage(@entry.Id,this)" href="javascript:;" title="Xóa tin nhắn này"><i class="icon_silk_delete"></i></a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                   <div>Bạn chưa có tin nhắn nào!</div>
+            }
+        </div>
+    </article>
+</article>

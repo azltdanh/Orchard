@@ -1,0 +1,35 @@
+﻿@using RealEstate.ViewModels;
+@using RealEstate.Helpers;
+
+@{
+    var model = Model.ViewModel;
+}
+
+<ul class="list-apartment-highlight">   
+@foreach (var item in model.LocationApartments)
+{
+    <li class="col-lg-4 col-md-4 col-sm-4 col-xs-12 no-padding">
+        <div class="item-aparment">
+            <div class="media">
+                <a href="@Url.Action("RealEstateDetail", new { id = item.LocationApartment.Id, title = item.LocationApartment.Name })" class="pull-left hidden-xs">
+                    <img class="img-thumbnail img-responsive" src="@item.DefaultImgUrl?width=100" alt="">
+                </a>
+                <div class="media-body">
+                    <div class="block-ellipsis block-ellipsis-2" style="word-wrap: break-word;">
+
+                        <a title="@item.LocationApartment.Name" href="@Url.Action("LocationApartmentDetail", new { id = item.LocationApartment.Id, title = item.DisplayUrl })" class="link-visited">
+                            <strong>
+                                @Html.Raw(item.LocationApartment.Name)
+                            </strong>
+                        </a>
+                    </div>
+                    <div class="block-ellipsis block-ellipsis-2" style="word-wrap: break-word;">
+                        <strong>Địa điểm: </strong>@Html.Raw(item.LocationApartment.DisplayForLocationAddress)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+}
+</ul>
+<div class="clearfix"></div>

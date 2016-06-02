@@ -1,0 +1,617 @@
+﻿@model RealEstate.ViewModels.PropertyIndexViewModel
+@using RealEstate.ViewModels;
+
+@{
+    Style.Require("Rating");
+    Script.Require("Rating");
+    Style.Require("Select2");
+    Script.Require("Select2");
+    Script.Require("Floatheader");
+    Script.Require("Common");
+
+    Style.Require("jQueryColorBox");
+    Script.Require("jQueryColorBox");
+
+    Layout.Title = T("Properties").ToString();
+}
+
+<style>
+    #main {
+        min-width: 976px;
+    }
+</style>
+@using (Script.Foot())
+{
+<script>
+
+    // auto reload a page if there is no activity for 5 minutes on the page
+
+    var time = new Date().getTime();
+
+    $(document.body).bind("mousemove keypress", function (e) {
+        time = new Date().getTime();
+    });
+
+    function refresh() {
+        if (new Date().getTime() - time >= 300000)
+            window.location.reload(true);
+        else
+            setTimeout(refresh, 10000);
+    }
+
+    setTimeout(refresh, 10000);
+
+</script>
+}
+@if (Model.Options != null)
+{
+    @Html.Partial("Filter", Model.Options)
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{
+    <div class="left">@Html.Raw(String.Format("Tìm được <strong>{0:#,0}</strong> kết quả ({1:#,0.##} giây)", Model.TotalCount, Model.TotalExecutionTime))</div>
+    <div class="right">
+        @if (AuthorizedFor(RealEstate.Permissions.BulkActionProperties))
+    {
+            <fieldset class="bulk-actions">
+                <label for="publishActions" class="filter-label">@T("Tác vụ:")</label>
+
+                <select class="publishActions multiselect" name="@Html.NameOf(m => m.Options.PublishBulkAction)" multiple="multiple" placeholder="-- Vui lòng chọn --">
+
+                    <optgroup label="Publish tin rao">
+                        <!-- Publish -->
+                        @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.Publish, T("Cho phép hiện tin rao").ToString())
+                        @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.UnPublish, T("- Dấu tin rao").ToString())
+                        <!-- PublishAddress -->
+                        @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.PublishAddress, T("Cho phép hiện số nhà").ToString())
+                        @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.UnPublishAddress, T("- Dấu số nhà").ToString())
+                        <!-- PublishContact -->
+                        @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.PublishContact, T("Cho phép hiện liên hệ").ToString())
+                        @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.UnPublishContact, T("- Dấu liên hệ").ToString())
+                    </optgroup>
+
+                    <optgroup label="Tin quảng cáo">
+                        <!-- AdsGoodDeal -->
+                        @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.AddToAdsGoodDeal, T("BĐS giá rẻ").ToString())
+                        @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.RemoveAdsGoodDeal, T("- loại khỏi BĐS giá rẻ").ToString())
+                        <!-- AdsVIP -->
+                        @*@Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.AddToAdsVIP, T("BĐS giao dịch gấp").ToString())*@
+                        @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.AddToVIP1, T("BĐS VIP 1").ToString())
+                        @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.AddToVIP2, T("BĐS VIP 2").ToString())
+                        @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.AddToVIP3, T("BĐS VIP 3").ToString())
+                        @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.RemoveAdsVIP, T("- loại khỏi BĐS VIP").ToString())
+                        <!-- AdsHighlight -->
+                        @*@Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.AddToAdsHighlight, T("BĐS nổi bật").ToString())
+                            @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.RemoveAdsHighlight, T("- loại khỏi BĐS nổi bật").ToString())*@
+                    </optgroup>
+
+                    <optgroup label="Thông tin thêm">
+                        <!-- IsOwner -->
+                        @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.SetIsOwner, T("BĐS chính chủ").ToString())
+                        @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.UnSetIsOwner, T("- xóa BĐS chính chủ").ToString())
+                        <!-- NoBroker -->
+                        @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.SetNoBroker, T("BĐS miễn trung gian").ToString())
+                        @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.UnSetNoBroker, T("- xóa BĐS miễn trung gian").ToString())
+                        <!-- IsAuction -->
+                        @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.SetIsAuction, T("BĐS phát mãi").ToString())
+                        @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.UnSetIsAuction, T("- xóa BĐS phát mãi").ToString())
+                        <!-- SetIsAuthenticatedInfo -->
+                        @*@Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.SetIsAuthenticatedInfo, T("BĐS đã xác thực").ToString())*@
+                        @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.UnSetIsAuthenticatedInfo, T("- BĐS chưa xác thực").ToString())
+                        <!-- Delete UserProperties-->
+                        @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.DeleteUserProperties, T("- Xóa khỏi danh sách theo dõi").ToString())
+                    </optgroup>
+
+                </select>
+
+                <select class="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+                    @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.None, T("").ToString())
+
+                    <optgroup label="Trạng thái tin rao">
+                        @switch (Model.Options.StatusCssClass)
+                {
+                case "st-pending":
+                case "st-estimate":
+                case "st-approved":
+                case "st-invalid":
+                case "st-draft":
+
+                if (Model.Options.StatusCssClass == "st-approved")
+                {
+                    @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.Refresh, T("Làm mới tin").ToString())
+                }
+                else
+                {
+                    @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.Approve, T("Duyệt tin").ToString())
+                }
+
+                @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.NotApprove, T("Không hợp lệ").ToString())
+                        @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.Copy, T("Copy BĐS").ToString())
+                        @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.Delete, T("Xóa BĐS").ToString())
+                break;
+
+                default:
+                // Refresh
+                @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.Refresh, T("Làm mới tin").ToString())
+                        @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.Listing, T("BĐS rao bán").ToString())
+                if (AuthorizedFor(RealEstate.Permissions.CopyProperty))
+                {
+                    @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.Copy, T("Copy BĐS").ToString())
+                }
+                @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.Trash, T("Chờ xóa").ToString())
+                if (AuthorizedFor(RealEstate.Permissions.ManageProperties))
+                {
+                    @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.Delete, T("Xóa BĐS").ToString())
+                }
+                break;
+                }
+                    </optgroup>
+
+                    @if (AuthorizedFor(RealEstate.Permissions.ManageProperties))
+            {
+                        <optgroup label="BĐS dùng định giá">
+                            <!-- Estimation -->
+                            @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.AddToEstimation, T("BĐS dùng định giá").ToString())
+                            @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.RemoveFromEstimation, T("- loại khỏi BĐS dùng định giá").ToString())
+                        </optgroup>
+            }
+
+                    @if (AuthorizedFor(RealEstate.Permissions.ExportProperties))
+            {
+                        <optgroup label="Export">
+                            <!-- Export -->
+                            @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.Export, T("Xuất tin rao đăng báo").ToString())
+                        </optgroup>
+            }
+
+                    @if (AuthorizedFor(Orchard.Security.StandardPermissions.SiteOwner))
+            {
+                        <optgroup label="Mass-Update Properties">
+                            @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.UpdateNegotiateStatus, T("Cập nhật BĐS đang thương lượng").ToString())
+                            @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.UpdateMetaDescriptionKeywords, T("Cập nhật meta Decription Keywords").ToString())
+                            @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.TransferPropertyTypeConstruction, T("Cập nhật Loại công trình xây dựng").ToString())
+                        </optgroup>
+            }
+                </select>
+
+                <button type="submit" name="submit.BulkEdit" value="@T(" apply")">@T("Apply")</button>
+
+                @Html.Hidden("ReturnUrl")
+
+            </fieldset>
+    }
+
+        <div class="btn-group">
+            <a class="btn button primaryAction dropdown-toggle" data-toggle="dropdown" href="#">
+                Thêm BĐS mới
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li>@Html.ActionLink(T("Đất ở và các loại nhà").ToString(), "Create", new { AdsTypeId = Model.Options.AdsTypeId, TypeGroupCssClass = "gp-house", PaymentMethodId = Model.Options.PaymentMethodId }, new { })</li>
+                <li>@Html.ActionLink(T("Căn hộ, chung cư").ToString(), "Create", new { AdsTypeId = Model.Options.AdsTypeId, TypeGroupCssClass = "gp-apartment", PaymentMethodId = Model.Options.PaymentMethodId }, new { })</li>
+                <li>@Html.ActionLink(T("Các loại đất khác").ToString(), "Create", new { AdsTypeId = Model.Options.AdsTypeId, TypeGroupCssClass = "gp-land", PaymentMethodId = Model.Options.PaymentMethodId }, new { })</li>
+                <li>@Html.ActionLink(T("Trao đổi BĐS").ToString(), "Create", new { AdsTypeCssClass = "ad-exchange", TypeGroupCssClass = "gp-house", PaymentMethodId = Model.Options.PaymentMethodId}, new { })</li>
+            </ul>
+        </div>
+    </div>
+
+    <fieldset>
+        <table class="items fixed-table float-header">
+            <thead>
+                <tr>
+                    <th scope="col" class="w20 align-center"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.Properties)" /></th>
+                    <th scope="col" class="w58">@T("Id")</th>
+                    @if (Model.Options.StatusCssClass != "st-estimate")
+                {
+                        <th scope="col" class="w60">Giá (@Model.Options.PaymentMethodShortName)</th>
+                }
+                    @if (Model.Options.ShowEstimation || Model.Options.StatusCssClass == "st-estimate")
+                {
+                        <th scope="col" class="w40">@T("ĐGiá")</th>
+                }
+                    @if (Model.Options.StatusCssClass == "st-estimate")
+                {
+                        <th scope="col">@T("Đánh giá")</th>
+                }
+                    <th scope="col" class="w74">@T("Số nhà")</th>
+                    <th scope="col" class="w130">@T("Đường")</th>
+                    <th scope="col" class="w46">@T("Phường")</th>
+                    <th scope="col" class="w36">@T("Quận")</th>
+                    <th scope="col">@T("Diện tích")</th>
+                    <th scope="col" class="w78">@T("Nhà")</th>
+                    <th scope="col" class="w20">@T("Hg")</th>
+                    <th scope="col" class="w58">@T("MT/H")</th>
+                    <th scope="col" class="w30">@T("LH")</th>
+                    <th scope="col" class="w30">@T("Ng")</th>
+                    <th scope="col" class="w52">@T("Ngày")</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{var index = 0;}
+                @foreach (var entry in Model.Properties)
+            {
+            var item = entry.PropertyPart;
+                    <tr data-id="@item.Id" class="@(item.LastUpdatedDate < Model.Options.NeedUpdateDate ? " bg-new" : "" ) @(entry.IsCopyable ? " bg-resolved" : "" )">
+                        <td class="align-center">
+                            <input type="hidden" value="@Model.Properties[index].PropertyPart.Id" name="@Html.NameOf(m => m.Properties[index].Property.Id)" />
+                            <input type="checkbox" value="true" name="@Html.NameOf(m => m.Properties[index].IsChecked)" />
+
+                            @if (item.AdsVIPRequest == true)
+                    {
+                    List<string>
+                        request = new List<string>
+                            ();
+                            if (item.AdsVIPRequest == true)
+                            {
+                            request.Add("VIP");
+                            }
+                                <span title="BĐS yêu cầu đăng quảng cáo @String.Join(" , ", request) @(item.SeqOrder == 1 ? 3 : item.SeqOrder == 3 ? 1 : item.SeqOrder)" class="ui-icon icon-coin"></span>
+                            }
+                            else
+                            {
+                            <!-- IsAuthenticatedInfo -->
+                                @Html.Raw(item.IsAuthenticatedInfo ? "<span title=\"BĐS đã xác thực\" class=\"ui-icon icon-check\"></span>" : "")
+                            }
+                            @if (entry.IsCheckSavedProperty)
+                            {
+                                <div><span title="Xóa khỏi danh sách theo dõi" class="ui-icon icon-cross pointer deleteuserproperty" data-id="@item.Id"></span></div>
+                            }
+                            else
+                            {
+                                <div><span title="Lưu vào danh sách theo dõi" class="ui-icon icon-save pointer saveuserproperty" data-id="@item.Id"></span></div>
+                            }
+                        </td>
+
+                        <td>
+                            <!-- Published -->
+                            @if (item.Published)
+                            {
+                                <a href="@Url.Action("RealEstateDetail", "PropertySearch", new { area = "RealEstate.FrontEnd", id = item.Id, title = item.DisplayForUrl })" title="Xem trên web" target="_blank">
+                                    @if (item.AdsExpirationDate > DateTime.Now)
+                                    {
+                                        <span title="BĐS đang hiện trên trang chủ" class="left ui-icon icon-label-green" style="margin-top:3px;"></span>
+                                    }
+                                    else
+                                    {
+                                        <span title="BĐS hết hạn trên trang chủ" class="left ui-icon icon-label-red" style="margin-top:3px;"></span>
+                                    }
+                                </a>
+                            }
+
+                            <!-- ID -->
+                            <span class="@(item.IsExcludeFromPriceEstimation ? " property-excluded" : "" )">
+                                @Html.ActionLink(item.Id.ToString(), "Edit", new { item.Id, returnUrl = HttpContext.Current.Request.Url }, new { Class = "p-id" })
+                            </span>
+
+                            <!-- UserGroup -->
+                            @if (item.UserGroup != null)
+                            {
+                                <div><small class="small">@item.UserGroup.ShortName</small></div>
+                            }
+
+                            <!-- AdsVIPRequest -->
+                            @if (item.AdsVIPRequest == true)
+                            {
+                                <div><span title="BĐS giao dịch VIP" class="@(" icon-ads-vip-" + item.SeqOrder)"></span></div>
+                            }
+
+                        </td>
+
+                        <!-- PriceProposedInVND -->
+                        @if (Model.Options.StatusCssClass != "st-estimate")
+                {
+                            <td class="@(item.Flag != null ? item.Flag.CssClass : " ")">
+                                <span data-toggle="tooltip">@Html.DisplayFor(model => item.PriceProposedInVND, "Double", new {Model.Options.PaymentMethodCssClass })</span>
+                                <div data-tooltip-content="" style="display:none">
+                                    <div><em><strong>Giá rao:</strong></em> @item.PriceProposed @(item.PaymentMethod != null ? item.PaymentMethod.ShortName : "")  / @(item.PaymentUnit != null ? item.PaymentUnit.ShortName : "")</div>
+                                    <div>
+                                        <em><strong>Định giá:</strong></em>
+                                        @if (item.PriceEstimatedInVND != null)
+                            {
+                                            @Html.DisplayFor(model => item.PriceEstimatedInVND, "Double") <text>Tỷ</text>
+                            if (item.PriceProposedInVND > 0)
+                            {
+                                @Html.DisplayFor(model => item.PriceEstimatedInVND, "Percent", new {item.PriceProposedInVND })
+                            }
+                            }
+                            else
+                            {
+                                            <text>?</text>
+                            }
+                                    </div>
+                                </div>
+                            </td>
+                }
+
+                        <!-- PriceEstimatedInVND -->
+                        @if (Model.Options.ShowEstimation || Model.Options.StatusCssClass == "st-estimate")
+                {
+                            <td class="@(item.Flag != null ? item.Flag.CssClass : " ")">
+                                @Html.DisplayFor(model => item.PriceEstimatedInVND, "Double")
+
+                                @if (item.PriceProposedInVND > 0)
+                    {
+                                    @Html.DisplayFor(model => item.PriceEstimatedInVND, "Percent", new { PriceProposedInVND = item.PriceProposedInVND })
+                    }
+                            </td>
+                }
+
+                        <!-- PriceEstimatedInVND Rating -->
+                        @if (Model.Options.StatusCssClass == "st-estimate")
+                {
+                            <td>
+                                @if (item.PriceEstimatedRatingPoint > 0)
+                    {
+                                    <div>
+                                        <input class="star" type="radio" name="star-@item.Id" disabled="disabled" checked="@(item.PriceEstimatedRatingPoint == 1)" title="Không chính xác" />
+                                        <input class="star" type="radio" name="star-@item.Id" disabled="disabled" checked="@(item.PriceEstimatedRatingPoint == 2)" title="Không có ý kiến" />
+                                        <input class="star" type="radio" name="star-@item.Id" disabled="disabled" checked="@(item.PriceEstimatedRatingPoint == 3)" title="Chấp nhận được" />
+                                        <input class="star" type="radio" name="star-@item.Id" disabled="disabled" checked="@(item.PriceEstimatedRatingPoint == 4)" title="Chính xác" />
+                                        <input class="star" type="radio" name="star-@item.Id" disabled="disabled" checked="@(item.PriceEstimatedRatingPoint == 5)" title="Rất chính xác" />
+                                    </div>
+                    }
+
+                                @if (!string.IsNullOrEmpty(item.PriceEstimatedComment))
+                    {
+                                    <br />
+                                    <div>
+                                        <a href="#" data-toggle="tooltip">chi tiết đánh giá...</a>
+                                        <div data-tooltip-content="" style="display:none">
+                                            <div>
+                                                @Html.Raw(item.PriceEstimatedComment)
+                                            </div>
+                                        </div>
+                                    </div>
+                    }
+                            </td>
+                }
+
+                        <!-- AddressNumber -->
+                        <td class="@(item.Status != null ? item.Status.CssClass : " ")">
+                            @if (entry.ShowAddressNumber)
+                    {
+                    <!-- PublishAddress -->
+                    if (item.PublishAddress)
+                    {
+                        <span title="Cho phép hiện địa chỉ" class="left ui-icon icon-label-green" style="margin-top:3px;"></span>
+                    }
+
+                    @item.AddressNumber
+
+                    <!-- Status -->
+                    if (item.Status != null && !String.IsNullOrEmpty(item.Status.ShortName))
+                    {
+                        <span class="small">@item.Status.ShortName</span>
+                    }
+
+                    <!-- Gallery -->
+                    if (entry.Files != null && entry.Files.Count() > 0)
+                    {
+                        @Html.Partial("Gallery", entry.Files)
+                    }
+
+                    <!-- AddressCorner -->
+                    if (!String.IsNullOrEmpty(item.AddressCorner))
+                    {
+                        <div>(@item.AddressCorner)</div>
+                    }
+
+                    <!-- ApartmentNumber -->
+                    if (item.TypeGroup != null && item.TypeGroup.CssClass == "gp-apartment")
+                    {
+                        <div>@item.ApartmentNumber</div>
+                    }
+
+                    if (entry.PropertyExchange != null)
+                    {
+                        <span class="small"><a class="ajax" href="@Url.Action(" ajaxloadrequirementdetail", "PropertyExchange" , new { area="RealEstate.FrontEnd" , id=item.Id })" title="Thông tin bđs yêu cầu trao đổi">Trao đổi BĐS</a></span>
+                                <script>
+                                    $(document).ready(function () {
+                                        $(".ajax").colorbox({ width: "50%" });
+                                    })
+                                </script>
+                    }
+                    }
+                        </td>
+
+                        <!-- Street -->
+                        <td class="@(item.Status != null ? item.Status.CssClass : " ")">
+                            @(item.Street != null ? item.Street.Name : item.OtherStreetName)
+
+                            @if (item.TypeGroup != null && item.TypeGroup.CssClass == "gp-apartment")
+                    {
+                                <div>@(item.Apartment != null ? item.Apartment.Name : item.OtherProjectName)</div>
+                    }
+                        </td>
+
+                        <!-- Ward -->
+                        <td>
+                            @(item.Ward != null ? (String.IsNullOrEmpty(item.Ward.ShortName) ? item.Ward.Name : item.Ward.ShortName) : item.OtherWardName)
+                        </td>
+
+                        <!-- District -->
+                        <td>
+                            @(item.District != null ? (String.IsNullOrEmpty(item.District.ShortName) ? item.District.Name : item.District.ShortName) : item.OtherDistrictName)
+                        </td>
+
+                        <!-- Area -->
+                        <td>
+                            @if (item.TypeGroup != null)
+                    {
+                    switch (item.TypeGroup.CssClass)
+                    {
+                    case "gp-house":
+
+                    // AreaTotal
+                    if (!String.IsNullOrEmpty(item.DisplayForAreaTotal))
+                    {
+                        <div>DTKV: @Html.Raw(item.DisplayForAreaTotal)</div>
+                    }
+
+                    // AreaLegal
+                    if (!String.IsNullOrEmpty(item.DisplayForAreaLegal))
+                    {
+                        <div>DTQH: @Html.Raw(item.DisplayForAreaLegal)</div>
+                    }
+
+                    break;
+
+                    case "gp-apartment":
+
+                    // AreaUsable
+                    if (item.AreaUsable > 0)
+                    {
+                        <div>DT căn hộ: @String.Format("{0:#,0.##}", item.AreaUsable) m<sup>2</sup></div>
+                    }
+
+                    break;
+
+                    case "gp-land":
+
+                    // AreaTotal
+                    if (!String.IsNullOrEmpty(item.DisplayForAreaTotal))
+                    {
+                        <div>DTKV: @Html.Raw(item.DisplayForAreaTotal)</div>
+                    }
+
+                    // AreaResidential
+                    if (item.AreaResidential > 0)
+                    {
+                        <div>DT đất thổ cư: @String.Format("{0:#,0.##}", item.AreaResidential) m<sup>2</sup></div>
+                    }
+
+                    break;
+                    }
+                    }
+
+                            <!-- Title -->
+                            <!-- Content -->
+                            <!-- Advantages -->
+                            @if (!String.IsNullOrEmpty(item.Title) || !String.IsNullOrEmpty(item.Content) || (entry.Advantages != null && entry.Advantages.Any()))
+                    {
+                                <a href="#" data-toggle="tooltip">chi tiết...</a>
+                                <div data-tooltip-content="" style="display:none">
+                                    <div>
+                                        <!-- Title -->
+                                        @Html.Raw(String.IsNullOrEmpty(item.Title) ? " " : ("<div><em><strong>Tiêu đề:</strong></em> " + item.Title + "</div>"))
+                                        <!-- Content -->
+                                        @Html.Raw(String.IsNullOrEmpty(item.Content) ? "" : ("<div><em><strong>Nội dung:</strong></em> " + item.Content + "</div>"))
+                                        <!-- Advantages -->
+                                        @Html.Raw((entry.Advantages != null && entry.Advantages.Any()) ? ("<div><em><strong>Đặc điểm:</strong></em> " + String.Join(", ", entry.Advantages.Select(a => a.Name).ToList()) + "</div>") : "")
+                                    </div>
+                                </div>
+                    }
+                        </td>
+
+                        <!-- PropertyType -->
+                        <td>
+                            @if (item.Type != null)
+                    {
+                                @item.Type.ShortName
+                    }
+                            @Html.DisplayFor(model => item.Floors, "Floors")
+                        </td>
+
+                        <!-- Direction -->
+                        <td>
+                            @if (item.Direction != null)
+                    {
+                                @item.Direction.ShortName
+                    }
+                        </td>
+
+                        <!-- Location -->
+                        <td>
+                            <span data-toggle="tooltip" title="@item.DisplayForLocationInfo">@item.DisplayForAlley</span>
+                        </td>
+
+                        <!-- ContactPhone -->
+                        <td class="nowrap">
+                            @if (entry.ShowAddressNumber)
+                    {
+                    if (entry.ShowContactPhone)
+                    {
+                    <!-- PublishContact -->
+                    if (item.PublishContact)
+                    {
+                        <span title="Cho phép hiện liên hệ" class="left ui-icon icon-label-green" style="margin-top:3px;"></span>
+                    }
+
+                    <!-- ContactPhone -->
+                                @Html.DisplayFor(m => item.ContactPhone, "Truncate", new { Note = item.Note, Email = item.ContactEmail })
+                    }
+                    }
+                        </td>
+
+                        <!-- UserInfo -->
+                        <td class="nowrap">
+                            @Html.DisplayFor(m => item.LastInfoFromUser.UserName, "UserInfo",
+                    new
+                    {
+                    LastInfoFromUserName = item.LastInfoFromUser.UserName,
+                    LastUpdatedUserName = item.LastUpdatedUser.UserName,
+                    LastUpdatedDate = item.LastUpdatedDate,
+                    FirstInfoFromUserName = item.FirstInfoFromUser.UserName,
+                    CreatedUserName = item.CreatedUser.UserName,
+                    CreatedDate = item.CreatedDate,
+                    })
+
+                        </td>
+
+                        <!-- Date -->
+                        <td>
+                            <!-- Date -->
+                            @if (entry.IsExportedRecently == true)
+                    {
+                                <span data-toggle="tooltip" class="color-note">
+                                    @Html.DisplayFor(model => item.LastUpdatedDate, "ShortDate")
+                                </span>
+                                <div data-tooltip-content="" style="display:none">
+                                    đã xuất tin ngày @(Html.DisplayFor(model => item.LastExportedDate, "ShortDate")) bởi
+                                    <strong>@item.LastExportedUser.UserName</strong>
+                                </div>
+                    }
+                    else if (entry.IsExportedExpired == true)
+                    {
+                        <span data-toggle="tooltip" class="color-highlight">
+                            @Html.DisplayFor(model => item.LastUpdatedDate, "ShortDate")
+                        </span>
+                                <div data-tooltip-content="" style="display:none">
+                                    tin đăng hết hạn, xuất lần cuối ngày @(Html.DisplayFor(model => item.LastExportedDate, "ShortDate")) bởi
+                                    <strong>@(item.LastExportedUser != null ? item.LastExportedUser.UserName : "...")</strong>
+                                </div>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(model => item.LastUpdatedDate, "ShortDate")
+                    }
+
+                            <!-- AdsHighlight -->
+                            @if (item.AdsHighlight && item.AdsHighlightExpirationDate > DateTime.Now)
+                    {
+                                <span title="BĐS nổi bật" class="icon-ads-highlight"></span>
+                    }
+
+                            <!-- AdsGoodDeal -->
+                            @if (item.AdsGoodDeal && item.AdsGoodDealExpirationDate > DateTime.Now)
+                    {
+                                <span title="BĐS giá rẻ" class="icon-ads-hot"></span>
+                    }
+
+                            <!-- AdsVIP -->
+                            @if (item.AdsVIP && item.AdsVIPExpirationDate > DateTime.Now)
+                    {
+                                <span title="BĐS giao dịch VIP" class="@(" icon-ads-vip-" + item.SeqOrder)"></span>
+                    }
+                        </td>
+                    </tr>
+            index++;
+            }
+            </tbody>
+        </table>
+
+        @Display(Model.Pager)
+
+    </fieldset>
+}

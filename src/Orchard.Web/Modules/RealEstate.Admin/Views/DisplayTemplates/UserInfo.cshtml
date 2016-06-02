@@ -1,0 +1,5 @@
+﻿<div data-toggle="tooltip">@Model</div>
+<div data-tooltip-content="" style="display:none">
+    <div><em><strong>Nguồn gần nhất:</strong> @ViewBag.LastInfoFromUserName - <strong>Sửa bởi:</strong> @ViewBag.LastUpdatedUserName ngày @string.Format("{0:dd/MM/yy}", ViewBag.LastUpdatedDate)</em></div>
+    <div><em><strong>Nguồn đầu tiên:</strong> @ViewBag.FirstInfoFromUserName - <strong>Tạo bởi:</strong> @ViewBag.CreatedUserName ngày @string.Format("{0:dd/MM/yy}", ViewBag.CreatedDate)</em></div>
+</div>

@@ -1,0 +1,111 @@
+﻿@model RealEstate.ViewModels.PropertyCreateViewModel
+@using RealEstate.ViewModels;
+
+<!-- Đặc điểm tốt - Đặc điểm xấu -->
+<article class="content-item">
+    <header>
+        <div class="header-wrapper pull-right">
+            <div class="header-center header-bg-green">
+                <div class="header-left header-bg-green">
+                    <div class="header-left-triangle"></div>
+                </div>
+                <h1>Đặc điểm xấu</h1>
+                <div class="header-right"></div>
+            </div>
+        </div>
+        <div class="header-wrapper">
+            <div class="header-center header-bg-green">
+                <div class="header-left header-bg-green">
+                    <div class="header-left-triangle"></div>
+                </div>
+                <h1>Đặc điểm tốt</h1>
+                <div class="header-right"></div>
+            </div>
+        </div>
+    </header>
+    <article>
+        <!-- Advantages -->
+        <div class="p50 pull-left">
+            <ul>
+            @{
+                var rIndex = 0;
+            }
+            @foreach (var r in Model.Advantages)
+            {
+                <li><input type="hidden" value="@r.Advantage.Id"
+                    name="@Html.FieldNameFor(m => m.Advantages[rIndex].Advantage.Id)"/>
+                    <label for="@Html.FieldNameFor(m => m.Advantages[rIndex].IsChecked)">
+                        <input type="checkbox" value="true"
+                            name="@Html.FieldNameFor(m => m.Advantages[rIndex].IsChecked)"
+                            id="@Html.FieldNameFor(m => m.Advantages[rIndex].IsChecked)"
+                            @if (r.IsChecked)
+                            {<text>checked="checked"</text>}/>
+                        @String.Format("{0} {1}", r.Advantage.Name, String.Format("({0:+0;-0;}%)", r.Advantage.AddedValue))
+                    </label>
+                    @{rIndex++;}
+                </li>
+            }
+            </ul>
+            <br />
+            <div class="form-inline">
+                <!-- OtherAdvantagesDesc -->
+                <div class="control-group">
+                    <label class="control-label">@T("Đặc điểm tốt khác làm tăng giá trị của BĐS:")</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.OtherAdvantagesDesc, new { maxlength = 250, @class = "text text-box-medium", placeholder = "Nêu đặc điểm tốt khác làm tăng thêm giá trị của BĐS" })
+                    </div>
+                </div>
+                <!-- OtherAdvantages -->
+                <div class="control-group">
+                    <label class="control-label">@T("Nhập số phần trăm tăng thêm:")</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.OtherAdvantages, new { @class = "text number-box" }) %
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- DisAdvantages -->
+        <div class="p50 pull-right">
+            <ul style="margin-left:10px;">
+            @{
+                var disIndex = 0;
+            }
+            @foreach (var r in Model.DisAdvantages)
+            {
+                <li><input type="hidden" value="@r.Advantage.Id"
+                    name="@Html.FieldNameFor(m => m.DisAdvantages[disIndex].Advantage.Id)"/>
+                    <label for="@Html.FieldNameFor(m => m.DisAdvantages[disIndex].IsChecked)">
+                        <input type="checkbox" value="true"
+                            name="@Html.FieldNameFor(m => m.DisAdvantages[disIndex].IsChecked)"
+                            id="@Html.FieldNameFor(m => m.DisAdvantages[disIndex].IsChecked)"
+                            @if (r.IsChecked)
+                            {<text>checked="checked"</text>}/>
+                        @string.Format("{0} {1}", r.Advantage.Name, String.Format("({0:+0;-0;}%)", r.Advantage.AddedValue))
+                    </label>
+                    @{disIndex++;}
+                </li>
+            }
+            </ul>
+            <br />
+            <div class="form-inline" style="margin-left:10px;">
+                <!-- OtherDisAdvantagesDesc -->
+                <div class="control-group">
+                    <label class="control-label">@T("Đặc điểm xấu khác làm giảm giá trị BĐS:")</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.OtherDisAdvantagesDesc, new { maxlength = 250, @class = "text text-box-medium", placeholder = "Nêu đặc điểm xấu khác làm giảm đi giá trị của BĐS" })
+                    </div>
+                </div>
+                <!-- OtherDisAdvantages -->
+                <div class="control-group">
+                    <label class="control-label">@T("Nhập số phần trăm giảm đi:")</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.OtherDisAdvantages, new { @class = "text number-box" }) %
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="vr"></div>
+    </article>
+    <footer></footer>
+</article>

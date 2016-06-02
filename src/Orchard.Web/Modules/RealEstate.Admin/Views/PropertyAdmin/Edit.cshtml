@@ -1,0 +1,67 @@
+﻿@{
+    Layout.Title = T("Edit Property").ToString();
+
+    Script.Require("jQueryUI_DatePicker");
+
+    Script.Require("jqueryValidate");
+
+    Script.Require("BootstrapCombobox");
+
+    Script.Require("Markdown.Converter");
+    Script.Require("Markdown.Sanitizer");
+    Script.Require("Common").AtFoot();
+
+    Style.Require("jQueryColorBox");
+    Script.Require("jQueryColorBox");
+}
+
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Post, new { enctype = "multipart/form-data", Class = "form-serialize" }))
+{
+    @Html.ValidationSummary()
+    // Model is a Shape, calling Display() so that it is rendered using the most specific template for its Shape type
+    @Display(Model)
+}
+
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        $(function () {
+            $('button[name="submit.SaveContinue"]').clone().insertAfter('fieldset.save-button button[name="submit.Save"]').css('margin-left', '4px');
+            $('<button value="submit.SaveContinueRequirement" name="submit.SaveContinueRequirement" type="submit" class="primaryAction">Lưu và cập nhật BĐS yêu cầu</button>').insertAfter('fieldset.save-button button[name="submit.Save"]').css('margin-left', '4px');
+            // #map
+            $('.content-item-map').appendTo('#property .form-editor');
+            $('a[href="#property"]').on('shown.bs.tab', function () {   // When tab is displayed...
+                if (typeof map != 'undefined') {
+                    //var map = googleMaps[0],
+                    center = map.getCenter();
+                    google.maps.event.trigger(map, 'resize');         // fixes map display
+                    map.setCenter(center);                            // centers map correctly
+                }
+            });
+            // #seo
+            $('.edit-item-content fieldset').prependTo('#seo');
+            $('a[href="#seo"]').on('shown.bs.tab', function () {   // When tab is displayed...
+                $('#comments').load($('#comments .lazy-loading-url').attr('href'), function () {
+                    var converter = Markdown.getSanitizingConverter();
+                    $('p.commentbody').each(function (ix, commentbody) {
+                        var convertedhtml = converter.makeHtml($(commentbody).html());
+                        $(commentbody).html(convertedhtml);
+                    })
+                });
+            });
+            // #revisions
+            $('a[href="#revisions"]').on('shown.bs.tab', function () {   // When tab is displayed...
+                $('#revisions').load($('#revisions .lazy-loading-url').attr('href'));
+            });
+            // #customers
+            $('a[href="#customers"]').on('shown.bs.tab', function () {   // When tab is displayed...
+                $('#customers').load($('#customers .lazy-loading-url').attr('href'));
+            });
+
+            $("#AdsTypeCssClass").change(function () {
+                $('button[name="submit.Save"],button[name="submit.SaveContinue"]').toggle($(this).val() != 'ad-exchange');
+                $('button[name="submit.SaveContinueRequirement"]').toggle($(this).val() == 'ad-exchange');
+            }).change();
+        });
+    </script>
+}

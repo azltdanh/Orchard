@@ -1,0 +1,456 @@
+﻿@model RealEstate.ViewModels.CustomerCreateViewModel
+@using RealEstate.ViewModels;
+@{
+    Script.Require("jQueryUI_DatePicker");
+    
+    Script.Require("BootstrapCombobox");
+    Script.Require("BootstrapMultiselect");
+    Script.Require("Common");
+}
+
+<div class="form-editor">
+
+<span id="Id" style="display:none;">@Html.DisplayFor(m => m.Id)</span>
+
+<!-- Thông tin khách hàng -->
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-center header-bg-green">
+                <div class="header-left header-bg-green">
+                    <div class="header-left-triangle"></div>
+                </div>
+                <h1>Thông tin khách hàng</h1>
+                <div class="header-right"></div>
+            </div>
+            <div class="header-msg">
+                <p class="text-success">Các mục có dấu (<span class="text-error">*</span>) là bắt buộc nhập</p>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="form-horizontal pull-left">
+            @Html.HiddenFor(r => r.IsRequirementExchange)
+            @Html.HiddenFor(r => r.PropertyExchangeId)
+            @Html.HiddenFor(r => r.PropertyAddress)
+            @Html.HiddenFor(r => r.PropertyLink)
+            @if (Model.IsRequirementExchange)
+            { 
+                
+                <!-- ExchangeTypes -->
+                <div class="control-group">
+                    <label class="control-label">@T("Link BĐS Trao đổi:")</label>
+                    <div class="controls">
+                        <a href="@Model.PropertyLink" target="_blank">@Model.PropertyAddress</a>
+                    </div>
+                </div>
+                <!-- ExchangeTypes -->
+                <div class="control-group">
+                    <label class="control-label"><span class="text-error">*</span> @T("Loại trao đổi:")</label>
+                    <div class="controls">
+                        @Html.DropDownListFor(m => m.ExchangeTypeClass,
+                                 Model.ExchangeTypes.Select(s => new SelectListItem
+                                 {
+                                     Selected = s.Value == Model.ExchangeTypeClass,
+                                     Text = s.Text,
+                                     Value = s.Value
+                                 }),
+                        new { @class = "select-box" })
+                        @Html.ValidationMessageFor(m => m.ExchangeTypeClass, "*")
+                    </div>
+                </div>
+                <!-- ExchangeValue -->
+                <div class="control-group">
+                    <label class="control-label"><span class="text-error">*</span> <span class="label-exchange">Số tiền bù thêm:</span></label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.ExchangeValue, new { @class = "text number-box" })
+                        @Html.DropDownListFor(m => m.PaymentMethodId,
+                        Model.PaymentMethods.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.PaymentMethodId,
+                            Text = s.ShortName,
+                            Value = s.Id.ToString()
+                        }), new { Class = "" })
+                    </div>
+                </div>
+
+            }
+            <!-- ContactName -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Tên khách hàng:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.ContactName, new { @class = "text text-box-medium" })
+                </div>
+            </div>
+            <!-- ContactPhone -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Điện thoại:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.ContactPhone, new { @class = "text text-box-medium ajax-validate" })
+                </div>
+            </div>
+            <!-- ContactAddress -->
+            <div class="control-group">
+                <label class="control-label">@T("Địa chỉ:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.ContactAddress, new { @class = "text text-box-medium" })
+                </div>
+            </div>
+            <!-- ContactEmail -->
+            <div class="control-group">
+                <label class="control-label">@T("Email:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.ContactEmail, new { @class = "text text-box-medium" })
+                </div>
+            </div>
+            <!-- Status -->
+            <div class="control-group">
+                <label class="control-label">@T("Tình trạng:")</label>
+                <div class="controls">
+                    @Html.DropDownListFor(m => m.StatusId,
+                    Model.Status.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.StatusId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }),
+                    new { @class = "select-box" })
+                    @Html.ValidationMessageFor(m => m.StatusId, "*")
+                </div>
+            </div>
+            <!-- Note -->
+            <div class="control-group">
+                <label class="control-label">@T("Ghi chú:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.Note, new { @class = "text text-box-medium" })
+                </div>
+            </div>
+            <!-- IsExternalCustomer -->
+            @if (Model.IsExternalCustomer)
+            {
+            <!-- Published -->
+            <div class="control-group">
+                <label class="control-label"></label>
+                <div class="controls">
+                    @Html.CheckBoxFor(m => m.Published)
+                    @Html.LabelFor(m => m.Published, T("Published"))
+                    <select id="@Html.NameOf(m => m.AddAdsExpirationDate)" name="@Html.NameOf(m => m.AddAdsExpirationDate)">
+                        @Html.SelectOption(Model.AddAdsExpirationDate, ExpirationDate.None, T("").ToString())
+                        @Html.SelectOption(Model.AddAdsExpirationDate, ExpirationDate.Day10, T("10 ngày").ToString())
+                        @Html.SelectOption(Model.AddAdsExpirationDate, ExpirationDate.Day20, T("20 ngày").ToString())
+                        @Html.SelectOption(Model.AddAdsExpirationDate, ExpirationDate.Day30, T("30 ngày").ToString())
+                        @Html.SelectOption(Model.AddAdsExpirationDate, ExpirationDate.Day60, T("60 ngày").ToString())
+                        @Html.SelectOption(Model.AddAdsExpirationDate, ExpirationDate.Day90, T("90 ngày").ToString())
+                    </select>
+                    @Html.TextBoxFor(m => m.AdsExpirationDate, new { @class = "text date-box date-box-full" })
+                </div>
+            </div>
+            <!-- AdsVIP -->
+            <div class="control-group">
+                <label class="control-label"></label>
+                <div class="controls">
+                    @Html.CheckBoxFor(m => m.AdsVIP)
+                    @Html.LabelFor(m => m.AdsVIP, T("Tin VIP"))
+                    <select id="@Html.NameOf(m => m.AddAdsVIPExpirationDate)" name="@Html.NameOf(m => m.AddAdsVIPExpirationDate)">
+                        @Html.SelectOption(Model.AddAdsVIPExpirationDate, ExpirationDate.None, T("").ToString())
+                        @Html.SelectOption(Model.AddAdsVIPExpirationDate, ExpirationDate.Day10, T("10 ngày").ToString())
+                        @Html.SelectOption(Model.AddAdsVIPExpirationDate, ExpirationDate.Day20, T("20 ngày").ToString())
+                        @Html.SelectOption(Model.AddAdsVIPExpirationDate, ExpirationDate.Day30, T("30 ngày").ToString())
+                        @Html.SelectOption(Model.AddAdsVIPExpirationDate, ExpirationDate.Day60, T("60 ngày").ToString())
+                        @Html.SelectOption(Model.AddAdsVIPExpirationDate, ExpirationDate.Day90, T("90 ngày").ToString())
+                    </select>
+                    @Html.TextBoxFor(m => m.AdsVIPExpirationDate, new { @class = "text date-box date-box-full" })
+                </div>
+            </div>
+            }
+        </div>
+        <div class="form-horizontal pull-left">
+            <ul style="padding-left:40px;">
+            @{
+                var rIndex = 0;
+            }
+            @foreach (var r in Model.Purposes)
+            {
+                <li><input type="hidden" value="@r.Purpose.Id"
+                    name="@Html.FieldNameFor(m => m.Purposes[rIndex].Purpose.Id)"/>
+                    <label for="@Html.FieldNameFor(m => m.Purposes[rIndex].IsChecked)">
+                        <input type="checkbox" value="true"
+                            name="@Html.FieldNameFor(m => m.Purposes[rIndex].IsChecked)"
+                            id="@Html.FieldNameFor(m => m.Purposes[rIndex].IsChecked)"
+                            @if (r.IsChecked)
+                            {<text>checked="checked"</text>}/>
+                        @string.Format("{0}", r.Purpose.Name)
+                    </label>
+                    @{rIndex++;}
+                </li>
+            }
+            </ul>
+        </div>
+        <div class="clearfix"></div>
+    </article>
+    <footer></footer>
+</article>
+
+<!-- Yêu cầu của khách hàng -->
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-center header-bg-green">
+                <div class="header-left header-bg-green">
+                    <div class="header-left-triangle"></div>
+                </div>
+                <h1>Yêu cầu của khách hàng</h1>
+                <div class="header-right"></div>
+            </div>
+            <div class="header-msg">
+                <p class="text-success">Các mục có dấu (<span class="text-error">*</span>) là bắt buộc nhập</p>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="form-horizontal pull-left">
+            <!-- AdsType -->
+            <div class="control-group">
+                <label class="control-label">@T("Loại tin:")</label>
+                <div class="controls">
+                    @Html.DropDownListFor(m => m.AdsTypeId,
+                    Model.AdsTypes.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.AdsTypeId,
+                        Text = s.ShortName,
+                        Value = s.Id.ToString()
+                    }),
+                    new { Class = "select-box" })
+                    @Html.ValidationMessageFor(m => m.AdsTypeId, "*")
+                </div>
+            </div>
+            <!-- TypeGroup -->
+            <div class="control-group">
+                <label class="control-label">@T("Nhóm BĐS:")</label>
+                <div class="controls">
+                    @Html.DropDownListFor(m => m.PropertyTypeGroupId,
+                    Model.PropertyTypeGroups.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.PropertyTypeGroupId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }),
+                    new { Class = "select-box" })
+                    @Html.ValidationMessageFor(m => m.PropertyTypeGroupId, "*")
+                </div>
+            </div>
+            <!-- Province -->
+            <div class="control-group">
+                <label class="control-label">@T("Tỉnh / Thành Phố:")</label>
+                <div class="controls">
+                    @Html.DropDownListFor(m => m.ProvinceId,
+                    Model.Provinces.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.ProvinceId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }),
+                    T("-- Tất cả --").ToString(), new { Class = "combobox" })
+                    @Html.ValidationMessageFor(m => m.ProvinceId, "*")
+                </div>
+            </div>
+            <!-- Districts -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error not-apartment">*</span> @T("Quận / Huyện:")</label>
+                <div class="controls">
+                    @Html.ListBoxFor(m => m.DistrictIds,
+                    new MultiSelectList(Model.Districts.Select(a => new { a.Name, a.Id }).ToList(), "Id", "Name", Model.DistrictIds)
+                    , new { Class = "select-box multiselect", placeholder = "Tất cả Quận / Huyện" })
+                    @Html.ValidationMessageFor(m => m.DistrictIds, "*")
+                </div>
+            </div>
+            <!-- Wards -->
+            <div class="control-group">
+                <label class="control-label">@T("Phường / Xã:")</label>
+                <div class="controls">
+                    @Html.ListBoxFor(m => m.WardIds,
+                    new MultiSelectList(Model.Wards.Select(a => new { a.Name, a.Id }).ToList(), "Id", "Name", Model.WardIds)
+                    , new { Class = "select-box multiselect", placeholder = "Tất cả Phường / Xã" })
+                    @Html.ValidationMessageFor(m => m.WardIds, "*")
+                </div>
+            </div>
+            <!-- Streets -->
+            <div class="control-group not-apartment">
+                <label class="control-label">@T("Đường / Phố:")</label>
+                <div class="controls">
+                    @Html.ListBoxFor(m => m.StreetIds,
+                    new MultiSelectList(Model.Streets.Select(a => new { a.Name, a.Id }).ToList(), "Id", "Name", Model.StreetIds)
+                    , new { Class = "select-box multiselect", placeholder = "Tất cả các Đường / Phố" })
+                    @Html.ValidationMessageFor(m => m.StreetIds, "*")
+                </div>
+            </div>
+            <!-- Apartment -->
+            <div class="control-group apartment-name">
+                <label class="control-label"> @T("Tên dự án / Chung cư:")</label>
+                <div class="controls">
+                    @Html.ListBoxFor(m => m.ApartmentIds,
+                    new MultiSelectList(Model.Apartments.Select(a => new { a.Name, a.Id }).ToList(), "Id", "Name", Model.ApartmentIds)
+                    , new { Class = "select-box multiselect", placeholder = "Tất cả các Dự án / Chung cư" })
+                    @Html.ValidationMessageFor(m => m.ApartmentIds, "*")
+
+                    @Html.TextBoxFor(m => m.OtherProjectName, new { @class = "text text-box", style = "display:none;", placeholder = "Tên dự án / Chung cư" })
+                    @Html.ValidationMessageFor(m => m.OtherProjectName, "*")
+
+                    <label>@Html.CheckBoxFor(m => m.ChkOtherProjectName, new { tabindex = "-1" }) @T("Khác")</label>
+                </div>
+            </div>
+            <!-- Area -->
+            <div class="control-group">
+                <label class="control-label">@T("Diện tích tối thiểu:")</label>
+                <div class="controls">
+                    @*@Html.TextBoxFor(m => m.MaxArea, new { @class = "text number-box" })
+                    @Html.ValidationMessageFor(m => m.MaxArea, "*")
+                     đến *@
+                    @Html.TextBoxFor(m => m.MinArea, new { @class = "text number-box w140" })  m<sup>2</sup>
+                    @Html.ValidationMessageFor(m => m.MinArea, "*")
+                </div>
+            </div>
+            <!-- Width -->
+            <div class="control-group not-apartment">
+                <label class="control-label">@T("Chiều ngang tối thiểu:")</label>
+                <div class="controls">
+                    @*@Html.TextBoxFor(m => m.MaxWidth, new { @class = "text number-box" }) 
+                    @Html.ValidationMessageFor(m => m.MaxWidth, "*")
+                     đến *@
+                    @Html.TextBoxFor(m => m.MinWidth, new { @class = "text number-box w140" }) m
+                    @Html.ValidationMessageFor(m => m.MinWidth, "*")
+                </div>
+            </div>
+            <!-- Length -->
+            <div class="control-group not-apartment">
+                <label class="control-label">@T("Chiều dài tối thiểu:")</label>
+                <div class="controls">
+                    @*@Html.TextBoxFor(m => m.MaxLength, new { @class = "text number-box" })
+                    @Html.ValidationMessageFor(m => m.MaxLength, "*")
+                     đến *@
+                    @Html.TextBoxFor(m => m.MinLength, new { @class = "text number-box w140" })  m
+                    @Html.ValidationMessageFor(m => m.MinLength, "*")
+                </div>
+            </div>
+
+            <!-- Floors -->
+            <div class="control-group not-apartment not-apartment-floor">
+                <label class="control-label">@T("Số lầu tối thiểu:")</label>
+                <div class="controls">
+                    @*@Html.TextBoxFor(m => m.MaxFloors, new { @class = "text number-box" })
+                đến *@
+                    @Html.TextBoxFor(m => m.MinFloors, new { @class = "text number-box w140" })
+
+                    @*@Html.ValidationMessageFor(m => m.MaxFloors, "*")*@
+                    @Html.ValidationMessageFor(m => m.MinFloors, "*")
+                </div>
+            </div>
+
+            <!-- Apartment Floor -->
+            <div class="control-group apartment-floor">
+                <label class="control-label">@T("Vị trí tầng:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.MinFloors, new { @class = "text number-box w65", placeholder = "từ" })
+                    @Html.TextBoxFor(m => m.MaxFloors, new { @class = "text number-box w65", placeholder = "đến" })
+
+                </div>
+            </div>
+
+            <!-- MinBedrooms -->
+            <div class="control-group apartment-name">
+                <label class="control-label">@T("Số phòng ngủ tối thiểu:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.MinBedrooms, new { @class = "text number-box w140" })
+                    @Html.ValidationMessageFor(m => m.MinBedrooms, "*")
+                </div>
+            </div>
+
+            <!-- Directions -->
+            <div class="control-group">
+                <label class="control-label">@T("Hướng BĐS:")</label>
+                <div class="controls">
+                    @Html.ListBoxFor(m => m.DirectionIds,
+                    new MultiSelectList(Model.Directions.Select(a => new { a.Name, a.Id }).ToList(), "Id", "Name", Model.DirectionIds)
+                    , new { Class = "select-box multiselect", placeholder = "Tất cả các Hướng" })
+                    @Html.ValidationMessageFor(m => m.DirectionIds, "*")
+                </div>
+            </div>
+            <!-- Locations -->
+            <div class="control-group not-apartment">
+                <label class="control-label">@T("Vị trí BĐS:")</label>
+                <div class="controls">
+                    @Html.DropDownListFor(m => m.LocationId,
+                    Model.Locations.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.LocationId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }),
+                    T("-- Tất cả --").ToString(), new { Class = "select-box" })
+                    @Html.ValidationMessageFor(m => m.LocationId, "*")
+                </div>
+            </div>
+            <!-- AlleyWidth -->
+            <div class="control-group not-apartment">
+                <label class="control-label">@T("Hẻm rộng tối thiểu:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.MinAlleyWidth, new { @class = "text number-box w140" })
+                    @* đến @Html.TextBoxFor(m => m.MaxAlleyWidth, new { @class = "text number-box" })*@ m
+
+                    @Html.ValidationMessageFor(m => m.MinAlleyWidth, "*")
+                    @Html.ValidationMessageFor(m => m.MaxAlleyWidth, "*")
+                </div>
+            </div>
+            <!-- AlleyTurns -->
+            <div class="control-group not-apartment">
+                <label class="control-label">@T("Số lần rẽ tối đa:")</label>
+                <div class="controls">
+                    @*@Html.TextBoxFor(m => m.MinAlleyTurns, new { @class = "text number-box" }) đến *@
+                    @Html.TextBoxFor(m => m.MaxAlleyTurns, new { @class = "text number-box w140" })
+
+                    @*@Html.ValidationMessageFor(m => m.MinAlleyTurns, "*")*@
+                    @Html.ValidationMessageFor(m => m.MaxAlleyTurns, "*")
+                </div>
+            </div>
+            <!-- DistanceToStreet -->
+            <div class="control-group not-apartment">
+                <label class="control-label">@T("K/c đến đường chính tối đa:")</label>
+                <div class="controls">
+                    @*@Html.TextBoxFor(m => m.MinDistanceToStreet, new { @class = "text number-box" }) đến *@
+                    @Html.TextBoxFor(m => m.MaxDistanceToStreet, new { @class = "text number-box w140" }) m
+
+                    @*@Html.ValidationMessageFor(m => m.MinDistanceToStreet, "*")*@
+                    @Html.ValidationMessageFor(m => m.MaxDistanceToStreet, "*")
+                </div>
+            </div>
+            
+            @if (!Model.IsRequirementExchange)
+            { 
+                <!-- Price -->
+                <div class="control-group">
+                    <label class="control-label">@T("Giá từ:")</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.MinPrice, new { @class = "text number-box" }) 
+                        đến 
+                        @Html.TextBoxFor(m => m.MaxPrice, new { @class = "text number-box" })
+
+                        @Html.DropDownListFor(m => m.PaymentMethodId,
+                        Model.PaymentMethods.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.PaymentMethodId,
+                            Text = s.ShortName,
+                            Value = s.Id.ToString()
+                        }), new { Class = "" })
+            
+                        @Html.ValidationMessageFor(m => m.MinPrice, "*")
+                        @Html.ValidationMessageFor(m => m.MaxPrice, "*")
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="clearfix"></div>
+    </article>
+    <footer></footer>
+</article>
+
+</div>

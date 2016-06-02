@@ -1,0 +1,139 @@
+﻿@model RealEstate.ViewModels.FastFilterIndexOptions
+@using RealEstate.FrontEnd.ViewModels;
+    
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Get))
+{      
+    @Html.ValidationSummary()
+    <fieldset>
+        <table class="filter-table">
+            <tr>
+                <td>
+                    @Html.DropDownListFor(m => m.AdsTypeId,
+                    Model.AdsTypes.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.AdsTypeId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }),
+                    T("-- Loại Tin --").ToString(), new { Class = "select-box" }) 
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.DropDownListFor(m => m.TypeGroupId,
+                    Model.TypeGroups.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.TypeGroupId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }),
+                    T("-- Loại BĐS --").ToString(), new { Class = "select-box" }) 
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.DropDownListFor(m => m.ProvinceId,
+                    Model.Provinces.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.ProvinceId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }),
+                    T("-- Tỉnh/Thành Phố --").ToString(), new { Class = "select-box" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.ListBoxFor(m => m.DistrictIds,
+                        new MultiSelectList(Model.Districts.Select(a => new { a.Name, a.Id }).ToList(), "Id", "Name", Model.DistrictIds)
+                        , new { Class = "select-box dropdown-check-list-district" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.ListBoxFor(m => m.WardIds,
+                        new MultiSelectList(Model.Wards.Select(a => new { a.Name, a.Id }).ToList(), "Id", "Name", Model.WardIds)
+                        , new { Class = "select-box dropdown-check-list-ward" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.ListBoxFor(m => m.StreetIds,
+                        new MultiSelectList(Model.Streets.Select(a => new { a.Name, a.Id }).ToList(), "Id", "Name", Model.StreetIds)
+                        , new { Class = "select-box dropdown-check-list-street" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <select>
+                        <option>Độ rộng Đường/Hẻm</option>
+                        <option value="0">Tất cả các loại đường</option>
+                        <option value="1">Hẻm Hơn 6m</option>
+                        <option value="2">Hẻm Hơn 5m</option>
+                        <option value="3">Hẻm Hơn 4m</option>
+                        <option value="4">Hẻm Hơn 3m</option>
+                        <option value="5">Tất cả các loại hẻm</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.ListBoxFor(m => m.DirectionIds,
+                        new MultiSelectList(Model.Directions.Select(a => new { a.Name, a.Id }).ToList(), "Id", "Name", Model.DirectionIds)
+                        , new { Class = "select-box dropdown-check-list-direction" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.TextBoxFor(m => m.MinAreaTotal, new { @class = "text text-box" ,@placeholder = "Diện tích đất tối thiểu"}) m<sup>2</sup>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.TextBoxFor(m => m.MinAreaTotalWidth, new { @class = "text text-box", @placeholder = "Chiều ngang tối thiểu" }) m
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.TextBoxFor(m => m.MinAreaTotalLength, new { @class = "text text-box", @placeholder = "Chiều dài tối thiểu" }) m
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.TextBoxFor(m => m.MinFloors, new { @class = "text text-box", @placeholder = "Số lầu tối thiểu" }) lầu
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.TextBoxFor(m => m.MinPriceProposedInVND, new { @class = "text text-box", @placeholder = "Giá từ",@style = "width: 50px;"})
+                    @Html.TextBoxFor(m => m.MaxPriceProposedInVND, new { @class = "text text-box", @placeholder = "đến",@style = "width: 50px;"})
+                    Tỷ
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.CheckBoxFor(m => m.FlagCheapPrice) @Html.LabelFor(m => m.FlagCheapPrice, T("Chỉ tìm BĐS giá rẻ"))
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Tìm kiếm")</button>
+                </td>
+            </tr>
+        </table>
+
+    </fieldset>
+    
+    <fieldset class="bulk-actions left">
+        <label for="Order">@T("Sắp xếp theo:")</label>
+        <select id="Order" name="@Html.NameOf(m => m.Order)">
+            @Html.SelectOption(Model.Order, FastFilterOrder.LastUpdatedDate, T("Ngày sửa lần cuối").ToString())
+            @Html.SelectOption(Model.Order, FastFilterOrder.AddressNumber, T("Số nhà").ToString())
+            @Html.SelectOption(Model.Order, FastFilterOrder.PriceProposedInVND, T("Giá rao").ToString())
+        </select>
+
+        <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Tìm kiếm")</button>
+        
+    </fieldset>
+    
+}    

@@ -1,0 +1,20 @@
+﻿@using RealEstate.UserControlPanel.Models;
+@using RealEstate.UserControlPanel.ViewModels;
+
+@{
+    var CountUserProperties = (int)Model.CountUserProperties;
+    var CoutMessageInbox = (int)Model.CoutMessageInbox;
+}
+@using (Html.BeginFormAntiForgeryPost())
+{
+<div class="layout-right-container">
+    <div class="right_main">
+        <ul class="sidebar-content arrow-left">
+            <li class="items">@Html.ActionLink("BĐS lưu theo dõi", "Index", "User", new { area = "RealEstate.UserControlPanel", ReturnStatus = "userproperty" }, new { }) (<span id="count_userproperties">@CountUserProperties</span>)</li>
+            <li class="items">@Html.ActionLink(T("Soạn thư mới").ToString(), "SendMessage", "MessageInboxFrontEnd", new { area = "RealEstate.NewLetter" }, new { })</li>
+            <li class="items">@Html.ActionLink(T("Thư đã nhận").ToString(), "Inbox", "MessageInboxFrontEnd", new { area = "RealEstate.NewLetter" }, new { }) (<span id="_countmsg">@CoutMessageInbox</span>)</li>
+            <li class="items">@Html.ActionLink(T("Thư đã gửi").ToString(), "SendInbox", "MessageInboxFrontEnd", new { area = "RealEstate.NewLetter" }, new { })</li>
+        </ul>
+    </div>
+</div>
+}

@@ -1,0 +1,128 @@
+﻿@model IEnumerable<RealEstate.Models.CustomerRequirementRecord>
+@*@if (Model.Any(r => r.AdsTypePartRecord != null))
+{
+<div>
+    <strong>Loại tin: </strong>
+    @Model.Where(r => r.AdsTypePartRecord != null).First().AdsTypePartRecord.ShortName
+</div>
+}*@
+
+@if (Model.Any(r => r.PropertyTypeGroupPartRecord != null))
+{
+    <div>
+        <strong>Nhóm BĐS: </strong>
+        <span class="color-note">@Model.Where(r => r.PropertyTypeGroupPartRecord != null).First().PropertyTypeGroupPartRecord.Name</span>
+    </div>
+}
+
+@if (Model.Any(r => r.LocationProvincePartRecord != null))
+{
+    <div>
+        <strong>Tỉnh / Thành Phố: </strong>
+        @Model.Where(r => r.LocationProvincePartRecord != null).First().LocationProvincePartRecord.Name
+    </div>
+}
+
+@if (Model.Any(r => r.LocationDistrictPartRecord != null))
+{
+    <div>
+        <strong>Khu vực: </strong>
+        @string.Join(", ", Model.Where(r => r.LocationDistrictPartRecord != null).Select(r => r.LocationDistrictPartRecord.Name).Distinct().ToArray())
+    </div>
+}
+@if (Model.Any(r => r.LocationApartmentPartRecord != null))
+{
+    <div>
+        <strong>Dự án / Chung cư: </strong>
+        @string.Join(", ", Model.Where(r => r.LocationApartmentPartRecord != null).Select(r => r.LocationApartmentPartRecord.Name).Distinct().ToArray())
+    </div>
+}
+
+@if (Model.Any(r => r.LocationWardPartRecord != null))
+{
+    <div>
+        <strong>Phường / Xã: </strong>
+        @string.Join(", ", Model.Where(r => r.LocationWardPartRecord != null).Select(r => r.LocationWardPartRecord.Name).Distinct().ToArray())
+    </div>
+}
+
+@if (Model.Any(r => r.LocationStreetPartRecord != null))
+{
+    <div>
+        <strong>Đường: </strong>
+        @string.Join(", ", Model.Where(r => r.LocationStreetPartRecord != null).Select(r => r.LocationStreetPartRecord.Name).Distinct().ToArray())
+    </div>
+}
+
+@if (Model.Any(r => r.DirectionPartRecord != null))
+{
+    <div>
+        <strong>Hướng: </strong>
+        @string.Join(", ", Model.Where(r => r.DirectionPartRecord != null).Select(r => r.DirectionPartRecord.Name).Distinct().ToArray())
+    </div>
+}
+
+@if (Model.Any(r => r.PropertyLocationPartRecord != null) || (Model.Min(r => r.MinAlleyWidth).HasValue || Model.Max(r => r.MaxAlleyWidth).HasValue) || (Model.Min(r => r.MinAlleyTurns).HasValue || Model.Max(r => r.MaxAlleyTurns).HasValue) || (Model.Min(r => r.MinDistanceToStreet).HasValue || Model.Max(r => r.MaxDistanceToStreet).HasValue))
+{
+    <div>
+        <strong>Vị trí: </strong>
+        @{
+    List<string> strLocation = new List<string>();
+    if (Model.Any(r => r.PropertyLocationPartRecord != null))
+    {
+        strLocation.Add(string.Join(", ", Model.Where(r => r.PropertyLocationPartRecord != null).OrderBy(r => r.PropertyLocationPartRecord.SeqOrder).Select(r => r.PropertyLocationPartRecord.Name).Distinct().ToArray()));
+    }
+    if (Model.Min(r => r.MinAlleyWidth).HasValue || Model.Max(r => r.MaxAlleyWidth).HasValue)
+    {
+        strLocation.Add(string.Format("hẻm rộng{0: từ #,0.##m}{1: đến #,0.##m}", Model.Min(r => r.MinAlleyWidth), Model.Max(r => r.MaxAlleyWidth)));
+    }
+    if (Model.Min(r => r.MinAlleyTurns).HasValue || Model.Max(r => r.MaxAlleyTurns).HasValue)
+    {
+        strLocation.Add(string.Format("số lần rẽ{0: từ #,0.##m}{1: đến tối đa #,0.##m}", Model.Min(r => r.MinAlleyTurns), Model.Max(r => r.MaxAlleyTurns)));
+    }
+    if (Model.Min(r => r.MinDistanceToStreet).HasValue || Model.Max(r => r.MaxDistanceToStreet).HasValue)
+    {
+        strLocation.Add(string.Format("cách đường chính{0: từ #,0.##m}{1: đến tối đa #,0.##m}", Model.Min(r => r.MinDistanceToStreet), Model.Max(r => r.MaxDistanceToStreet)));
+    }
+            @String.Join(", ", strLocation)
+        }
+    </div>
+}
+
+@if (Model.Min(r => r.MinArea).HasValue || Model.Max(r => r.MaxArea).HasValue || Model.Min(r => r.MinWidth).HasValue || Model.Max(r => r.MaxWidth).HasValue || Model.Min(r => r.MinLength).HasValue || Model.Max(r => r.MaxLength).HasValue)
+{
+    <div>
+        <strong>Diện tích: </strong>
+        @{
+    var strArea = "";
+    strArea += string.Format("{0: từ #,0.##m<sup>2</sup>}{1: đến #,0.##m<sup>2</sup>}", Model.Min(r => r.MinArea), Model.Max(r => r.MaxArea));
+    if (Model.Min(r => r.MinWidth).HasValue || Model.Max(r => r.MaxWidth).HasValue)
+    {
+        strArea += ((Model.Min(r => r.MinArea).HasValue || Model.Max(r => r.MaxArea).HasValue) ? ", " : "");
+        strArea += string.Format(" ngang{0: từ #,0.##m}{1: đến #,0.##m}", Model.Min(r => r.MinWidth), Model.Max(r => r.MaxWidth));
+    }
+    if (Model.Min(r => r.MinLength).HasValue || Model.Max(r => r.MaxLength).HasValue)
+    {
+        strArea += ((Model.Min(r => r.MinArea).HasValue || Model.Max(r => r.MaxArea).HasValue || Model.Min(r => r.MinWidth).HasValue || Model.Max(r => r.MaxWidth).HasValue) ? ", " : "");
+        strArea += string.Format(" sâu{0: từ #,0.##m}{1: đến #,0.##m}", Model.Min(r => r.MinLength), Model.Max(r => r.MaxLength));
+    }
+            @Html.Raw(strArea);
+        }
+    </div>
+}
+
+@if (Model.Min(r => r.MinFloors).HasValue || Model.Max(r => r.MaxFloors).HasValue)
+{
+    <div>
+        <strong>Số lầu: </strong>
+        @string.Format("{0: từ #,0.##}{1: đến #,0.##} lầu", Model.Min(r => r.MinFloors), Model.Max(r => r.MaxFloors))
+    </div>
+}
+
+@if (Model.Min(r => r.MinPrice).HasValue || Model.Max(r => r.MaxPrice).HasValue)
+{
+    <div>
+        <strong>Giá: </strong>
+        @string.Format("{0: từ #,0.##}{1: đến #,0.##} {2:0}", Model.Min(r => r.MinPrice), Model.Max(r => r.MaxPrice), Model.First().PaymentMethodPartRecord.Name)
+    </div>
+}

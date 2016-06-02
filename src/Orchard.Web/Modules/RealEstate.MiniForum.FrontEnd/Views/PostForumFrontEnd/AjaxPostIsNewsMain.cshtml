@@ -1,0 +1,89 @@
+﻿@using RealEstateForum.Service.ViewModels
+@using RealEstate.Helpers
+@{
+    List<PostByTopicEntry> listPostWithImage = Model.ListPostWithImage;// listtopic
+    List<WidgetPostItem> listPostNotImage = Model.ListPostNotImage;// listthread
+    var currentUser = WorkContext.CurrentUser;
+    var i = 1;
+    var countListPostWithImage = listPostWithImage.Count;
+}
+
+@if (countListPostWithImage > 0)
+{
+    <div class="block-news-main hidden-sm hidden-xs">
+        <div class="block-detail">
+            @foreach (var item in listPostWithImage)
+            {
+                var urlPageDetail = Url.Action("PostDetail", "PostForumFrontEnd", new { area = "RealEstate.MiniForum.FrontEnd", Id = item.Id, title = item.DisplayForNameForUrl, ThreadShortName = item.ThreadShortName, TopicShortName = item.TopicShortName });
+                <div class="show-news-main" id="@("div_news_" + i)" style="display:@(i == 1 ? "block" : "none");">
+                    @if (!String.IsNullOrEmpty(item.DefaultImage))
+                    {
+                        <div class="col-lg-4 col-md-4 no-padding">
+                            <a href="@urlPageDetail" title="@item.Title">
+                                <img alt="@item.Title" src="@item.DefaultImage" class="media-object img-thumbnail img-responsive" />
+                            </a>
+                        </div>
+                    }
+                    <div class="media-body col-lg-8 col-md-8 no-padding-right">
+                        <a href="@urlPageDetail">
+                            <h4 class="media-heading-sidebar" title="@item.Title">@item.Title</h4>
+                        </a>
+                        <div class="block-ellipsis block-ellipsis-6">
+                            @if (!string.IsNullOrEmpty(item.Content))
+                            {
+                                <div>@Html.Raw(item.Content.Normalize().Trim())</div>
+                            }
+                        </div>
+                        <div class="next-and-prev">
+                            <div class="btn-maket-prev" title="prev" onclick="NextTopicNewsMain('div_news_',@((i == 1) ? countListPostWithImage : (i - 1)))"></div>
+                            <div class="btn-maket-next" title="next" onclick="NextTopicNewsMain('div_news_',@((i == countListPostWithImage) ? 1 : (i + 1)))"></div>
+                        </div>
+                    </div>
+                </div>
+                            i++;
+            }
+            <input id="valTopicNewsMain" type="hidden" value="">
+            <script type="text/javascript">
+                var countListTopics = @countListPostWithImage;
+                if ( countListTopics != "0") {
+                    var topicMarketToIndex = setTimeout("NextTopicNewsMain('div_news_',2)", 10000);
+                    function NextTopicNewsMain(div, Id) {
+                        if (Id <= countListTopics) {
+                            $('.show-news-main').hide();
+                            $('#' + div + Id).fadeIn(500);
+
+                            $('#valTopicNewsMain').val(div + Id);
+
+                            var idNextTo = Id + 1;
+                            if (Id == countListTopics) {
+                                idNextTo = 1;
+                            }
+                            if (topicMarketToIndex != null) clearTimeout(topicMarketToIndex);
+
+                            topicMarketToIndex = setTimeout("NextTopicNewsMain('div_news_', " + idNextTo + ")", 15000);
+                        }
+                    }
+                }
+            </script>
+            <div class="clearfix"></div>
+        </div>
+        @if (listPostNotImage.Count > 0)
+        {
+            <div class="bg-news-main">
+                <div class="list-news-main">
+                    <ul class="list-bullet-blue last">
+                        @foreach (var item in listPostNotImage)
+                        {
+                            <li class="text-ellipsis">
+                                @Html.ActionLink(item.Title, "PostDetail", new { controller = "PostForumFrontEnd", area = "RealEstate.MiniForum.FrontEnd", Id = item.Id, title = item.DisplayForNameForUrl, ThreadShortName = item.ThreadShortName, TopicShortName = item.TopicShortName }, new { title = item.Title })
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        }
+        <div class="btn-maket-view">
+            <a rel="nofollow" title="Xem thêm tin tức mới" class="text-success" href="@Url.Action("ListPostNews", "ThreadForumFrontEnd", new { Area = "RealEstate.MiniForum.FrontEnd" })">Xem thêm >></a>
+        </div>
+    </div>
+}

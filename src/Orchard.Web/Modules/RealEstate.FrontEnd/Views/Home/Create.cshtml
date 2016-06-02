@@ -1,0 +1,8 @@
+﻿@{ Layout.Title = T("Đăng tin").ToString();}
+
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Post, new { enctype = "multipart/form-data", Class = "formvalidate" }))
+{
+    @Html.ValidationSummary()
+    // Model is a Shape, calling Display() so that it is rendered using the most specific template for its Shape type
+    @Display(Model)
+}

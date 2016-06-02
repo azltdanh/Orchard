@@ -1,0 +1,79 @@
+@model RealEstate.ViewModels.CoefficientLengthsIndexViewModel
+@using RealEstate.Models;
+@using RealEstate.ViewModels;
+
+@{
+    Script.Require("Common");
+    Layout.Title = T("Coefficient Length").ToString();
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{ 
+    @Html.ValidationSummary()
+    <div class="manage">@Html.ActionLink(T("Add new CoefficientLength").ToString(), "Create", new { }, new { @class = "button primaryAction" })</div>
+
+    <fieldset class="bulk-actions">
+        <label for="publishActions">@T("Actions:")</label>
+        <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+            @Html.SelectOption(Model.Options.BulkAction, CoefficientLengthsBulkAction.None, T("Choose action...").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, CoefficientLengthsBulkAction.Enable, T("Enable").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, CoefficientLengthsBulkAction.Disable, T("Disable").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, CoefficientLengthsBulkAction.Delete, T("Delete").ToString())
+        </select>
+        <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+    </fieldset>
+    <fieldset class="bulk-actions">
+        @Html.TextBoxFor(m => m.Options.Search, new { @class = "text" })        
+        <label for="filterResults">@T("Filter:")</label>
+        <select id="filterResults" name="@Html.NameOf(m => m.Options.Filter)">
+            @Html.SelectOption(Model.Options.Filter, CoefficientLengthsFilter.All, T("All").ToString())
+        </select>
+        <label for="filterResults">@T("Sort by:")</label>
+        <select id="filterResults1" name="@Html.NameOf(m => m.Options.Order)">
+            @Html.SelectOption(Model.Options.Order, CoefficientLengthsOrder.Name, T("Name").ToString())
+            @Html.SelectOption(Model.Options.Order, CoefficientLengthsOrder.SeqOrder, T("SeqOrder").ToString())
+        </select>
+
+        <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+    </fieldset>
+    <fieldset>
+        <table class="items">
+            <thead>
+                <tr>
+                    <th scope="col"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.CoefficientLengths)" /></th>
+                    <th scope="col">@T("WidthRange")</th>
+                    <th scope="col">@T("MinLength")</th>
+                    <th scope="col">@T("MaxLength")</th>
+                    <th scope="col">@T("Actions")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.CoefficientLengths)
+            { 
+            <tr>
+                <td>
+                    <input type="hidden" value="@Model.CoefficientLengths[index].CoefficientLength.Id" name="@Html.NameOf(m => m.CoefficientLengths[index].CoefficientLength.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.CoefficientLengths[index].IsChecked)"/>
+                </td>
+                <td>
+                    @Html.DisplayFor(model => entry.CoefficientLength.WidthRange, "m")
+                </td>
+                <td>
+                    @Html.DisplayFor(model => entry.CoefficientLength.MinLength, "m")
+                </td>
+                <td>
+                    @Html.DisplayFor(model => entry.CoefficientLength.MaxLength, "m")
+                </td>
+                <td>
+                    @Html.ActionLink(T("Edit").ToString(), "Edit", new { entry.CoefficientLength.Id }) |
+                    @Html.ActionLink(T("Delete").ToString(), "Delete", new { entry.CoefficientLength.Id }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                </td>
+            </tr>
+                index++;
+            }
+        </table>
+
+    @Display(Model.Pager)
+
+    </fieldset>
+} 

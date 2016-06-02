@@ -1,0 +1,13 @@
+Name: Active Directory Authentication
+AntiForgery: enabled
+Author: RealEstate.Users
+Website: http://orchardproject.net
+Version: 1.0.0
+OrchardVersion: 1.0.0
+Description: Active Directory authentication support for Orchard
+Features:
+    RealEstate.Users.ActiveDirectory:
+        Name: Active Directory Authentication
+        Description: Active Directory authentication support for Orchard
+        Category: Authentication
+        Dependencies: Orchard.Users,Orchard.Roles

@@ -1,0 +1,44 @@
+﻿@model List<PropertyDisplayEntry>
+@using RealEstate.ViewModels;
+@if (Model.Count() > 0)
+{
+    <table class="table table-bordered table-condensed table-striped table-row-height">
+        <tbody>
+            @foreach (var entry in Model)
+            {
+                var item = entry.Property;
+                
+                <tr data-toggle="popover" data-html="true" data-placement="auto" data-trigger="hover" data-content="">
+                    <td class="text-ellipsis">
+                        <a class="text-success" href="@Url.Action("ResultFilter", "PropertySearch",
+                                                      new { area = "RealEstate.FrontEnd", AdsTypeCssClass = item.AdsType.CssClass, ProvinceId = item.Province.Id, TypeGroupCssClass = item.TypeGroup.CssClass })">
+                            <strong>@(String.IsNullOrEmpty(item.Province.ShortName) ? item.Province.Name : item.Province.ShortName)</strong>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="@Url.Action("RealEstateDetail", new { id = item.Id, title = item.DisplayForUrl })">
+                            <strong class="price-overflow">
+                                @Html.Raw(item.DisplayForTitleWithPriceProposed)
+                                @if ((DateTime.Now - item.LastUpdatedDate.ToLocalTime()).TotalDays < 1)
+                                {
+                                    <i class="icon_silk_new pull-right"></i>
+                                }
+                            </strong>
+                        </a>
+                        <div class="popover-data-content hidden-xs" style="height: 0; overflow: hidden;">
+                            @Html.Partial("RealEstateDetail.Compact", entry)
+                        </div>
+                    </td>
+
+                    <td class="text-ellipsis">
+                        @Html.Raw(String.Format("{0:dd/MM/yyyy<br> hh:mm tt}", item.LastUpdatedDate.ToLocalTime()))
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div>Không có BĐS nào!</div>
+}

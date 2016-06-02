@@ -1,0 +1,91 @@
+﻿@model RealEstate.ViewModels.PropertyCreateViewModel
+@using RealEstate.ViewModels;
+@{
+    
+}
+
+<!-- Navigation -->
+
+<ul class="nav nav-tabs">
+    <!-- Property -->
+    <li class="active"><a href="#property" data-toggle="tab">BĐS</a></li>
+    @*<li><a href="#map" data-toggle="tab">Map</a></li>*@
+    <li><a href="#seo" data-toggle="tab">SEO</a></li>
+</ul>
+
+<div class="tab-content">
+    <!-- Property -->
+    <div class="tab-pane active" id="property">
+        <div class="save-button">
+            <button value="submit.Save" name="submit.Save" type="submit" class="primaryAction">Save</button>
+            <button value="submit.Save" name="submit.SaveContinue" type="submit" class="primaryAction">Save &amp; Continue</button>
+            @Html.ActionLink(T("Trở lại").ToString(), "Index", new { }, new { @class = "button" })
+        </div>
+
+        <div class="form-editor">
+
+            <span id="Id" style="display: none;">@Html.DisplayFor(m => m.Id)</span>
+
+            <!-- StaffInfo -->
+            @Html.Partial("Partial.StaffInfo.Create", Model)
+
+            @if (Model.TypeGroupCssClass == "gp-apartment")
+            {
+                <!-- GalleryManager -->
+                @Html.Partial("GalleryManager", new RealEstate.ViewModels.PropertyImagesViewModel { Images = null, EnableEditImages = false })
+            }
+
+            <!-- AdsType, TypeGroup, Type -->
+            @Html.Partial("Partial.AdsType.Create", Model)
+
+            <!-- AddressInfo -->
+            @Html.Partial("Partial.AddressInfo.Create", Model)
+
+            @if (Model.TypeGroupCssClass == "gp-apartment")
+            {
+                <!-- Apartment -->
+                @Html.Partial("Partial.AreaInfo.Create", Model)
+            }
+
+            @if (Model.TypeGroupCssClass == "gp-house" || Model.TypeGroupCssClass == "gp-land")
+            {
+                <!-- Legal Status, Direction, Location, Alley -->
+                @Html.Partial("Partial.LocationInfo.Create", Model)
+
+                <!-- AreaTotal, AreaLegal, AreaResidential -->
+                @Html.Partial("Partial.AreaInfo.Create", Model)
+            }
+
+            @if (Model.TypeGroupCssClass == "gp-house" || Model.TypeGroupCssClass == "gp-apartment")
+            {
+                <!-- Construction -->
+                @Html.Partial("Partial.ConstructionInfo.Create", Model)
+            }
+
+            @if (Model.TypeGroupCssClass == "gp-house")
+            {
+                <!-- Advantage & Disadvantage -->
+                @Html.Partial("Partial.Advantages.Create", Model)
+            }
+
+            <!-- ContactInfo -->
+            @Html.Partial("Partial.ContactInfo.Create", Model)
+
+            <!-- PriceProposed -->
+            @Html.Partial("Partial.PriceProposed.Create", Model)
+
+            <!-- AdsContent -->
+            @Html.Partial("Partial.AdsContent.Create", Model)
+
+        </div>
+    </div>
+    <!-- Map -->
+    <div class="tab-pane" id="map"></div>
+    <!-- SEO -->
+    <div class="tab-pane" id="seo"></div>
+    
+    <!-- Script post to facebook -->
+    @*@Html.Partial("Partial.PostToFacebook.Create")*@
+</div>
+@Html.Partial("Partial.ColorboxAddressCorner")
+@Html.Partial("Partial.YoutubeImageGuide")

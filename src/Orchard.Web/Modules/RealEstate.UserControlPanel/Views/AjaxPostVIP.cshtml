@@ -1,0 +1,96 @@
+﻿@model RealEstate.UserControlPanel.ViewModels.PostVIPViewModel
+<script type="text/javascript">
+    var unitPriceArray = [@string.Join(",", Model.UnitArray)]
+</script>
+<div class="form-horizontal">
+    <div class="form-group">
+        <div class="form-inline col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <strong>- Số tiền hiện tại đang có trong tài khoản của bạn:<span class="text-error"> @Model.AmountVND</span></strong><br />
+            <strong class="text-green">- @Html.ActionLink("Click vào đây", "CardPayment", "User", new { area = "RealEstate.UserControlPanel" }, new { Class = "payment-history text-error", target = "_blank" }) để xem hướng dẫn nạp tiền.</strong>
+            @Html.HiddenFor(r => r.Amount)
+            @Html.HiddenFor(r => r.PropertyId)
+            @Html.HiddenFor(r => r.DistrictId)
+            @Html.HiddenFor(r => r.AdsTypeCssClass)
+            <input type="hidden" id="statusProperty" value="0" />
+            <input type="hidden" id="oldAdsTypeVip" value="0" />
+            <input type="hidden" id="oldPostingDates" value="0" />
+            <div class="block-ellipsis-1"></div>
+            <div class="form-group col-xs-4">
+                <label>Chọn loại tin đăng:</label>
+                <select name="@Html.NameOf(m => m.AdsTypeVIP)" id="AdsTypeVIP" class="form-control">
+                    <option value="0" @(Model.AdsTypeVIP == 0 ? "selected=\"selected\"" : "")>Tin thường</option>
+                    <option value="3" @(Model.AdsTypeVIP == 3 ? "selected=\"selected\"" : "")>VIP 1</option>
+                    <option value="2" @(Model.AdsTypeVIP == 2 ? "selected=\"selected\"" : "")>VIP 2</option>
+                    <option value="1" @(Model.AdsTypeVIP == 1 ? "selected=\"selected\"" : "")>VIP 3</option>
+                </select>
+                <i class="icon_silk_help" title="Tin của bạn sẽ được đưa vào khu vực tin VIP."></i>
+            </div>
+            <div class="form-group col-xs-3 right-10">
+                <label>Từ ngày</label> @Html.TextBoxFor(m => m.DateVipFrom, new { @class = "form-control date-vip date-vip-start", @placeholder = "Từ ngày" })
+            </div>
+            <div class="form-group col-xs-3 ">
+                <label>đến ngày</label> @Html.TextBoxFor(m => m.DateVipTo, new { @class = "form-control date-vip date-vip-end", @placeholder = "Đến ngày" })
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="form-inline col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="form-group col-xs-8">
+                <strong>Số tiền phải trả: <span class="text-error paymentAmount"> </span></strong>
+            </div>
+        </div>
+        <div class="form-inline col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div>- Tin VIP1: <strong class="text-error">@Model.UnitArray[2]đ/ngày</strong> - Tiêu đề in hoa màu đỏ luôn hiển thị trên cùng khi tìm kiếm BĐS từ trang chủ.</div>
+            <div>- Tin VIP2: <strong class="text-error">@Model.UnitArray[1]đ/ngày</strong> - Tiêu đề màu cam, hiển thị sau tin VIP1</div>
+            <div>- Tin VIP3: <strong class="text-error">@Model.UnitArray[0]đ/ngày</strong> - Tiêu đề màu xanh lá, hiển thị sau tin VIP2</div>
+            <div>- Tin thường: Tiêu đề xanh dương, hiển thị sau tin VIP  </div>
+            <div>+ <strong class="text-error">@Model.UnitArray[0]đ/ngày cho những tin đăng thuộc các quận: Quận 1, Quận 3, Quận 5, Quận 10, Quận 11, Quận Phú Nhuận, Quận Tân Bình, Quận Bình Thạnh, Quận Tân Phú</strong></div>
+            <div>+ <strong class="text-error">Miễn phí các tỉnh, quận huyện còn lại</strong></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="form-inline col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="alert alert-success no-margin-bottom">
+                <h4 class="text-black">
+                    Nếu gặp khó khăn trong việc đăng tin và nạp tiền xin liên hệ:
+                    <span class="text-blue">0928.788.188 Ms. Hà <a href="skype:leha.lh?chat" title="Liên hệ skype"><img width="20" height="20" border="0" src="//pay.tocdo.vn/media/ketnoisms/img/skype.png"></a></span> hoặc
+                    <span class="text-blue">0977.690.727 Mr. Tuấn <a href="skype:thanhtuan1k9?chat" title="Liên hệ skype"><img width="20" height="20" border="0" src="//pay.tocdo.vn/media/ketnoisms/img/skype.png"></a></span>
+                </h4>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Load calendar
+    $(function () {
+        if ($.fn.datepicker) {
+            $('.date-box').datepicker({
+                dateFormat: "dd/mm/yy",
+                changeMonth: true,
+                changeYear: true,
+                numberOfMonths: 1,
+                onSelect: function (selectedDate) {
+                    id = $(this).attr('id');
+                    if (id.indexOf('From') >= 0)
+                        $('#' + $(this).attr('id').replace('From', 'To')).datepicker('option', 'minDate', selectedDate);
+                    else if (id.indexOf('To') >= 0)
+                        $('#' + $(this).attr('id').replace('To', 'From')).datepicker("option", "maxDate", selectedDate);
+                }
+            });
+            $('.date-vip').datepicker({
+                dateFormat: 'dd/mm/yy',
+                //changeMonth: true,
+                minDate: new Date()
+            });
+
+            $('.date-vip-start, .date-vip-end').change(function () {
+                ResetDateVip(2);
+            });
+        }
+        ResetDateVip(3);
+    });
+    $('#AdsTypeVIP').change(function () {
+        ResetDateVip(1);
+    });
+
+</script>

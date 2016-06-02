@@ -1,0 +1,16 @@
+﻿@model RealEstate.ViewModels.PaymentExchangeCreateViewModel
+<fieldset>
+    @Html.LabelFor(m => m.USD, T("USD"))
+    @Html.TextBoxFor(m => m.USD, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.USD, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.SJC, T("SJC"))
+    @Html.TextBoxFor(m => m.SJC, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.SJC, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.Date, T("Date"))
+    @Html.TextBoxFor(m => m.Date, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.Date, "*")
+</fieldset>

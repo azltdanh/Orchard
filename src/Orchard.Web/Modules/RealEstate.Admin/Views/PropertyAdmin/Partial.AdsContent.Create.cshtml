@@ -1,0 +1,48 @@
+﻿@model RealEstate.ViewModels.PropertyCreateViewModel
+@using RealEstate.ViewModels;
+@{
+    Script.Require("realEstate.MiniForum.Tinymce");
+}
+<!-- Thông tin khác -->
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-center header-bg-green">
+                <div class="header-left header-bg-green">
+                    <div class="header-left-triangle"></div>
+                </div>
+                <h1>Thông tin khác</h1>
+                <div class="header-right"></div>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="form-horizontal pull-left">
+            <!-- Title -->
+            <div class="control-group">
+                <label class="control-label">@T("Tiêu đề tin rao:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.Title, new { maxlength = 250, @class = "text text-box-medium" })
+                </div>
+            </div>
+            <!-- Content -->
+            <div class="control-group">
+                <label class="control-label">@T("Thông tin khác:")</label>
+                <div class="controls">
+                    @*@Html.TextAreaFor(m => m.Content, 5, 40, new { @class = "text text-box-medium" })*@
+                    @Html.TextAreaFor(r => r.Content, new { @class = "html tinymce", cols = 5, rows = 5 })
+                </div>
+            </div>
+            @*@if (Model.HaveFacebookUserId) {*@ 
+            <div class="control-group">
+                <label class="control-label">&nbsp;</label>
+                <div class="controls">
+                    <label for="AcceptPostToFacebok">@Html.CheckBoxFor(r => r.AcceptPostToFacebok) Chia sẻ lên facebook(Nếu có đăng nhập bằng facebook)</label>
+                </div>
+            </div>
+            @*}*@
+        </div>
+        <div class="clearfix"></div>
+    </article>
+    <footer></footer>
+</article>

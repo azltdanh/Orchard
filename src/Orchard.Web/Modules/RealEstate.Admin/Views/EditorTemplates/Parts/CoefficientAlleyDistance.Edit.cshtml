@@ -1,0 +1,16 @@
+﻿@model RealEstate.ViewModels.CoefficientAlleyDistanceEditViewModel
+<fieldset>
+    @Html.LabelFor(m => m.LastAlleyWidth, T("LastAlleyWidth"))
+    @Html.TextBoxFor(m => m.LastAlleyWidth, new { @class = "text-small" })
+    @Html.ValidationMessageFor(m => m.LastAlleyWidth, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.MaxAlleyDistance, T("MaxAlleyDistance"))
+    @Html.TextBoxFor(m => m.MaxAlleyDistance, new { @class = "text-small" })
+    @Html.ValidationMessageFor(m => m.MaxAlleyDistance, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.CoefficientDistance, T("CoefficientDistance"))
+    @Html.TextBoxFor(m => m.CoefficientDistance, new { @class = "text-small" })
+    @Html.ValidationMessageFor(m => m.CoefficientDistance, "*")
+</fieldset>

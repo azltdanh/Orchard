@@ -1,0 +1,110 @@
+﻿@{ Layout.Title = T("Soạn thư").ToString(); }
+
+<article>
+    <div class="col-md-3 no-padding">
+        <div class="panel panel-primary panel-overwrite">
+            <header>
+                <div class="header-wrapper">
+                    <div class="header-title">
+                        <div class="header-title-left"><div class="header-title-triangle"></div></div>
+                        <h2 class="header-title-text">Bảng giá quảng cáo</h2>
+                        <div class="header-title-right"></div>
+                    </div>
+                </div>
+            </header>
+            <div class="panel-body no-padding">
+                <ul class="list-underline">
+                    <li id="menu-2" class="li-sub"><a onclick="ShowPage(2)" href="/lien-he#menu-2">Bảng giá đăng tin rao</a></li>
+                    <li id="menu-3" class="li-sub"><a onclick="ShowPage(3)" href="/lien-he#menu-3">Bảng giá banner</a></li>
+                    <li id="menu-4" class="li-sub"><a onclick="ShowPage(4)" href="/lien-he#menu-4">Bảng giá thẩm định giá</a></li>
+                    <li id="menu-5" class="li-sub"><a onclick="ShowPage(5)" href="/lien-he#menu-5">Đăng ký quảng cáo trực tuyến</a></li>
+                    <li id="menu-1" class="li-sub active"><a href="@Url.Action("SendMessageContact", "ContactInboxFrontEnd", new { area = "RealEstate.NewLetter" })">Liên hệ</a></li>
+                </ul>
+            </div>
+        </div>
+        @*<div class="panel panel-primary panel-overwrite">
+            <header>
+                <div class="header-wrapper">
+                    <div class="header-title">
+                        <div class="header-title-left"><div class="header-title-triangle"></div></div>
+                        <h2 class="header-title-text">Hướng dẫn sử dụng</h2>
+                        <div class="header-title-right"></div>
+                    </div>
+                </div>
+            </header>
+            <div class="panel-body no-padding">
+                <ul class="list-underline">
+                    <li id="menu-6" class="li-sub"><a onclick="ShowPage(6)" href="/lien-he#menu-6">Đăng ký thành viên</a></li>
+                    <li id="menu-7" class="li-sub"><a onclick="ShowPage(7)" href="/lien-he#menu-7">Đăng tin / Quản lý tin</a></li>
+                    <li id="menu-8" class="li-sub"><a onclick="ShowPage(8)" href="/lien-he#menu-8">Thanh toán</a></li>
+                    <li id="menu-1" class="li-sub active"><a href="@Url.Action("SendMessageContact", "ContactInboxFrontEnd", new { area = "RealEstate.NewLetter" })">Liên hệ</a></li>
+                </ul>
+            </div>
+        </div>*@
+    </div>
+    <div class="col-md-9 no-padding-right padding-left-dv" id="contact-top">
+        <div class="panel panel-primary panel-overwrite" id="AjaxContactLoadContent">
+            <header>
+                <div class="header-wrapper">
+                    <div class="header-title">
+                        <div class="header-title-left"><div class="header-title-triangle"></div></div>
+                        <h2 class="header-title-text" id="mapName">Hộp thư liên hệ</h2>
+                        <div class="header-title-right"></div>
+                    </div>
+                </div>
+            </header>
+            <div class="panel-body">
+                @using (Html.BeginFormAntiForgeryPost())
+                {
+                    // Model is a Shape, calling Display() so that it is rendered using the most specific template for its Shape type
+                    @Display(Model)
+                }
+            </div>
+        </div>
+    </div>
+</article>
+<script type="text/javascript">
+    function ShowPage(id) {
+        switch (Number(id)) {
+            case 2: //Bảng giá Đăng tin rao
+                $("#AjaxContactLoadContent").load("@Url.Action("AjaxLoadAdsPrice", "Contact", new { area = "RealEstate.UserControlPanel" })");
+                break;
+            case 3://Bảng giá banner 
+                $("#AjaxContactLoadContent").load("@Url.Action("AjaxLoadBannerPrice", "AdsPriceConfig", new { area = "RealEstate.MiniForum" })");
+                break;
+            case 4://Bảng giá thẩm định giá
+                $("#AjaxContactLoadContent").load("@Url.Action("AjaxLoadValuationCertificatePrice", "Contact", new { area = "RealEstate.UserControlPanel" })");
+                break;
+            case 5://Đăng ký quản cáo trực tuyên AjaxLoadContactOnline
+                $("#AjaxContactLoadContent").load("@Url.Action("AjaxLoadContactOnline", "Contact", new { area = "RealEstate.UserControlPanel" })");
+                break;
+            case 6://Đăng ký thành viên
+                alert('Đang được cập nhật.');
+                break;
+            case 7: //Dang tin - qunly tin
+                alert('Đang được cập nhật.');
+                break;
+            case 8://Thanh toan
+                alert('Đang được cập nhật.');
+                break;
+            case 9://Lien he
+                break;
+            default:
+                break;
+        }
+        $(".li-sub").each(function () {
+            $(this).removeClass("active");
+        });
+        //$("#ads" + id).css("display", "block");
+        $("#menu-" + id).addClass("active");
+        $('html,body').animate({ scrollTop: $('#contact-top').offset().top - 90 }, 1000);
+    }
+    window.onload = function () {
+        if(window.location.hash != '') {
+            var hash = window.location.hash.substring(6);
+            if ($.isNumeric(hash)) ShowPage(hash);
+        } else {
+            ShowPage(1);
+        }
+    };
+</script> 

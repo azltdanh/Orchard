@@ -1,0 +1,123 @@
+﻿@model RealEstate.NewLetter.ViewModels.ContactInboxEntry
+
+@{
+    Layout.Title = T("Xem thư").ToString();
+    var item = Model.ContactInbox;
+}
+<style>
+    .control-label {
+        font-weight: bold;
+    }
+
+    .form-reply {
+        display: none;
+    }
+</style>
+<div class="send-content">
+    <div class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label" for="Name">
+                Họ và tên:
+            </label>
+            <div class="controls form-inline">
+                @item.FullName
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="Email">
+                Email:
+            </label>
+            <div class="controls form-inline">
+                @item.Email
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="Phone">
+                Số điện thoại:
+            </label>
+            <div class="controls form-inline">
+                @item.Phone
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="Phone">
+                Link lỗi:
+            </label>
+            <div class="controls form-inline">
+                @item.Link
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="Title">
+                Tiêu đề:
+            </label>
+            <div class="controls form-inline">
+                @item.Title
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="Content">
+                Nội dung:
+            </label>
+            <div class="controls form-inline">
+                @item.Content
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="Content">
+                Ngày gửi:
+            </label>
+            <div class="controls form-inline">
+                @Convert.ToDateTime(item.DateCreated).ToString("HH:mm:ss dd/MM/yyyy")
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="Content">
+                Tình trạng:
+            </label>
+            <div class="controls form-inline">
+                <label for="item_IsRead" data-id="@item.Id">
+                    @(item.IsRead ?
+                                    Html.ActionLink(T("Xử lý sau").ToString(), "CheckIsRead", new { item.Id, returnUrl = HttpContext.Current.Request.Url }, new { itemprop = "RemoveUrl UnsafeUrl", @class = "button btn-isread" }) :
+                                    Html.ActionLink(T("Đánh dấu đã xử lý").ToString(), "CheckIsRead", new { item.Id, returnUrl = HttpContext.Current.Request.Url }, new { itemprop = "RemoveUrl UnsafeUrl", @class = "button" })
+                    )
+                </label>
+            </div>
+        </div>
+
+        <div class="control-group" style="font-weight:bold;">
+            @Html.ActionLink(T("Delete").ToString(), "Delete", new { item.Id, returnUrl = HttpContext.Current.Request.Url }, new { itemprop = "RemoveUrl UnsafeUrl" }) | 
+            @Html.ActionLink(T("Reply").ToString(), "CreateMessage", "MessageInboxAdmin", new { area = "RealEstate.NewLetter", strUser = item.Email, returnUrl = HttpContext.Current.Request.Url }, new { })
+        </div>
+    </div>
+</div>
+@using (Html.BeginFormAntiForgeryPost())
+{ }
+<script>
+    $(function () {
+        $('#item_IsRead').click(function () {
+            var id = $(this).parent().attr('data-id');
+            $.ajax({
+                type: "post",
+                dataType: "",
+                url: "/ajax/realestatenewletter/AjaxCheckIsRead",
+                data: { Id : id,
+                    __RequestVerificationToken: antiForgeryToken
+                },
+                success: function (response) {
+                    if (!response.status)
+                        alert('Có lỗi xảy ra!');
+                },
+                error: function (request, status, error) {
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script>

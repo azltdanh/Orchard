@@ -1,0 +1,48 @@
+﻿@using RealEstate.Helpers
+@using RealEstateForum.Service.ViewModels;
+@{
+    var model = Model;
+    List<PostByTopicEntry> ListPost = model;
+    var count = 0;
+}
+   
+    @if (ListPost.Count() > 0)
+    {
+        <ul class="media-list media-list-condensed last">
+            @foreach (var item in ListPost)
+            {
+                if(count < 5)
+                { 
+                var userDisplayName = item.UserInfo.DisplayName;
+
+                var urlUserProfile = (WorkContext.CurrentUser != null && item.UserInfo.Id == WorkContext.CurrentUser.Id) ?
+                                        Url.Action("MyPage", "PersonalPage", new { Area = "RealEstate.MiniForum.FrontEnd" })
+                                            :
+                                            Url.Action("FriendPage", "PersonalPage", new { Area = "RealEstate.MiniForum.FrontEnd", UserName = item.UserInfo.UserName.ToSlug(), UserId = item.UserInfo.Id });
+
+                var urlUserAvatar = item.UserInfo.Avatar;
+
+                <li class="media@(ListPost.IndexOf(item) == 0 ? " first" : "")@(ListPost.IndexOf(item) == ListPost.Count - 1 ? " last" : "")"
+                    data-toggle="popover" data-html="true" data-placement="auto" data-trigger="hover" data-content="">
+                    <a class="pull-left" href="@urlUserProfile" title="@userDisplayName">
+                        <img alt="@userDisplayName" src="@urlUserAvatar?width=36&height=32" class="media-object img-thumbnail img-thumbnail-small" />
+                    </a>
+                    <div class="media-body">
+                        <div class="block-ellipsis block-ellipsis-2">
+                            @Html.ActionLink(item.Title, "PostDetail", new { controller = "PostForumFrontEnd", area = "RealEstate.MiniForum.FrontEnd", Id = item.Id, title = item.DisplayForNameForUrl, ThreadShortName = item.ThreadShortName, TopicShortName = item.TopicShortName }, new { })
+                        </div>
+                        <div class="popover-data-content">
+                            <h5><strong>@item.Title</strong></h5>
+                            <a class="text-success" href="@urlUserProfile">@userDisplayName</a>
+                            <small class='text-muted'>@string.Format("{0:h:mm tt (dd/MM/yyyy)}", @item.DateUpdated)</small>
+                            <div class="block-ellipsis block-ellipsis-6">
+                                @Html.Raw(item.Content.Normalize().Trim())
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                }
+                count++;
+            }
+        </ul>
+    }

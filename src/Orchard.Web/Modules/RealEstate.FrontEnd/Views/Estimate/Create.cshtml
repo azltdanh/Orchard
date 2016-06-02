@@ -1,0 +1,13 @@
+﻿@{ 
+    Layout.Title = T("Định giá bất động sản trực tuyến").ToString();
+    SetMeta("description", "Trung tâm dữ liệu giao dịch nhà đất Việt Nam. Nơi lưu trữ mọi thông tin về bất động sản dùng làm dữ liệu để tra cứu và Định giá bất động sản. Phần mềm quản lý và định giá bất động sản trực tuyến đầu tiên của Việt Nam.");
+    SetMeta("keywords", "dinh gia, tham dinh gia, bat dong san, nha dat, mua ban, cho thue, nha, nha pho, can ho, biet thu, chung cu, phong, dat dai, du an, bang gia dat, khung gia dat, luat, moi gioi, nha o, huong nha, Ho Chi Minh, quan 1, quan 2, quan 3, quan 4, quan 5, quan 6, quan 7, quan 8, quan 9, quan 10, quan 11, quan 12, quan Binh Tan, quan Binh Thanh, quan Go Vap, quan Phu Nhuan, quan Tan Binh, quan Tan Phu, quan Thu Duc, huyen Binh Chanh");
+}
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Post, new { enctype = "multipart/form-data", Class = "formvalidate" }))
+{
+    <div class="form-editor">
+        @Html.ValidationSummary()
+    </div>
+    // Model is a Shape, calling Display() so that it is rendered using the most specific template for its Shape type
+    @Display(Model)
+}

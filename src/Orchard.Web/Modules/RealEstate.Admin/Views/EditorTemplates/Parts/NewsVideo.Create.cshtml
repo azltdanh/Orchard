@@ -1,0 +1,28 @@
+﻿@model RealEstate.ViewModels.NewsVideoCreateViewModel
+       
+@*<fieldset>
+    <label>Chọn file video</label>
+    <input type="file" name="YoutubeUpload" id="YoutubeUpload" />
+    @Html.ValidationMessage("YoutubeUploadNull", "Vui lòng chọn file video cần upload!")
+</fieldset>*@
+
+<fieldset>
+    @Html.LabelFor(m => m.Title, T("Title"))
+    @Html.TextBoxFor(m => m.Title, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.Title, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.Description, T("Description"))
+    @Html.TextAreaFor(m => m.Description, new { })
+    @Html.ValidationMessageFor(m => m.Description, "*")
+</fieldset>
+<fieldset>
+    <label for="Enable">@Html.CheckBoxFor(r => r.Enable) Enable</label>
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.SeqOrder, T("SeqOrder"))
+    @Html.TextBoxFor(m => m.SeqOrder, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.SeqOrder, "*")
+</fieldset>
+
+@Html.Partial("Partial.YoutubeUpload")

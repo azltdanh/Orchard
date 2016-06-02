@@ -1,0 +1,38 @@
+﻿@model RealEstate.ViewModels.VideoManageIndexViewModel
+@using RealEstate.ViewModels;
+@using RealEstate.Helpers;
+
+<article class="padding-left padding-right">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left">
+                    <div class="header-title-triangle"></div>
+                </div>
+                <h2 class="header-title-text">Danh sách video</h2>
+                <div class="header-title-right"></div>
+            </div>
+        </div>
+    </header>
+    <div class="row no-margin bg-main">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 no-padding sub-video">
+            @if (Model.VideoManages != null)
+            {
+                foreach (var entry in Model.VideoManages)
+                {
+                    <div class="subtray">
+                        <div class="item">
+                            <a href="@Url.Action("VideoDetail", "PostForumFrontEnd", new { Area = "RealEstate.MiniForum.FrontEnd", title = entry.VideoManagePart.Title.ToSlug(), Id = entry.VideoManagePart.Id })">
+                                <img src="@entry.VideoManagePart.Image" class="img-sub" alt="@entry.VideoManagePart.Title">
+                            </a>
+                        </div>
+                        <div class="description">
+                            <a title="@entry.VideoManagePart.Title" href="@Url.Action("VideoDetail", "PostForumFrontEnd", new { Area = "RealEstate.MiniForum.FrontEnd", title = entry.VideoManagePart.Title.ToSlug(), Id = entry.VideoManagePart.Id })">@entry.VideoManagePart.Title</a>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</article>

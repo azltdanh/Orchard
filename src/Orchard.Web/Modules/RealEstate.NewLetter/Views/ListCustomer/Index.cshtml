@@ -1,0 +1,85 @@
+﻿@model RealEstate.NewLetter.ViewModels.ListCustomerLetterIndexViewModel
+@using RealEstate.NewLetter.Models;
+@using RealEstate.NewLetter.ViewModels;
+
+@{
+    Script.Require("newletter.common");
+    Layout.Title = T("Gửi BĐS cho khách").ToString();
+}
+
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Get))
+{      
+    @Html.ValidationSummary()
+
+    <fieldset class="bulk-actions left">
+
+        <label for="filterResults">@T("Search option:")</label>
+        @Html.TextBoxFor(m => m.Options.Search, new { @class = "text" })        
+        
+        <label for="filterResults">@T("Filter:")</label>
+        <select id="filterResults" name="@Html.NameOf(m => m.Options.Filter)">
+            @Html.SelectOption(Model.Options.Filter, ListCustomerLetterFilter.All, T("All").ToString())
+        </select>
+
+        <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+
+    </fieldset>
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{ 
+    @Html.ValidationSummary()
+
+    <fieldset class="bulk-actions right">
+        <label for="publishActions">@T("Actions:")</label>
+        <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+            @Html.SelectOption(Model.Options.BulkAction, ListCustomerLetterBulkAction.None, T("Choose action...").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, ListCustomerLetterBulkAction.SendMail, T("SendMail").ToString())
+        </select>
+        <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+    </fieldset>
+    
+    <fieldset>
+        <table class="items">
+            <thead>
+                <tr>
+                    <th scope="col"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.ListCustomerLetters)" /></th>
+                    <th scope="col">@T("Name")</th>
+                    <th scope="col">@T("Contact Email")</th>
+                    <th scope="col">@T("Contact Phone")</th>
+                    <th scope="col">@T("Status Exception")</th>
+                    <th scope="col">@T("Count")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.ListCustomerLetters)
+            { 
+            <tr>
+                <td>
+                    <input type="hidden" value="@Model.ListCustomerLetters[index].ListCustomerLetter.Id" name="@Html.NameOf(m => m.ListCustomerLetters[index].ListCustomerLetter.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.ListCustomerLetters[index].IsChecked)"/>
+                </td>
+                <td>
+                    @Html.ActionLink(entry.ListCustomerLetter.ContactName, "Edit", new { entry.ListCustomerLetter.Id, returnUrl = HttpContext.Current.Request.Url }) 
+                </td>
+                <td>
+                    @entry.ListCustomerLetter.ContactEmail
+                </td>
+                <td>
+                    @entry.ListCustomerLetter.ContactPhone 
+                </td>
+                <td>
+                    @entry.StatusException 
+                </td>
+                <td>
+                    @entry._count 
+                </td>
+            </tr>
+                index++;
+            }
+        </table>
+
+        @Display(Model.Pager)
+
+    </fieldset>
+} 

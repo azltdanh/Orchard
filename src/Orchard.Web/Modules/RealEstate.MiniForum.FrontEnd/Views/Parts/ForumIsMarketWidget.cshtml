@@ -1,0 +1,93 @@
+﻿@using RealEstateForum.Service.ViewModels
+
+@{
+    var model = Model.ViewModel;
+    List<PostByTopicEntry> listPostWithImage = model.ListPostWithImage;// listtopic
+    List<WidgetPostItem> listPostNotImage = model.ListPostNotImage;// listthread
+    var currentUser = WorkContext.CurrentUser;
+    var i = 1;
+    var countListPostWithImage = listPostWithImage.Count;
+}
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        var countListTopics = @countListPostWithImage;
+        if ( countListTopics != "0") {
+            var topicMarketToIndex = setTimeout("NextTopicMarketNew('div_market_',2)", 10000);
+            function NextTopicMarketNew(div, Id) {
+                if (Id <= countListTopics) {
+                    $('.show-content-market').hide();
+                    $('#' + div + Id).fadeIn(500);
+
+                    $('#valTopicMarket').val(div + Id);
+
+                    var idNextTo = Id + 1;
+                    if (Id == countListTopics) {
+                        idNextTo = 1;
+                    }
+                    if (topicMarketToIndex != null) clearTimeout(topicMarketToIndex);
+
+                    topicMarketToIndex = setTimeout("NextTopicMarketNew('div_market_', " + idNextTo + ")", 15000);
+                }
+            }
+        }
+    </script>
+}
+@if (countListPostWithImage > 0)
+    {
+        <div class="block-market-news">
+            @foreach (var item in listPostWithImage)
+            {
+                var urlPageDetail = Url.Action("PostDetail", "PostForumFrontEnd", new { area = "RealEstate.MiniForum.FrontEnd", Id = item.Id, title = item.DisplayForNameForUrl, ThreadShortName = item.ThreadShortName, TopicShortName = item.TopicShortName });
+                <div class="item show-content-market" id="@("div_market_" + i)" style="display:@(i == 1 ? "block" : "none");">
+                    <div class="media row content-item-details">
+                        @if (!String.IsNullOrEmpty(item.DefaultImage))
+                        {
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <a href="@urlPageDetail" title="@item.Title">
+                                <img alt="@item.Title" src="@item.DefaultImage?width=500" class="media-object img-thumbnail img-responsive" />
+                            </a>
+                        </div>
+                        }
+                        <div class="media-body col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <a href="@urlPageDetail">
+                                <h4 class="media-heading-sidebar" title="@item.Title">@item.Title</h4>
+                            </a>
+                            <div class="block-ellipsis block-ellipsis-6">
+                                @if (!string.IsNullOrEmpty(item.Content))
+                                {
+                                    <div>@Html.Raw(item.Content.Normalize().Trim())</div>
+                                }
+                            </div>
+                            <div class="next-and-prev">
+                                <div class="btn-maket-prev" title="prev" onclick="NextTopicMarketNew('div_market_',@((i == 1) ? countListPostWithImage : (i - 1)))"></div>
+                                <div class="btn-maket-next" title="next" onclick="NextTopicMarketNew('div_market_',@((i == countListPostWithImage) ? 1 : (i + 1)))"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                i++;
+            }
+            <input id="valTopicMarket" type="hidden" value="">
+            <div class="clearfix">
+            </div>
+        </div>
+        if (listPostNotImage.Count > 0)
+        {
+        <div class="bg-market-news">
+            <div class="list-market-news">
+                <ul class="list-bullet-blue last">
+                    @foreach (var item in listPostNotImage)
+                    {
+                        <li class="text-ellipsis">
+                            @Html.ActionLink(item.Title, "PostDetail", new { controller = "PostForumFrontEnd", area = "RealEstate.MiniForum.FrontEnd", Id = item.Id, title = item.DisplayForNameForUrl, ThreadShortName = item.ThreadShortName, TopicShortName = item.TopicShortName }, new { title = item.Title})
+                        </li>  
+                    }
+                </ul>
+            </div>
+        </div>
+        }
+        <div class="btn-maket-view">
+            <a rel="nofollow" title="Xem thêm tin tức thị trường" class="text-success" href="/dien-dan/tin-tuc-thi-truong-bat-dong-san">Xem thêm >></a>
+        </div>
+    }

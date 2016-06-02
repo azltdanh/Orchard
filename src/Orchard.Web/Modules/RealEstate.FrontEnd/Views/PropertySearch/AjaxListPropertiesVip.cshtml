@@ -1,0 +1,21 @@
+﻿@model RealEstate.ViewModels.PropertyDisplayIndexViewModel
+           
+@if (Model.Properties.Count() > 0)
+{
+<div id="ViewResultFilterPropertiesVip">
+    @*<div class="hidden-xs">
+        @Html.Partial("ListPropertiesVIP-front", Model.Properties)
+    </div>*@
+    @*<div class="visible-xs">*@
+        @Html.Partial("ListPropertiesDeal", Model.Properties)
+    @*</div>*@
+    <div class="pull-right view-continue">
+        <a class="text-bold" href="@Url.Action("SearchProperties", "PropertySearch", new { area = "RealEstate.FrontEnd", AdsTypeCssClass = Model.Options.AdsTypeCssClass, FlagAds = "vip" })">>> Xem thêm bđs</a>
+    </div>
+    <div class="clearfix"></div>
+</div>
+}
+else
+{
+    @Html.Partial("NoResult")
+}

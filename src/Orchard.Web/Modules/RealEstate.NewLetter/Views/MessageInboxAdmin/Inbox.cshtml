@@ -1,0 +1,82 @@
+﻿@using RealEstate.NewLetter.ViewModels
+@model MessageInboxIndexViewModel
+
+@{
+    Layout.Title = T("Hộp thư đến").ToString();
+}
+
+
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Get))
+{
+    @Html.ValidationSummary()
+
+    <fieldset class="bulk-actions left">
+
+        <label for="filterResults">@T("Từ khóa:")</label>
+        @Html.TextBoxFor(m => m.Options.Search, new { @class = "text" })
+
+        <label for="filterResults">@T("Filter:")</label>
+        <select id="filterResults" name="@Html.NameOf(m => m.Options.Filter)">
+            @Html.SelectOption(Model.Options.Filter, MessagesFilter.All, T("All").ToString())
+            @Html.SelectOption(Model.Options.Filter, MessagesFilter.Read, T("Đã đọc").ToString())
+            @Html.SelectOption(Model.Options.Filter, MessagesFilter.UnRead, T("Chưa đọc").ToString())
+        </select>
+
+        <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+
+    </fieldset>
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{
+    <fieldset>
+        <table class="items">
+            <thead>
+                <tr>
+                    <th scope="col">@T("Người gửi")</th>
+                    <th scope="col">@T("Tiêu đề")</th>
+                    <th scope="col">@T("Nội dung")</th>
+                    <th scope="col">@T("Ngày gửi")</th>
+                    <th scope="col">@T("Trả lời")</th>
+                    <th scope="col">@T("Thao tác")</th>
+                </tr>
+            </thead>
+            @{var index = 0; string status; string title;}
+            @foreach (var entry in Model.ListMessage)
+            {
+                var item = entry.MessagePart;
+                int tempId = item.ParentId != null ? item.ParentId.Value : item.Id;
+                if (item.IsRead == false) { status = "f-bold"; title = "Tin nhắn này chưa được xử lý!"; } else { status = ""; title = ""; }
+                <tr class="@status" title="@title">
+                    <td>
+                        @item.UserSend.UserName
+                    </td>
+                    <td>
+                        @Html.ActionLink(item.Title, "ViewMessage", new { Id = tempId, returnUrl = HttpContext.Current.Request.Url })
+                    </td>
+                    <td>
+                        @(item.Content.Length > 100 ? item.Content.Substring(0,100) : item.Content)
+                    </td>                    
+                    <td>
+                        @Convert.ToDateTime(item.DateSend).ToString("dd/MM/yyyy hh:mm")
+                    </td>
+                    <td>
+                        @entry.ReplyCount
+                    </td>
+                    <td>
+                        @Html.ActionLink(T("Xóa").ToString(), "DeleteMessageInbox", new { item.Id, returnUrl = HttpContext.Current.Request.Url }, new { itemprop = "RemoveUrl UnsafeUrl" }) |
+                        @Html.ActionLink(T("Trả lời").ToString(), "ViewMessage", new { Id = tempId, returnUrl = HttpContext.Current.Request.Url })
+                    </td>
+                </tr>
+                index++;
+            }
+        </table>
+        @Display(Model.Pager)
+
+    </fieldset>
+}
+<style>
+    .f-bold td {
+        font-weight: bold;
+    }
+</style>

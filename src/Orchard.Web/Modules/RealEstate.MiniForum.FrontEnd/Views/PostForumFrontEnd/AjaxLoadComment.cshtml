@@ -1,0 +1,96 @@
+﻿@using RealEstateForum.Service.ViewModels
+@using RealEstate.Helpers
+@model CommentIndexViewModel
+
+@if (Model.ListComment != null)
+{
+
+    List<CommentPostViewModel> lstComment = Model.ListComment;
+
+    foreach (var item in lstComment)
+    {
+        var urlUserProfile = (WorkContext.CurrentUser != null && item.UserInfo.Id == WorkContext.CurrentUser.Id) ?
+                                                Url.Action("MyPage", "PersonalPage", new { Area = "RealEstate.MiniForum.FrontEnd" })
+                                    :
+                                    Url.Action("FriendPage", "PersonalPage", new { Area = "RealEstate.MiniForum.FrontEnd", UserName = item.UserInfo.UserName.ToSlug(), UserId = item.UserInfo.Id });
+        <!-- Comment Item -->
+        <div class="comment-item c-item cm-@item.CommentId">
+            <div class="pull-left c-content">
+                <img src="@item.UserInfo.Avatar?width=68" class="img-thumbnail" />
+            </div>
+            <div>
+                <div class="displayname-inline">
+                    <a href="@urlUserProfile"><strong>@item.UserInfo.DisplayName</strong></a>
+                    @if (Model.IsMangagementOrAdmin || item.IsOwner)
+                    {
+                        <span class="f-icon pull-right">
+                            @*<i class="icon_rev_cog pointer" title="Cập nhật thứ tự cho comment này"></i>*@
+                            <i class="icon_rev_cross pointer" onclick="DeleteComment(@item.CommentId)" title="Xóa comment này"></i>
+                        </span>
+                    }
+                </div>
+                <div class="media-body p-comment-content">
+                    <div>@Html.Raw(item.Content)</div>
+                    <div class="c-btn-reply">
+                        <span><a href="javascript:ShowReply(@item.CommentId)">Trả lời </a></span>
+                        <span><a href="javascript:;">Thích </a></span>
+                        <span class="time">@item.TimeAgo</span>
+                    </div>
+                </div>
+            </div>            
+            <div class="clear-fix"></div>
+        </div>
+        <!-- Reply comment -->
+        <div class="subcomment-item c-item form-reply" id="form-reply-@item.CommentId">
+            <i class="icons-arrow-reply detail-post" id="arrow-@item.CommentId" style="display:none;"></i>
+            <div class="form-background">
+                <textarea class="form-control" cols="12" id="@("replyContent_" + item.CommentId)" placeholder="Nội dung trả lời"></textarea>
+                <div class="height-10"></div>
+                <input type="button" class="btn btn-default btnReplyComent pull-right" onclick="ChildComment(this)" value="Đăng" />
+                <div class="clearfix"></div>
+            </div>
+        </div>
+
+        if (item.ListSubComment != null && item.ListSubComment.Count > 0)
+        {
+            foreach (var subitem in item.ListSubComment)
+            {
+                var urlSubComment = (WorkContext.CurrentUser != null && subitem.UserInfo.Id == WorkContext.CurrentUser.Id) ?
+                                                Url.Action("MyPage", "PersonalPage", new { Area = "RealEstate.MiniForum.FrontEnd" })
+                                    :
+                                    Url.Action("FriendPage", "PersonalPage", new { Area = "RealEstate.MiniForum.FrontEnd", UserName = subitem.UserInfo.UserName.ToSlug(), UserId = subitem.UserInfo.Id });
+                <div class="subcomment-item c-item cm-@subitem.SubCommentId">
+                <i class="icons-arrow-reply detail-post"></i>
+                <div class="form-background">
+                    <div class="pull-left c-content">
+                        <img src="@subitem.UserInfo.Avatar?width=50" class="img-thumbnail" />
+                    </div>
+                    <div class="re-right">
+                        <div>
+                            <a href="@urlSubComment"><strong>@subitem.UserInfo.DisplayName</strong></a>
+                            @if (Model.IsMangagementOrAdmin || subitem.IsOwner)
+                            {<i class="re-delete icon_rev_cross pointer pull-right" onclick="DeleteComment(@subitem.SubCommentId)" title="Xóa comment này"></i>}
+                        </div>
+                        <div class="media-body">
+                            <div>@subitem.SubCommentContent</div>
+                            <div class="c-btn-reply">
+                                <span class="time">@subitem.TimeAgo</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            }
+        }
+    }
+        <div class="pager-bottom">
+            @Display(Model.Pager)
+        </div>
+}
+else
+{
+    <div class="alert alert-warning">Chưa có comment nào.</div>
+}

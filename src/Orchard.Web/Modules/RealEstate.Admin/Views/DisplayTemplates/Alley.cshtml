@@ -1,0 +1,35 @@
+﻿@model dynamic
+           
+@{
+    
+    List<string> listWidth = new List<string> { 
+        ViewBag.AlleyWidth1 != null ? ViewBag.AlleyWidth1.ToString() : "?",
+        ViewBag.AlleyWidth2 != null ? ViewBag.AlleyWidth2.ToString() : "?",
+        ViewBag.AlleyWidth3 != null ? ViewBag.AlleyWidth3.ToString() : "?",
+        ViewBag.AlleyWidth4 != null ? ViewBag.AlleyWidth4.ToString() : "?",
+        ViewBag.AlleyWidth5 != null ? ViewBag.AlleyWidth5.ToString() : "?",
+        ViewBag.AlleyWidth6 != null ? ViewBag.AlleyWidth6.ToString() : "?",
+        ViewBag.AlleyWidth7 != null ? ViewBag.AlleyWidth7.ToString() : "?",
+        ViewBag.AlleyWidth8 != null ? ViewBag.AlleyWidth8.ToString() : "?",
+        ViewBag.AlleyWidth9 != null ? ViewBag.AlleyWidth9.ToString() : "?"
+    };
+    string _lastAlleyWidth = "";
+    string _alleyTitle = "";
+    if (ViewBag.CssClass == "h-alley" && ViewBag.AlleyTurns != null)
+    {
+        int _alleyTurns = ViewBag.AlleyTurns;
+        if (_alleyTurns > 0) {
+            _alleyTitle += string.Format("{0:0 lần rẽ\\,}", _alleyTurns);
+            if(ViewBag.DistanceToStreet != null) {
+                _alleyTitle += string.Format("{0: cách MT 0.##m\\,}", ViewBag.DistanceToStreet);
+            }
+            for(int i=0; i<_alleyTurns;i++)
+            {
+                _alleyTitle += " H" + (i+1).ToString() + " " + (listWidth[i] ?? "?") + "m";
+            }
+            _lastAlleyWidth = listWidth[_alleyTurns - 1] + "m";
+        }
+    }
+    
+}
+<span data-toggle="tooltip" title="@_alleyTitle">@Model @_lastAlleyWidth</span>

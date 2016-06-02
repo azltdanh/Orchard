@@ -1,0 +1,20 @@
+﻿@model RealEstate.FrontEnd.ViewModels.AliasesMetaCreateViewModel
+<fieldset>
+    @Html.LabelFor(m => m.DomainGroupCurrent, T("Domain hiện tại thuộc group"))
+    <strong>@Model.DomainGroupCurrent</strong>
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.Title, T("Title"))
+    @Html.TextBoxFor(m => m.Title, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.Title, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.Keywords, T("Keywords"))
+    @Html.TextAreaFor(m => m.Keywords, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.Keywords, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.Description, T("Description"))
+    @Html.TextAreaFor(m => m.Description, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.Description, "*")
+</fieldset>

@@ -1,0 +1,36 @@
+﻿@{
+    Dictionary<string, long> Price = (Dictionary<string, long>)ViewBag.Price;
+}
+@*<div class="panel-heading panel-heading-overwrite text-center">
+    <h3 class="panel-title">Bảng giá đăng tin rao</h3>
+</div>*@
+<div class="panel-body">
+    <div class="row">
+        <div class="col-md-12 text-center"><h3 class="light-blue">ĐĂNG KÝ QUẢNG CÁO TRỰC TUYẾN</h3></div>
+        <div class="col-md-12 text-center">------------------</div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="list-none margin-bottom-10">
+                <li><strong> 1. Thu tiền tận nơi</strong>: Nếu khách hàng ở trung tâm TPHCM, Hà Nội, Khánh Hòa thì sẽ có nhân viên đến thu tiền trực tiếp.</li>
+                <li>
+                    <strong>2. Đăng ký tại văn phòng:</strong>
+                    <ul>
+                        <li>Văn phòng 1: 286/3 Tô Hiến Thành, Phường 15, Quận 10, TP HCM</li>
+                        <li>Văn phòng 2: 34/10 Trần Khánh Dư, Phường Tân Định, Quận 1, TP HCM</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>3. Chuyển khoản Ngân hàng </strong> đến số Tài Khoản:<br />
+                    - Số Tài Khoản: 54510049<br />
+                    - Tại Ngân hàng ACB - phòng giao dịch Lê Ngô Cát, TP. HCM<br />
+                    - Chủ tài khoản: Lê Đình Dũng.
+                </li>
+                <li>
+                    <strong>2. Hoặc điền đầy đủ thông tin liên hệ <a href="@Url.Action("SendMessageContact", "ContactInboxFrontEnd", new { area = "RealEstate.NewLetter" })">tại đây</a></strong>
+                </li>
+            </ul>
+            
+        </div>
+    </div>
+</div>

@@ -1,0 +1,108 @@
+﻿@using RealEstateForum.Service.ViewModels
+@model PostIndexOptions
+@using RealEstateForum.Service.Models;
+
+@{
+    Script.Require("jQueryUI");
+    Script.Require("BootstrapMultiselect");
+    //Script.Require("JsCombobox");
+    var hostname = Request.QueryString.Get("hostname");
+}
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Get))
+{
+    <fieldset>
+        <legend></legend>
+        <table class="filter-table postFilter">
+            <tr>
+                <th>Chuyên mục</th>
+                <td>
+                    <input type="hidden" value="@hostname" name="hostname" id="hostname" class="text">
+                    @Html.DropDownListFor(m => m.ThreadIdIndex,
+                Model.ListThread.Select(s => new SelectListItem
+                {
+                    Selected = s.Id == Model.ThreadIdIndex,
+                    Text = s.Name,
+                    Value = s.Id.ToString()
+                }),
+                T("-- Tất cả --").ToString(), new { Class = "select-box" })
+                </td>
+
+                <th>Chuyên đề</th>
+                <td style="vertical-align: middle">
+                    @Html.ListBoxFor(m => m.TopicIds,
+                    new MultiSelectList(Model.ListTopic.Select(a => new { a.Name, a.Id }).ToList(), "Id", "Name", Model.TopicIds)
+                    , new { Class = "select-box multiselect" })
+                </td>
+
+            </tr>
+            <tr>
+                <th>Tên bài viết</th>
+                <td>
+                    @Html.TextBoxFor(r => r.Title, new { @class = "text" })
+                </td>
+                <th>ID Bài viết</th>
+                <td style="vertical-align: middle">
+                    @Html.TextBoxFor(c => c.PostId, new { @class = "PostId" })
+                </td>
+            </tr>
+            <tr>
+                <th>Nội dung</th>
+                <td>
+                    @Html.TextBoxFor(m => m.SearchText, new { @class = "text" })
+                </td>
+                <th>UserName hoặc Email</th>
+                <td>
+                    @Html.TextBoxFor(m => m.UserNameOrEmail, new { @class = "text" })
+                </td>
+            </tr>
+            <tr>
+                <th>Ngày đăng</th>
+                <td colspan="3">@Html.TextBoxFor(m => m.DateCreateFrom, new { @class = "text date-box" }) <b>đến</b> @Html.TextBoxFor(m => m.DateCreateTo, new { @class = "text date-box" })</td>
+            </tr>
+            <tr>
+                <th>Trạng thái</th>
+                <td>@Html.DropDownListFor(m => m.PostStatusId,
+                    Model.ListPostStatus.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.PostStatusId,
+                        Text = s.Value.ToString(),
+                        Value = s.Id.ToString()
+                    }), new { Class = "select-box-1" })</td>
+                <th>Publish</th>
+                <td>@Html.DropDownListFor(m => m.PublishStatusId,
+                    Model.ListPublishStatus.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.PublishStatusId,
+                        Text = s.Value.ToString(),
+                        Value = s.Id.ToString()
+                    }), new { Class = "select-box-1" })</td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="control-inline" style="margin-right: 30px;">
+                        @Html.EditorFor(m => m.IsHeighLight, new { @class = "textMedium" })
+                        <label for="IsHeighLight" class="control-inline">Bài viết nổi bật</label>
+                    </div>
+                    <div class="control-inline" style="margin-right: 30px;">
+                        @Html.EditorFor(m => m.IsMarket, new { @class = "textMedium" })
+                        <label for="IsMarket" class="control-inline">Bài viết thuộc tin tức thị trường</label>
+                    </div>
+                    
+                </td>
+                <td>
+                    <div class="control-inline">
+                        @Html.EditorFor(m => m.IsProject, new { @class = "textMedium" })
+                        <label for="IsProject" class="control-inline">Bài viết dự án nổi bật</label>
+                    </div>
+                </td>
+                <td>
+                    <div class="control-inline">
+                        @Html.EditorFor(m => m.IsPinned, new { @class = "textMedium" })
+                        <label for="IsProject" class="control-inline">Bài viết ghim</label>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Tìm Kiếm")</button>
+}

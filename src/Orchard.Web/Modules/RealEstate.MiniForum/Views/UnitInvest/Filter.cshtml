@@ -1,0 +1,25 @@
+﻿@model RealEstateForum.Service.ViewModels.UnitInvestOptions
+@using RealEstateForum.Service.ViewModels;
+    
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Get))
+{      
+    <fieldset>
+        <!-- Tìm kiếm cơ bản -->
+        <table class="filter-table">
+            <tbody>
+                <tr>
+                    <td class="filter-label">Tên đơn vị tài trợ</td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.TextBoxFor(m => m.Search, new { @class = "text" })
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </fieldset>
+    <fieldset class="bulk-actions left">
+        <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Tìm kiếm")</button>
+    </fieldset>
+}    

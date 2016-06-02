@@ -1,0 +1,173 @@
+﻿@model RealEstate.ViewModels.UserActivitiesIndexViewModel
+@using Orchard.Users.Models;
+@using Orchard.Users.ViewModels;
+@using RealEstate.Helpers;
+@{
+    Style.Require("BootstrapCombobox");
+}
+@using (Script.Foot())
+{
+    Script.Require("BootstrapCombobox");
+}
+<div class="content-item">
+    @using (Html.BeginFormAntiForgeryPost(null, FormMethod.Post, new { enctype = "multipart/form-data", Class = "formvalidate" }))
+    {
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="form-group col-lg-3 col-md-3 col-sm-3 padding-top">
+                    @*@Html.DropDownListFor(m => m.Options.ProvinceId,
+                Model.Options.Provinces.Select(s => new SelectListItem
+                {
+                    Selected = s.Id == Model.Options.ProvinceId,
+                    Text = s.Name,
+                    Value = s.Id.ToString()
+                }), "-- Tỉnh / Thành Phố --", new { Class = "form-control" })*@
+                    @Html.DropDownListFor(m => m.Options.ProvinceId, Model.Options.Provinces, "-- Tỉnh / Thành phố --", new { Class = "form-control combobox" })
+                </div>
+
+                <div class="form-group col-lg-3 col-md-3 col-sm-3 padding-top">
+                    @*@Html.DropDownListFor(m => m.Options.DistrictId,
+                Model.Options.Districts.Select(s => new SelectListItem
+                {
+                    Selected = s.Id == Model.Options.DistrictId,
+                    Text = s.Name,
+                    Value = s.Id.ToString()
+                }), "-- Quận / Huyện --", new { Class = "form-control" })*@
+                    @Html.DropDownListFor(m => m.Options.DistrictId, Model.Options.Districts, "-- Quận / Huyện --", new { Class = "form-control combobox" })
+                </div>
+
+                <div class="form-group col-lg-3 col-md-3 col-sm-3 padding-top">
+                    @Html.TextBoxFor(m => m.Options.NameAgencies, new { @class = "form-control", @placeholder = "Tên nhà môi giới" })
+                </div>
+
+                <div class="form-group col-lg-2 col-md-2 col-sm-2 padding-top">
+                    <button type="submit" class="btn btn-primary">Tìm kiếm môi giới</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left"><div class="header-title-triangle"></div></div>
+                <h2 class="header-title-text" id="mapName">Danh sách các nhà môi giới (@Model.UserUpdateOptions.Count())</h2>
+                <div class="header-title-right"></div>
+            </div>
+            <div class="header-msg">
+                <p class="text-success"><strong>&nbsp;&nbsp;Đăng ký làm môi giới - Liên hệ: <span class="organe">0912.14.16.17</span></strong></p>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="row no-margin">
+            @if (Model.UserUpdateOptions != null)
+            {
+                foreach (var item in Model.UserUpdateOptions)
+                {
+                    <div class="col-lg-4 col-md-6 col-sm-6  no-padding padding-5">
+                        @if (WorkContext.CurrentUser != null && WorkContext.CurrentUser.Id == item.UserUpdateProfilePart.Id)
+                    {
+                    <div class="media box-media">
+                        <div class="pull-left">
+                            <a href="@Url.Action("MyPage", "PersonalPage", new { area = "RealEstate.MiniForum.FrontEnd"})" class="img-thumbnail block-image-small">
+                                @if (!string.IsNullOrEmpty(item.UserUpdateProfilePart.Avatar))
+                                    {
+                                    <img class="img-agency" src="@item.UserUpdateProfilePart.Avatar" alt="@item.UserUpdateProfilePart.DisplayName">
+                                    }
+                                    else
+                                    {
+                                    <i class="img-user-no-avatar"></i>
+                                    }
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <div>
+                                <strong>
+                                    @if (string.IsNullOrEmpty(item.UserUpdateProfilePart.DisplayName))
+                                        {
+                                        @Html.ActionLink(item.UserPart.UserName, "MyPage", new { Controller = "PersonalPage", Area = "RealEstate.MiniForum.FrontEnd" }, new { @title = item.UserPart.UserName });
+                                        }
+                                        else
+                                        {
+                                        @Html.ActionLink(item.UserUpdateProfilePart.DisplayName, "MyPage", new { Controller = "PersonalPage", Area = "RealEstate.MiniForum.FrontEnd" }, new { @title = item.UserUpdateProfilePart.DisplayName });
+                                        }
+                                </strong>
+                            </div>
+                            <div>
+                                <strong>
+                                    @if (!string.IsNullOrEmpty(item.UserUpdateProfilePart.Phone))
+                                        {
+                                        @item.UserUpdateProfilePart.Phone
+                                        }
+                                </strong>
+                                <div class="margin-bottom-5">
+                                    <strong class="text-danger">
+                                        @if (!string.IsNullOrEmpty(item.UserUpdateProfilePart.AreaAgencies))
+                                            {
+                                            @item.UserUpdateProfilePart.AreaAgencies
+                                            }
+                                    </strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                    else
+                    {
+                    <div class="media box-media">
+                        <div class="pull-left">
+                            <a href="@Url.Action("FriendPage", "PersonalPage", new { area = "RealEstate.MiniForum.FrontEnd", UserId = item.UserUpdateProfilePart.Id, UserName = item.UserPart.UserName.ToSlug() })" class="img-thumbnail block-image-small">
+                                @if (!string.IsNullOrEmpty(item.UserUpdateProfilePart.Avatar))
+                                    {
+                                    <img class="img-agency" src="@item.UserUpdateProfilePart.Avatar" alt="@item.UserPart.UserName">
+                                    }
+                                    else
+                                    {
+                                    <i class="img-user-no-avatar"></i>
+                                    }
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <div>
+                                <strong>
+                                    @if (string.IsNullOrEmpty(item.UserUpdateProfilePart.DisplayName))
+                                        {
+                                        @Html.ActionLink(item.UserPart.UserName, "FriendPage", new { Controller = "PersonalPage", Area = "RealEstate.MiniForum.FrontEnd", UserId = item.UserUpdateProfilePart.Id, UserName = item.UserPart.UserName.ToSlug() }, new { @title = item.UserPart.UserName });
+                                        }
+                                        else
+                                        {
+                                        @Html.ActionLink(item.UserUpdateProfilePart.DisplayName, "FriendPage", new { Controller = "PersonalPage", Area = "RealEstate.MiniForum.FrontEnd", UserId = item.UserUpdateProfilePart.Id, UserName = item.UserUpdateProfilePart.DisplayName.ToSlug() }, new { @title = item.UserUpdateProfilePart.DisplayName });
+                                        }
+                                </strong>
+                            </div>
+                            <div>
+                                <strong>
+                                    @if (!string.IsNullOrEmpty(item.UserUpdateProfilePart.Phone))
+                                        {
+                                        @item.UserUpdateProfilePart.Phone
+                                        }
+                                </strong>
+                                <div class="margin-bottom-5">
+                                    <strong class="text-danger">
+                                        @if (!string.IsNullOrEmpty(item.UserUpdateProfilePart.AreaAgencies))
+                                            {
+                                            @item.UserUpdateProfilePart.AreaAgencies
+                                            }
+                                    </strong>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    }
+                    </div>
+                }
+            }
+        </div>
+        <div class="pager-bottom">
+            @Display(Model.Pager)
+        </div>
+    </article>
+</article>

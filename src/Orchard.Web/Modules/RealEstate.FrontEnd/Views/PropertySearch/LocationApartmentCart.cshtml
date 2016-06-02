@@ -1,0 +1,164 @@
+﻿@using System.Globalization
+@model RealEstate.ViewModels.LocationApartmentCartIndexViewModel
+
+@{
+    Layout.Title = T("Giỏ hàng dự án " + Model.LocationApartment.Name + " - dinhgianhadat.vn").ToString();
+    var color = new Dictionary<int, string>();
+    var title = new Dictionary<int, string>();
+    color[21] = "#018a3a"; title[21] = "Chưa hoàn chỉnh";
+    color[22] = "#018a3a"; title[22] = "Đủ thông tin";
+    color[23] = "#fefb00"; title[23] = "Đang thương lượng";
+    color[24] = "#fea500"; title[24] = "Chờ giao dịch";
+    color[25] = "#c61b21"; title[25] = "Đã giao dịch";
+    color[26] = "#9B9898"; title[26] = "Tạm ngưng";
+    color[30] = "#3e0055"; title[30] = "Không liên lạc được";
+    color[139164] = "#ffa691"; title[139164] = "Người đăng đã xóa";
+    color[27] = "#f40000"; title[27] = "Chờ xóa";
+    color[28] = "#c61b21"; title[28] = "Đã xóa";
+}
+
+<article class="content-item scroll-filter">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left">
+                    <div class="header-title-triangle"></div>
+                </div>
+                <h2 class="header-title-text">Giỏ hàng dự án @Model.LocationApartment.Name</h2>
+                <div class="header-title-right"></div>
+            </div>
+        </div>
+    </header>
+    <article class="content-filter">
+        <div>
+            <div class="color-guide">
+                <div class="row">
+                    <p class="color-item col-md-4"><span style="background: #018a3a">&nbsp;&nbsp;&nbsp;</span> => Chưa hoàn chỉnh / Đủ thông tin</p>
+                    <p class="color-item col-md-4"><span style="background: #fefb00">&nbsp;&nbsp;&nbsp;</span> => Đang thương lượng </p>
+                    <p class="color-item col-md-4"><span style="background: #fea500">&nbsp;&nbsp;&nbsp;</span> => Chờ giao dịch</p>
+                </div>
+                <div class="row">
+                    <p class="color-item col-md-4"><span style="background: #c61b21">&nbsp;&nbsp;&nbsp;</span> => Đã giao dịch  </p>
+                    <p class="color-item col-md-4"><span style="background: #3e0055">&nbsp;&nbsp;&nbsp;</span> => Không liên lạc được  </p>
+                    <p class="color-item col-md-4"><span style="background: #9B9898">&nbsp;&nbsp;&nbsp;</span> => Tạm ngưng </p>
+                </div>
+            </div>
+            <div class="apartment-info">
+                @foreach (var item in Model.LocationApartmentBlocks.Where(item => item.Properties.Any(r => r.GroupInApartmentBlock != null)))
+                {
+                    <div class="block-name"><strong>@item.ApartmentBlockPart.BlockName</strong></div>
+
+                    foreach (var groupAp in item.GroupInApartmentBlockParts)
+                    {
+                        <div class="apartment-item">
+                            <!-- Từng Group trong block-->
+                            <div class="group-apartment-info">Nhóm @groupAp.ApartmentGroupPosition</div>
+                            <table class="table table-bordered apartment-cart-table">
+                                <tbody>
+                                    @for (int i = groupAp.FloorFrom; i <= groupAp.FloorTo; i++)
+                                    {
+                                    <!-- Từng từng trong group-->
+                                    <tr>
+                                        <td colspan="@groupAp.ApartmentPerFloor">Mặt bằng tầng @i</td>
+                                    </tr>
+                                    <tr>
+                                        @for (int j = 1; j <= groupAp.ApartmentPerFloor; j +=2)
+                                            {
+                                            <!--A131 => Tên A, Nhóm 1, tầng 3, vị trí 1-->
+                                            <!--Từng căn trong tầng-->
+                                                var property = item.Properties.FirstOrDefault(r =>
+                                                r.ApartmentBlock != null && r.ApartmentBlock.Id == item.ApartmentBlockPart.Id &&
+                                                r.GroupInApartmentBlock.Id == groupAp.Id &&
+                                                r.ApartmentFloorTh != null && r.ApartmentFloorTh == i &&
+                                                r.ApartmentPositionTh == j);
+                                                // Phải có vị trí của căn hộ: ApartmentPositionTh
+                                        <td style="background: @(property != null ? color[property.Status.Id] : "");" title="@(property != null ? title[property.Status.Id] : "")">
+
+                                            @if (property != null)
+                                                {
+                                                @Html.ActionLink(property.ApartmentNumber, "RealEstateDetail", "PropertySearch", new { property.Id, title = property.DisplayForUrl }, new { Class = "p-id", target = "_blank", data_toggle = "tooltip" })
+                                                <div data-tooltip-content="" style="display: none">
+                                                    <div>
+                                                        <em>
+                                                            <strong>Đơn giá:</strong>
+                                                        </em> @property.PriceProposed @(property.PaymentMethod != null ? property.PaymentMethod.ShortName : "")  / @(property.PaymentUnit != null ? property.PaymentUnit.ShortName : "")
+                                                    </div>
+                                                    <div>
+                                                        <em>
+                                                            <strong>Tổng giá:</strong>
+                                                        </em> @Html.DisplayFor(model => property.PriceProposedInVND, "Double") Tỷ
+                                                    </div>
+                                                    <div>
+                                                        <em>
+                                                            <strong>Trạng thái:</strong>
+                                                        </em> @title[property.Status.Id]
+                                                    </div>
+                                                    @if (!string.IsNullOrEmpty(property.Note))
+                                                            {
+                                                        <div>
+                                                            <em><strong>Ghi chú:</strong></em>
+                                                            <span>@property.Note</span>
+                                                        </div>
+                                                            }
+                                                </div>
+                                                    }
+                                        </td>
+                                            }
+                                    </tr>
+                                        <tr>
+                                        @for (int j = 2; j <= groupAp.ApartmentPerFloor; j += 2)
+                                            {
+                                            <!--A131 => Tên A, Nhóm 1, tầng 3, vị trí 1-->
+                                            <!--Từng căn trong tầng-->
+                                                var property = item.Properties.FirstOrDefault(r =>
+                                                r.ApartmentBlock != null && r.ApartmentBlock.Id == item.ApartmentBlockPart.Id &&
+                                                r.GroupInApartmentBlock.Id == groupAp.Id &&
+                                                r.ApartmentFloorTh != null && r.ApartmentFloorTh == i &&
+                                                r.ApartmentPositionTh == j);
+                                                // Phải có vị trí của căn hộ: ApartmentPositionTh
+                                        <td style="background: @(property != null ? color[property.Status.Id] : "");" title="@(property != null ? title[property.Status.Id] : "")">
+
+                                            @if (property != null)
+                                                {
+                                                @Html.ActionLink(property.ApartmentNumber, "RealEstateDetail", "PropertySearch", new { property.Id, title = property.DisplayForUrl }, new { Class = "p-id", target = "_blank", data_toggle = "tooltip" })
+                                                <div data-tooltip-content="" style="display: none">
+                                                    <div>
+                                                        <em>
+                                                            <strong>Đơn giá:</strong>
+                                                        </em> @property.PriceProposed @(property.PaymentMethod != null ? property.PaymentMethod.ShortName : "")  / @(property.PaymentUnit != null ? property.PaymentUnit.ShortName : "")
+                                                    </div>
+                                                    <div>
+                                                        <em>
+                                                            <strong>Tổng giá:</strong>
+                                                        </em> @Html.DisplayFor(model => property.PriceProposedInVND, "Double") Tỷ
+                                                    </div>
+                                                    <div>
+                                                        <em>
+                                                            <strong>Trạng thái:</strong>
+                                                        </em> @title[property.Status.Id]
+                                                    </div>
+                                                    @if (!string.IsNullOrEmpty(property.Note))
+                                                            {
+                                                        <div>
+                                                            <em><strong>Ghi chú:</strong></em>
+                                                            <span>@property.Note</span>
+                                                        </div>
+                                                            }
+                                                </div>
+                                                    }
+                                        </td>
+                                            }
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    <div class="clearfix"></div>
+                }
+            </div>
+        </div>
+    </article>
+    <footer>
+    </footer>
+</article>

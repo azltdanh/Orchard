@@ -1,0 +1,13 @@
+﻿@model RealEstate.ViewModels.PropertyDisplayIndexViewModel
+
+@if (Model.Properties.Any())
+{
+    @Html.Partial("ListPropertiesHighlight", Model.Properties)
+    <div class="pull-right view-continue">
+        <a class="text-bold" href="@Url.Action(" ", "PropertySearch", new { area = "RealEstate.FrontEnd", AdsTypeCssClass = Model.Options.AdsTypeCssClass, FlagAds = "highlight" })">>> Xem thêm bđs</a>
+    </div>
+}
+else
+{
+    @Html.Partial("NoResult")
+}

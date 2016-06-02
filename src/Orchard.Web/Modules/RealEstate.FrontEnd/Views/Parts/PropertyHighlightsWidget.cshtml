@@ -1,0 +1,89 @@
+﻿@using RealEstate.ViewModels;
+@using RealEstate.Models;
+
+@{
+    List<PropertyDisplayEntry> highlightProperties = Model.HighlightProperties;
+    var adsType = "ad-selling";
+    if (Url.RequestContext.RouteData.Values["AdsTypeCssClass"] != null)
+    {
+        adsType = Url.RequestContext.RouteData.Values["AdsTypeCssClass"].ToString();
+    }
+}
+<div class="header-msg text-right scroll-properties">
+    <a rel="nofollow" class="text-success text-underline" href="@Url.Action("Create", "Home", new { AdsHighlightRequest = true })"><i class="icon_silk_layout_add"></i>Đăng tin rao</a>
+</div>
+
+<div class="block-properties-highlight">
+    <!-- Carousel -->
+    <div id="highlightPropertiesCarousel" class="carousel slide">
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner media">
+            <!-- Carousel items -->
+            @foreach (var entry in highlightProperties)
+            {
+            <div class="item@(highlightProperties.IndexOf(entry) == 0 ? " active" : "")">
+                @Html.Partial("RealEstateDetail.Compact", entry)
+            </div>
+            }
+        </div>
+    </div>
+</div>
+<div class="row-carousel">
+    <div class="col-lg-4 col-sm-4 col-md-4 col-xs-4">
+        <a href="#highlightPropertiesCarousel" data-slide="prev" title="Previous"><span class="icon_rev_resultset_first"></span></a>
+    </div>
+    <div class="col-lg-4 col-sm-4 col-md-4 col-xs-4 text-center">
+        <a class="text-success" href="@Url.Action("ResultFilter", "PropertySearch", new { AdsHighlight = true })"><i class="icon-search"></i>Xem tất cả</a>
+    </div>
+    <div class="col-lg-4  col-sm-4 col-md-4 col-xs-4 text-right">
+        <a href="#highlightPropertiesCarousel" data-slide="next" title="Next"><span class="icon_rev_resultset_last"></span></a>
+    </div>
+    <!-- Controls -->
+</div>
+<div class="clearfix"></div>
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        var skip = @highlightProperties.Count;
+        var flag_skip = true;
+
+        function loadHightLightPropertySlideShow() {
+            if (flag_skip == true) {
+                $.ajax({
+                    type: "post",
+                    url: "/ajax/RealEstate.FrontEnd/PropertySearch/AjaxGetPropertyHightLight",
+                    data: {
+                        skipcount: skip,
+                        adsTypeCssClass: '@adsType',
+                        __RequestVerificationToken: antiForgeryToken
+                    },
+                    success: function(results) {
+                        if (results != '')
+                            $("#highlightPropertiesCarousel .carousel-inner").append('<div class="item">' + results + '</div>');
+                        else {
+                            flag_skip = false;
+                            $('#highlightPropertiesCarousel').unbind('slide');
+                        }
+                    },
+                    error: function(request, status, error) {
+                        console.log(error);
+                    }
+                });
+                skip++;
+            }
+        }
+
+        $(function() {
+            if ($.fn.carousel) {
+                $('#highlightPropertiesCarousel').carousel({
+                    interval: 5000,
+                    pause: "hover"
+                }).on('slide.bs.carousel', function(e) {
+                    // preload next property
+                    loadHightLightPropertySlideShow()
+                }) //.carousel('pause');
+            }
+        });
+
+    </script>
+}

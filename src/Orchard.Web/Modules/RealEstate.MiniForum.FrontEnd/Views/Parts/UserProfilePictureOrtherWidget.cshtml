@@ -1,0 +1,30 @@
+﻿@using (Script.Foot())
+{
+    Script.Require("realEstate.MiniForum.FrontEnd");
+
+    <script>
+        $(function () {
+            var userId = $("#userId").val();
+            var userCurentId = $("#userCurentId").val();
+            GetAvatarUserSelect($("#userId").val());
+            if (userCurentId != null && userId != null && userId != '' && userId != userCurentId) {
+                CheckFriend(userId);
+            } else {
+                $('#btn-f-friend').remove();
+            }
+        });
+    </script>
+}
+<div class="text-center user-avatar">
+    <h4 class="text-primary" id="username-select"></h4>
+    <div class="img-content" id="userphoto-select"></div>
+    <h5 id="view-info-select"></h5>
+    <div id="userIdFriend" style="display:none;"></div>
+    <input type="hidden" id="friendPartId" />
+    @if (WorkContext.CurrentUser != null)
+    {
+        <div id="btn-f-friend">
+            <button class="btn btn-default"><i class="glyphicon glyphicon-user text-green"></i> ...</button>
+        </div>
+    }
+</div>

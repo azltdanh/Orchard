@@ -1,0 +1,316 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{22672503-1420-46BD-8AC5-3673A70C0405}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RealEstate.MiniForum.FrontEnd</RootNamespace>
+    <AssemblyName>RealEstate.MiniForum.FrontEnd</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>4.0</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <TargetFrameworkProfile />
+    <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Contrib.OnlineUsers">
+      <HintPath>..\Contrib.OnlineUsers\bin\Contrib.OnlineUsers.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ImageResizer">
+      <HintPath>..\..\bin\ImageResizer.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Orchard.Alias">
+      <HintPath>..\Orchard.Alias\bin\Orchard.Alias.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Orchard.Tags">
+      <HintPath>..\Orchard.Tags\bin\Orchard.Tags.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Orchard.Users">
+      <HintPath>..\Orchard.Users\bin\Orchard.Users.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="RealEstate">
+      <HintPath>..\RealEstate\bin\RealEstate.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="RealEstate.FrontEnd">
+      <HintPath>..\RealEstate.FrontEnd\bin\RealEstate.FrontEnd.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="RealEstate.NewLetter">
+      <HintPath>..\RealEstate.NewLetter\bin\RealEstate.NewLetter.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="RealEstate.UserControlPanel">
+      <HintPath>..\RealEstate.UserControlPanel\bin\RealEstate.UserControlPanel.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="RealEstateForum.Service">
+      <HintPath>..\RealEstateForum.Service\bin\RealEstateForum.Service.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.ComponentModel.DataAnnotations">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\System.Web.Mvc.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Scripts\common.forum.media.js" />
+    <Content Include="Web.config" />
+    <Content Include="Scripts\Web.config" />
+    <Content Include="Styles\Web.config" />
+    <Content Include="Module.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Orchard.Core">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Orchard.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Orchard.Framework">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Orchard.Framework.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controllers\ForumErrorController.cs" />
+    <Compile Include="Controllers\FrontEndFileCacheController.cs" />
+    <Compile Include="Controllers\ImportUpdateUserController.cs" />
+    <Compile Include="Controllers\OrchardTagsController.cs" />
+    <Compile Include="Controllers\UserUpdateProfileController.cs" />
+    <Compile Include="Controllers\PersonalPageController.cs" />
+    <Compile Include="Controllers\PostForumFrontEndController.cs" />
+    <Compile Include="Controllers\ThreadForumFrontEndController.cs" />
+    <Compile Include="Controllers\UploadController.cs" />
+    <Compile Include="Drivers\ForumByThreadWidgetPartDriver.cs" />
+    <Compile Include="Drivers\ForumFormFilterWidgetPartDriver.cs" />
+    <Compile Include="Drivers\ForumIsProjectWidgetPartDriver.cs" />
+    <Compile Include="Drivers\ForumIsPostInThreadWidgetPartDriver.cs" />
+    <Compile Include="Drivers\ForumIsNewsMainWidgetPartDriver.cs" />
+    <Compile Include="Drivers\ForumIsHeighLightWidgetPartDriver .cs" />
+    <Compile Include="Drivers\ForumIsLawHousingWidgetPartDriver.cs" />
+    <Compile Include="Drivers\ForumIsMarketWidgetPartDriver.cs" />
+    <Compile Include="Drivers\ForumIsNewestWidgetPartDriver.cs" />
+    <Compile Include="Drivers\ForumMenuOfUserWidgetPartDriver.cs" />
+    <Compile Include="Drivers\ForumPostOfUserWidgetPartDriver.cs" />
+    <Compile Include="Drivers\AgencyRealEstateDetailPartDriver.cs" />
+    <Compile Include="Drivers\UserProfileAgencyWidgetPartDriver.cs" />
+    <Compile Include="Drivers\UserProfilePictureOrtherWidgetPartDriver.cs" />
+    <Compile Include="Drivers\UserProfilePictureWidgetPartDriver.cs" />
+    <Compile Include="Drivers\UserProfileSideMenuOrtherWidgetPartDriver.cs" />
+    <Compile Include="Drivers\MediaVideoWigetPartDriver.cs" />
+    <Compile Include="Drivers\UserProfileSideMenuWidgetPartDriver.cs" />
+    <Compile Include="Migration.cs" />
+    <Compile Include="Models\ForumByThreadWidgetPart.cs" />
+    <Compile Include="Models\ForumFormFilterWidgetPart.cs" />
+    <Compile Include="Models\ForumIsProjectWidgetPart.cs" />
+    <Compile Include="Models\ForumIsPostInThreadWidgetPart.cs" />
+    <Compile Include="Models\ForumIsNewsMainWidgetPart.cs" />
+    <Compile Include="Models\ForumIsHeighLightWidgetPart.cs" />
+    <Compile Include="Models\ForumIsLawHousingWidgetPart.cs" />
+    <Compile Include="Models\ForumIsMarketWidgetPart.cs" />
+    <Compile Include="Models\ForumIsNewestWidgetPart.cs" />
+    <Compile Include="Models\ForumMenuOfUserWidgetPart.cs" />
+    <Compile Include="Models\ForumPostOfUserWidgetPart.cs" />
+    <Compile Include="Models\AgencyRealEstateDetailWidgetPart.cs" />
+    <Compile Include="Models\UserProfileAgencyWidgetPart.cs" />
+    <Compile Include="Models\UserProfilePictureOrtherWidgetPart.cs" />
+    <Compile Include="Models\UserProfileSideMenuOrtherWidgetPart.cs" />
+    <Compile Include="Models\MediaVideoWidgetPart.cs" />
+    <Compile Include="Models\UserProfileSideMenuWidgetPart.cs" />
+    <Compile Include="Models\UserProfilePictureWidgetPart.cs" />
+    <Compile Include="Permissions.cs" />
+    <Compile Include="ResourceManifest.cs" />
+    <Compile Include="Routes.cs" />
+    <Compile Include="ViewModels\PostForumFrontEndViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\PostForumFrontEnd\Create.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Scripts\common.miniforum.frontend.js" />
+    <Content Include="Views\form.attachment.partial.cshtml" />
+    <Content Include="Views\EditorTemplates\Parts\PostFrontEnd.Edit.cshtml" />
+    <Content Include="Views\DisplayTemplates\Parts\View.PostDetail.cshtml" />
+    <Content Include="Views\ListPostIsMarket.Media.cshtml" />
+    <Content Include="Placement.info" />
+    <Content Include="Views\DisplayTemplates\Parts\ForumByThreadWidget.cshtml" />
+    <Content Include="Views\EditorTemplates\Parts\ForumByThreadWidget.Edit.cshtml" />
+    <Content Include="Views\ListPost.PersonalPage.cshtml" />
+    <None Include="Properties\PublishProfiles\Deploy_test.pubxml" />
+    <None Include="Views\EditorTemplates\Parts\PostFrontEnd.Create.cshtml" />
+    <Content Include="Views\PostForumFrontEnd\Edit.cshtml" />
+    <Content Include="Views\ListPostTopics.Compact.cshtml" />
+    <Content Include="Views\ThreadForumFrontEnd\ListPostByThread.cshtml" />
+    <Content Include="Views\ForumError\ForumNotFound.cshtml" />
+    <Content Include="Views\PostForumFrontEnd\PostDetail.cshtml" />
+    <Content Include="Views\ThreadForumFrontEnd\ViewTopic.cshtml" />
+    <Content Include="Views\ListPost.Media.cshtml" />
+    <Content Include="Views\ThreadForumFrontEnd\ListPostIsMarket.cshtml" />
+    <Content Include="Views\Parts\ForumIsMarketWidget.cshtml" />
+    <Content Include="Views\Parts\ForumIsHeighLightWidget.cshtml" />
+    <Content Include="Views\Parts\ForumIsNewestWidget.cshtml" />
+    <Content Include="Views\ThreadForumFrontEnd\HomeForum.cshtml" />
+    <Content Include="Views\PostForumFrontEnd\ResultsFilter.cshtml" />
+    <Content Include="Views\DisplayTemplates\Parts\ForumFormFilterWidget.cshtml" />
+    <Content Include="Views\PostForumFrontEnd\AjaxLoadComment.cshtml" />
+    <Content Include="Views\PersonalPage\MyPage.cshtml" />
+    <Content Include="Views\PersonalPage\FriendPage.cshtml" />
+    <Content Include="Views\Parts\ForumPostOfUserWidget.cshtml" />
+    <Content Include="Views\PostForumFrontEnd\AjaxLoadForumPostOfUser.cshtml" />
+    <Content Include="Views\OrchardTags\ListPropertiesTags.cshtml" />
+    <Content Include="Views\OrchardTags\Search.cshtml" />
+    <Content Include="Views\Parts\ForumIsLawHousingWidget.cshtml" />
+    <Content Include="Views\Parts\UserProfilePictureOrtherWidget.cshtml" />
+    <Content Include="Views\Parts\UserProfilePictureWidget.cshtml" />
+    <Content Include="Views\UserUpdateProfile\EditProfile.cshtml" />
+    <Content Include="Views\UserUpdateProfile\Index.cshtml" />
+    <Content Include="Views\UserUpdateProfile\ViewProfile.cshtml" />
+    <Content Include="Views\EditorTemplates\Parts\UserUpdateProfile.Edit.cshtml" />
+    <Content Include="Views\Parts\UserProfileSideMenuWidget.cshtml" />
+    <Content Include="Views\Parts\UserProfileSideMenuOrtherWidget.cshtml" />
+    <Content Include="Views\ImportUpdateUser\ImportUpdateUser.cshtml" />
+    <Content Include="Views\Parts\UserProfileAgencyWidget.cshtml" />
+    <Content Include="Views\UserAgencies.cshtml" />
+    <Content Include="Views\Parts\AgencyRealEstateDetailWidget.cshtml" />
+    <Content Include="Views\AgencyRealEstateDetail.cshtml" />
+    <Content Include="Views\UserUpdateProfile\ListUserAgencies.cshtml" />
+    <Content Include="Views\ForumError\RedirectFromExternalLink.cshtml" />
+    <Content Include="Views\Parts\ForumMenuOfUserWidget.cshtml" />
+    <Content Include="Views\PostForumFrontEnd\AjaxLoadForumMenuOfUser.cshtml" />
+    <Content Include="Views\PersonalPage\MyMessage.cshtml" />
+    <Content Include="Views\PostForumFrontEnd\AjaxLoadForumMenuOfFriend.cshtml" />
+    <Content Include="Views\PersonalPage\MyListFriend.cshtml" />
+    <Content Include="Views\PersonalPage\AjaxGetListFriend.cshtml" />
+    <Content Include="Views\PersonalPage\MyListRequestFriend.cshtml" />
+    <Content Include="Views\PersonalPage\AjaxGetListRequestFriend.cshtml" />
+    <Content Include="Views\PersonalPage\AjaxCheckFriend.cshtml" />
+    <Content Include="Views\PersonalPage\Partial.SendMessage.cshtml" />
+    <Content Include="Views\PersonalPage\YourListFriend.cshtml" />
+    <Content Include="Views\Parts\ForumIsNewsMainWidget.cshtml" />
+    <Content Include="Views\ThreadForumFrontEnd\ThreadContentFileCache.cshtml" />
+    <Content Include="Views\PostForumFrontEnd\PostDetailContentFileCache.cshtml" />
+    <Content Include="Views\PostForumFrontEnd\AjaxPostsHighlight.cshtml" />
+    <Content Include="Views\PostForumFrontEnd\AjaxPostIsLawHousing.cshtml" />
+    <Content Include="Views\PostForumFrontEnd\AjaxPostIsMarket.cshtml" />
+    <Content Include="Views\UserUpdateProfile\AjaxGetUserAgencies.cshtml" />
+    <Content Include="Views\PostForumFrontEnd\AjaxPostInThread.cshtml" />
+    <Content Include="Views\PostForumFrontEnd\AjaxAllPostInThread.cshtml" />
+    <Content Include="Views\ThreadForumFrontEnd\ListPostNews.cshtml" />
+    <Content Include="Views\Parts\ForumIsPostInThreadWidget.cshtml" />
+    <Content Include="Views\ThreadForumFrontEnd\ListPostIsHighlight.cshtml" />
+    <Content Include="Views\ListPostIsHighlight.Media.cshtml" />
+    <Content Include="Views\Parts\MediaVideoWidget.cshtml" />
+    <Content Include="Views\PostForumFrontEnd\VideoDetail.cshtml" />
+    <Content Include="Views\PostForumFrontEnd\ListVideo.cshtml" />
+    <Content Include="Views\PostForumFrontEnd\AjaxPostsIsProject.cshtml" />
+    <Content Include="Views\Parts\ForumIsProjectWidget.cshtml" />
+    <Content Include="Views\UserUpdateProfile\AjaxUnitInvest.cshtml" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target> -->
+  <Target Name="AfterBuild" DependsOnTargets="AfterBuildCompiler">
+    <PropertyGroup>
+      <AreasManifestDir>$(ProjectDir)\..\Manifests</AreasManifestDir>
+    </PropertyGroup>
+    <!-- If this is an area child project, uncomment the following line:
+    <CreateAreaManifest AreaName="$(AssemblyName)" AreaType="Child" AreaPath="$(ProjectDir)" ManifestPath="$(AreasManifestDir)" ContentFiles="@(Content)" />
+    -->
+    <!-- If this is an area parent project, uncomment the following lines:
+    <CreateAreaManifest AreaName="$(AssemblyName)" AreaType="Parent" AreaPath="$(ProjectDir)" ManifestPath="$(AreasManifestDir)" ContentFiles="@(Content)" />
+    <CopyAreaManifests ManifestPath="$(AreasManifestDir)" CrossCopy="false" RenameViews="true" />
+    -->
+  </Target>
+  <Target Name="AfterBuildCompiler" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(ProjectDir)\..\$(ProjectName)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>45979</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>
+          </IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://orchard.codeplex.com</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

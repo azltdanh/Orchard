@@ -1,0 +1,5 @@
+﻿@model dynamic
+@if (Model != null)
+{
+    @Html.Raw(string.Format("{0:#,0.### Tỷ;N/A;N/A}", Model))
+}

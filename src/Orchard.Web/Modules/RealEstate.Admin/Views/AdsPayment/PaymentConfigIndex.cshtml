@@ -1,0 +1,52 @@
+﻿@model RealEstate.ViewModels.AdsPaymentConfigIndexViewModel
+
+@{
+    Script.Require("Common");
+    Layout.Title = T("Quản lý config các loại tin VIP").ToString();
+}
+<div class="left">
+    @Html.ActionLink("Add Ads Config", "PaymentConfigCreate", "AdsPayment", new { area = "RealEstate.Admin" }, new { @class = "button" })
+</div>
+    <fieldset>
+        <table class="items fixed-table float-header">
+            <thead>
+                <tr>
+                    <th scope="col" class="w58">@T("Id")</th>
+                    <th scope="col" class="w130">@("Tên")</th>
+                    <th scope="col" class="w130">@T("CssClass")</th>
+                    <th scope="col" class="w130">@T("Description")</th>
+                    <th scope="col" class="w130">@T("Giá trị")</th>
+                    <th scope="col" class="w130">@T("IsEnable")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.AdsPaymentConfigs)
+            {
+                var item = entry.AdsPaymentConfig;
+                <tr>
+                    <td>
+                        @item.Id
+                    </td>
+                    <td>
+                        @Html.ActionLink(item.Name, "PaymentConfigEdit", new { item.Id})
+                    </td>
+                    <td>
+                        @item.CssClass
+                    </td>
+                    <td>
+                        @item.Description
+                    </td>
+                    <td>
+                        @item.Value
+                    </td>
+                    <td>
+                        @item.IsEnabled
+                    </td>
+                </tr>
+                index++;
+            }
+        </table>
+
+        @Display(Model.Pager)
+
+    </fieldset>

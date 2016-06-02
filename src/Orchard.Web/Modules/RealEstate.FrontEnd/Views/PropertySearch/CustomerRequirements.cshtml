@@ -1,0 +1,20 @@
+﻿@model List<RealEstate.ViewModels.CustomerRequirementEntry>
+@using RealEstate.Models;
+    
+@{
+    var groupIds = Model.Select(a => a.Requirement.GroupId).Distinct().ToList();
+}
+
+<table id="tblRequirements" class="items fixed-table">
+    <tbody>
+@foreach (int groupId in groupIds)
+{
+    IEnumerable<CustomerRequirementRecord> requirements = Model.Where(a => a.Requirement.GroupId == groupId).Select(a => a.Requirement).ToList();
+    <tr>
+        <td>
+            @Html.Partial("ViewCustomerRequirements", requirements)
+        </td>
+    </tr>
+}
+    </tbody>
+</table>

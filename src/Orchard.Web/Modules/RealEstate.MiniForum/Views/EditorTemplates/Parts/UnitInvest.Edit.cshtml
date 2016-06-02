@@ -1,0 +1,41 @@
+﻿@model RealEstateForum.Service.ViewModels.UnitInvestEditViewModel
+
+<fieldset>
+    @Html.LabelFor(m => m.Name, T("Tên đơn vị tài trợ"))
+    @Html.TextBoxFor(m => m.Name, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.Name, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.Website, T("Website của đơn vị tài trợ"))
+    @Html.TextBoxFor(m => m.Website, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.Website, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.Content, T("Thông tin mô tả"))
+    @Html.TextAreaFor(m => m.Content, new { })
+    @Html.ValidationMessageFor(m => m.Content, "*")
+</fieldset>
+
+<fieldset>
+    @Html.EditorFor(r => r.IsEnabled, new { @class = "textMedium" })
+    <label for="IsEnabled"> Ẩn / Hiện</label>
+</fieldset>
+
+<fieldset>
+    @Html.LabelFor(m => m.Avatar, T("Cần chọn ảnh đại diện cho đơn vị tài trợ"))
+    <input type="file" name="AvatarUnitInvest" id="AvatarUnitInvest" />
+</fieldset>
+
+@if (!string.IsNullOrEmpty(Model.Avatar))
+{
+    <fieldset>
+        <img src="@Model.Avatar" style="width:50px; border: 1px solid #ccc; border-radius: 5px;" alt="Đơn vị tài trợ" />
+    </fieldset>
+}
+
+<fieldset>
+    @Html.LabelFor(m => m.SeqOrder, T("Vị trí sắp xếp"))
+    @Html.TextBoxFor(m => m.SeqOrder, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.SeqOrder, "*")
+</fieldset>
+

@@ -1,0 +1,8 @@
+﻿<Placement>
+  <Place Parts_UserControlNavigationWidget="Content:0" />
+  <Place Parts_UserControlPanelWidget="Content:1" />
+  <Place Parts_UserControlWishListWidget="Content:2" />
+  <Place Parts_UserControlMailBoxWidget="Content:3" />
+  <Place Parts_EditProfileInfomation_Edit="Content:1"/>
+  <Place Parts_EditProfileInfomation="Content:1"/>
+</Placement>

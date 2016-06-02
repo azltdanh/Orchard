@@ -1,0 +1,197 @@
+﻿@model RealEstate.ViewModels.PropertyCreateViewModel
+@using RealEstate.ViewModels;
+
+<!-- Địa chỉ -->
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-center header-bg-green">
+                <div class="header-left header-bg-green">
+                    <div class="header-left-triangle"></div>
+                </div>
+                <h1>Địa chỉ</h1>
+                <div class="header-right"></div>
+            </div>
+            <div class="header-msg">
+                <p class="text-success">Các mục có dấu (<span class="text-error">*</span>) là bắt buộc nhập</p>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="form-horizontal pull-left">
+
+            <!-- Province -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Tỉnh / Thành Phố:")</label>
+                <div class="controls">
+                    @Html.DropDownListFor(m => m.ProvinceId, Model.Provinces, "-- Vui lòng chọn --", new { Class = "combobox" })
+                    @Html.ValidationMessageFor(m => m.ProvinceId, "*")
+                </div>
+            </div>
+
+            <!-- District -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Quận / Huyện:")</label>
+                <div class="controls">
+                    @Html.DropDownListFor(m => m.DistrictId,
+                    Model.Districts.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.DistrictId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }), "-- Vui lòng chọn --", new { Class = "combobox" })
+                    @Html.ValidationMessageFor(m => m.DistrictId, "*")
+                </div>
+            </div>
+
+            <!-- gp-apartment -->
+            @if (Model.TypeGroupCssClass == "gp-apartment")
+            {
+                <!-- Apartment -->
+                <div class="control-group">
+                    <label class="control-label">@T("Tên dự án / chung cư:")</label>
+                    <div class="controls">
+                        @Html.DropDownListFor(m => m.ApartmentId,
+                        Model.Apartments.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.ApartmentId,
+                            Text = s.Name,
+                            Value = s.Id.ToString()
+                        }), "-- Vui lòng chọn --", new { Class = "combobox" })
+                        @Html.TextBoxFor(m => m.OtherProjectName, new { maxlength = 250, Class = "text text-box", style = "display:none;" })
+                        @Html.ValidationMessageFor(m => m.ApartmentId, "*")
+                        @Html.ValidationMessageFor(m => m.OtherProjectName, "*")
+
+                        <label>@Html.CheckBoxFor(m => m.ChkOtherProjectName, new { tabindex = "-1" }) @T("Khác")</label>
+                    </div>
+                </div>
+
+                <!-- Apartment Block-->
+                <div class="control-group">
+                    <label class="control-label">@T("Block dự án / chung cư:")</label>
+                    <div class="controls">
+                        @Html.DropDownListFor(m => m.ApartmentBlockId,
+                        Model.ApartmentBlocks.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.ApartmentBlockId,
+                            Text = s.BlockName,
+                            Value = s.Id.ToString()
+                        }), "-- Vui lòng chọn --", new { Class = "combobox" })
+                        @Html.ValidationMessageFor(m => m.ApartmentBlockId, "*")
+                        @Html.Hidden("oldApartmentBlockId", Model.ApartmentBlockId)
+                    </div>
+                </div>
+            }
+
+            <!-- Ward -->
+            <div class="control-group">
+                <label class="control-label">
+                    @if (Model.TypeGroupCssClass == "gp-house")
+                    {
+                        <span class="text-error">*</span>
+                    }
+                    @T("Phường / Xã:")
+                </label>
+                <div class="controls">
+                    @Html.DropDownListFor(m => m.WardId,
+                    Model.Wards.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.WardId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }), "-- Vui lòng chọn --", new { Class = "combobox" })
+                    @Html.ValidationMessageFor(m => m.WardId, "*")
+
+                    @Html.TextBoxFor(m => m.OtherWardName, new { maxlength = 250, Class = "text text-box", style = "display:none;" })
+                    @Html.ValidationMessageFor(m => m.OtherWardName, "*")
+
+                    <label>@Html.CheckBoxFor(m => m.ChkOtherWardName, new { tabindex = "-1" }) @T("Khác")</label>
+                </div>
+            </div>
+
+            <!-- Street -->
+            <div class="control-group">
+                <label class="control-label">
+                    @if (Model.TypeGroupCssClass == "gp-house")
+                    {
+                        <span class="text-error">*</span>
+                    }
+                    @T("Đường / Phố:")
+                </label>
+                <div class="controls">
+                    @Html.DropDownListFor(m => m.StreetId,
+                    Model.Streets.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.StreetId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }), "-- Vui lòng chọn --", new { Class = "combobox" })
+                    @Html.ValidationMessageFor(m => m.StreetId, "*")
+
+                    @Html.TextBoxFor(m => m.OtherStreetName, new { maxlength = 250, Class = "text text-box", style = "display:none;" })
+                    @Html.ValidationMessageFor(m => m.OtherStreetName, "*")
+
+                    <label>@Html.CheckBoxFor(m => m.ChkOtherStreetName, new { tabindex = "-1" }) @T("Khác")</label>
+                </div>
+            </div>
+
+            <!-- AddressNumber -->
+            <div class="control-group">
+                <label class="control-label">
+                    @if (Model.TypeGroupCssClass == "gp-apartment")
+                    {
+                        @T("Số nhà / Địa chỉ chung cư:")
+                    }
+                    else
+                    {
+                        @T("Số nhà / Số lô:")
+                    }
+                    <a href="#colorbox_addresscorner" tabindex="-1" title="Click để xem hướng dẫn" class="inline-addresscorner"><i class="icon-help ui-icon"></i></a>
+                </label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.AddressNumber, new { maxlength = 250, Class = "text text-box" })
+                    @Html.ValidationMessageFor(m => m.AddressNumber, "*")
+
+                    @if (Model.TypeGroupCssClass != "gp-apartment")
+                    {
+                        <label>@Html.CheckBoxFor(m => m.PublishAddress, new { tabindex = "-1" }) @T("Cho phép hiện địa chỉ")</label>
+                    }
+                </div>
+            </div>
+
+            <!-- gp-house -->
+            @if (Model.TypeGroupCssClass == "gp-house")
+            {
+                <!-- AddressCorner -->
+                <div class="control-group" style="display:none;">
+                    <label class="control-label">
+                        @T("Ngõ / Ngách:")
+                        <a href="#colorbox_addresscorner" title="Click để xem hướng dẫn" class="inline-addresscorner"><i class="icon-help ui-icon"></i></a>
+                    </label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.AddressCorner, new { maxlength = 250, Class = "text text-box" })
+                        @Html.ValidationMessageFor(m => m.AddressCorner, "*")
+                    </div>
+                </div>
+            }
+
+            <!-- gp-apartment -->
+            @if (Model.TypeGroupCssClass == "gp-apartment")
+            {
+                <!-- ApartmentNumber -->
+                <div class="control-group">
+                    <label class="control-label">@T("Mã số căn hộ:")</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.ApartmentNumber, new { maxlength = 250, Class = "text text-box" })
+                        @Html.ValidationMessageFor(m => m.ApartmentNumber, "*")
+
+                        <label>@Html.CheckBoxFor(m => m.PublishAddress, new { tabindex = "-1" }) @T("Cho phép hiện địa chỉ")</label>
+                    </div>
+                </div>
+            }
+
+        </div>
+        <div class="clearfix"></div>
+    </article>
+    <footer></footer>
+</article>

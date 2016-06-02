@@ -1,0 +1,45 @@
+﻿@using RealEstateForum.Service.ViewModels
+@using RealEstate.Helpers
+@model UserFriendIndexViewModel
+
+
+@if (Model.ListUser.Count > 0) { 
+<div class="row list-friend">
+    <div class="col-md-12">
+        @foreach (var item in Model.ListUser)
+        {
+            string urlpage = WorkContext.CurrentUser != null && WorkContext.CurrentUser.Id != item.Id ?
+                Url.Action("FriendPage", "PersonalPage", new { area = "RealEstate.MiniForum.FrontEnd", UserId = item.Id, UserName = item.UserName.ToSlug() }) :
+                Url.Action("MyPage", "PersonalPage", new { area = "RealEstate.MiniForum.FrontEnd" });
+            <div class="text-center f-item">
+                <img class="img" src="@(item.Avatar)?w=120&h=90" />
+                <div class="user-friend-info">
+                    <div class="block-ellipsis"><a class="text-bold" href="@urlpage" title="Đến trang cá nhân của @item.DisplayName"> @item.DisplayName</a></div>
+                    @if (WorkContext.CurrentUser != null && WorkContext.CurrentUser.Id != item.Id)
+                    {
+                        <div class="block-ellipsis"><a class="text-bold" href="javascript:;" onclick="PartialSendMessage(@item.Id,'@item.UserName')"><i class="icon_silk_comment"></i> Gửi tin nhắn</a></div>
+                    }
+                    @if (item.CheckFriend == 1)
+                    {<button class="btn btn-default" disabled="disabled"><i class="glyphicon glyphicon-user text-green"></i> Bạn bè</button>}
+                    else if (item.CheckFriend == 2)
+                    { <button class="btn btn-default" disabled="disabled"><i class="glyphicon glyphicon-user text-green"></i> Đã gửi yêu cầu</button>}
+                    else if (item.CheckFriend == 3)
+                    { <a class="btn btn-default btn-acceptfriend" onclick="AjaxAcceptFriend(this)" data-userselect="@item.Id"><i class="glyphicon glyphicon-user text-green"></i> Đồng ý kết bạn</a>}
+                    else if (item.CheckFriend == 4)
+                    { <a class="btn btn-default btn-addfriend" onclick="AjaxAddFriend(this)" data-userselect="@item.Id"><i class="glyphicon glyphicon-user text-green"></i> Kết bạn</a>}
+                </div>
+            </div>
+        }
+        <div class="clearfix"></div>
+    </div>
+</div>
+    <div class="row">
+        <div class="col-md-12 text-center">@Display(Model.Pager)</div>
+    </div>
+    
+    @Html.Partial("Partial.SendMessage")
+}
+else
+{
+    <strong>Chưa có bạn nào!</strong>
+}

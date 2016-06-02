@@ -1,0 +1,236 @@
+﻿@using RealEstate.FrontEnd.ViewModels;
+@{
+
+    AliasesMetaCreatedOptions model = Model;
+    Script.Require("BootstrapMultiselect");
+    
+}
+
+@using (Html.BeginFormAntiForgeryPost(Url.Action("AliasCollectionCreate", "AliasesMeta", new { area = "RealEstate.FrontEnd" }), FormMethod.Post, new { Class = "formvalidate", id = "frmFilter" }))
+{   
+    <div class="form-horizontal-filter">
+        <div id="formFilter">
+            <!-- AdsType -->
+            <div class="form-group">
+                @Html.DropDownListFor(m => model.AdsTypeCssClass,
+            model.AdsTypes.Select(s => new SelectListItem
+            {
+                Selected = s.CssClass == model.AdsTypeCssClass,
+                Text = s.Name,
+                Value = s.CssClass
+            }), new { Class = "form-control" })
+            </div>
+
+            <!-- TypeGroup -->
+            <div class="form-group">
+                @Html.DropDownListFor(m => model.TypeGroupCssClass,
+            model.TypeGroups.Select(s => new SelectListItem
+            {
+                Selected = s.CssClass == model.TypeGroupCssClass,
+                Text = s.Name,
+                Value = s.CssClass
+            }), T("Chọn tất cả loại BĐS").ToString(), new { Class = "form-control" })
+            </div>
+            <hr />
+            <!-- PropertyDisplayStatus -->
+            <div class="form-group">                
+                <div class="col-lg-12">
+                    @Html.CheckBoxFor(m => model.AdsGoodDeal)
+                    @Html.LabelFor(m => model.AdsGoodDeal, T("Tìm BĐS giá rẻ"))
+                </div>
+                <div class="col-lg-12">
+                    @Html.CheckBoxFor(m => model.AdsVIP)
+                    @Html.LabelFor(m => model.AdsVIP, T("Tìm BĐS giao dich gấp"))
+                </div>
+                <div class="col-lg-12">
+                    @Html.CheckBoxFor(m => model.IsOwner)
+                    @Html.LabelFor(m => model.IsOwner, T("Tìm BĐS chính chủ"))
+                </div>
+                <div class="col-lg-12">
+                    @Html.CheckBoxFor(m => model.IsAuction)
+                    @Html.LabelFor(m => model.IsAuction, T("Tìm BĐS phát mãi"))
+                </div>
+            </div>
+            <hr />
+            <div class="form-group" title="Chọn để tạo alias và meta cho từng quận huyện.">
+                @Html.CheckBoxFor(m => model.IsCheckProvince)
+                @Html.LabelFor(m => model.IsCheckProvince, T("Chọn tỉnh/Thành phố"))
+            </div>
+            <div class="form-group group-province" style="display: none;">
+                @Html.ListBoxFor(m => model.ProvinceIds,
+                        new MultiSelectList(model.Provinces.Select(a => new { a.Name, a.Id }).ToList(), "Id", "Name", model.Provinces)
+                        , new { Class = "select-box multiselect" })
+            </div>
+            <hr class="dashed" />
+            <div class="form-group">
+                @Html.CheckBoxFor(m => model.IsCheckUpdateMeta, new { })
+                @Html.LabelFor(m => model.IsCheckUpdateMeta, T("Tự động cập nhật meta, title"))
+            </div>
+
+            <div class="overwrite-meta">
+                <hr />
+                <div class="form-group">
+                    @Html.CheckBoxFor(m => model.IsCheckUpdateTitle, new { })
+                    @Html.LabelFor(m => model.IsCheckUpdateTitle, T("Cập nhật tile"))
+                    <div class="overwrite-title">
+                        <label for="MetaTitle">"Từ: <strong>{TaiQuanHuyen} - {TaiTinhThanh}</strong> => chọn quận/huyện - Tỉnh thành. Từ: <strong>{LoaiGiaoDich}</strong> => Loại giao dịch(giá rẻ,giao dịch gấp,...)"</label>
+                        <textarea name="MetaTitle" id="MetaTitle" placeholder="VD: Nhà đất bán tại {TaiQuanHuyen} - {TaiTinhThanh} . . . Nhà này {LoaiGiaoDich} . . . "></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.CheckBoxFor(m => model.IsCheckUpdateMetaKeyword, new { })
+                    @Html.LabelFor(m => model.IsCheckUpdateMetaKeyword, T("Cập nhật Meta keyword"))
+                    <div class="overwrite-keyword">
+                        <label for="MetaKeyword">"Từ: <strong>{TaiQuanHuyen} - {TaiTinhThanh}</strong> => chọn quận/huyện - Tỉnh thành. Từ: <strong>{LoaiGiaoDich}</strong> => Loại giao dịch(giá rẻ,giao dịch gấp,...)"</label>
+                        <textarea name="MetaKeyword" id="MetaKeyword" placeholder="VD: Nhà đất bán tại {TaiQuanHuyen} - {TaiTinhThanh} . . . Nhà này {LoaiGiaoDich} . . . "></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.CheckBoxFor(m => model.IsCheckUpdateMetaDescription, new { })
+                    @Html.LabelFor(m => model.IsCheckUpdateMetaDescription, T("Cập nhật Meta Description"))
+                    <div class="overwrite-description">
+                        <label for="MetaDescription">"Từ: <strong>{TaiQuanHuyen} - {TaiTinhThanh}</strong> => chọn quận/huyện - Tỉnh thành. Từ: <strong>{LoaiGiaoDich}</strong> => Loại giao dịch(giá rẻ,giao dịch gấp,...)" </label>
+                        <textarea name="MetaDescription" id="MetaDescription" placeholder="VD: Nhà đất bán tại {TaiQuanHuyen} - {TaiTinhThanh} . . . Nhà này {LoaiGiaoDich} . . . "></textarea>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <!-- Button -->
+            <div class="form-group form-inline">
+                <button type="submit" class="btn btn-warning" id="btSearch"><i class="glyphicon glyphicon-search"></i>Continue</button>
+            </div>
+        </div>
+        <div class="spacer"></div>
+    </div>
+}
+<style>
+    .form-group
+    {
+        margin: 5px;
+    }
+
+    .form-group label
+    {
+        display: inline-block;
+    }
+
+    hr.dashed
+    {
+        border: 1px dashed #ccc;
+    }
+
+    .overwrite-title, .overwrite-keyword, .overwrite-description
+    {
+        display: none;
+    }
+</style>
+@using (Script.Foot())
+{
+    <script>
+        $(function() {
+            if ($('#IsCheckProvince').is(":checked"))
+                $('.group-province').show();
+            else
+                $('.group-province').hide();
+
+            if ($('#IsCheckUpdateMeta').is(":checked"))
+                $('.overwrite-meta').hide();
+            else
+                $('.overwrite-meta').show();
+
+            if ($('#IsCheckUpdateTitle').is(":checked"))
+                $('.overwrite-title').show();
+            else
+                $('.overwrite-title').hide();
+
+            if ($('#IsCheckUpdateMetaKeyword').is(":checked"))
+                $('.overwrite-keyword').show();
+            else
+                $('.overwrite-keyword').hide();
+
+            if ($('#IsCheckUpdateMetaDescription').is(":checked"))
+                $('.overwrite-description').show();
+            else
+                $('.overwrite-description').hide();
+
+            //.is(':checked')
+            $('#IsCheckProvince').change(function() {
+                if ($(this).is(':checked'))
+                    $('.group-province').show();
+                else
+                    $('.group-province').hide();
+            });
+            $('#IsCheckUpdateMeta').change(function() {
+                if ($(this).is(':checked'))
+                    $('.overwrite-meta').hide();
+                else
+                    $('.overwrite-meta').show();
+            });
+            $('#IsCheckUpdateTitle').change(function() {
+                if ($(this).is(':checked'))
+                    $('.overwrite-title').show();
+                else
+                    $('.overwrite-title').hide();
+            });
+            $('#IsCheckUpdateMetaKeyword').change(function() {
+                if ($(this).is(':checked'))
+                    $('.overwrite-keyword').show();
+                else
+                    $('.overwrite-keyword').hide();
+            });
+            $('#IsCheckUpdateMetaDescription').change(function() {
+                if ($(this).is(':checked'))
+                    $('.overwrite-description').show();
+                else
+                    $('.overwrite-description').hide();
+            });
+        });
+    </script>
+}
+<!-- Replace-->
+@using (Html.BeginFormAntiForgeryPost(Url.Action("ReplaceRouteByCharacter", "AliasesMeta", new { area = "RealEstate.FrontEnd" }), FormMethod.Post, new { Class = "formvalidate", id = "frmFilter" }))
+{
+    <div class="form-horizontal-filter" style="display:block;">
+        <div id="formReplace">
+            <hr />
+            <div class="form-group">
+                <div class="col-lg-12">
+                    <label class="control-label">Từ cần thay thế</label>
+                    <input type="text" name="WordReplace" class="control-group" />
+                </div>
+                <div class="col-lg-12">
+                    <label class="control-label">Từ thay thế</label>
+                    <input type="text" name="WordByReplace" class="control-group" />
+                </div>
+
+            </div>
+            <hr />
+            <!-- Button -->
+            <div class="form-group form-inline">
+                <button type="submit" class="btn btn-warning" id="btnReplace"><i class="glyphicon glyphicon-search"></i>Continue</button>
+            </div>
+        </div>
+        <div class="spacer"></div>
+    </div>
+}
+<!-- Replace-->
+@using (Html.BeginFormAntiForgeryPost(Url.Action("RemoveAliasByAliasPath", "AliasesMeta", new { area = "RealEstate.FrontEnd" }), FormMethod.Post, new { Class = "formvalidate", id = "frmFilter" }))
+{
+    <div class="form-horizontal-filter">
+        <div id="formRemoveAliasPath">
+            <hr />
+            <div class="form-group">
+                <div class="col-lg-12">
+                    <label class="control-label">Từ cần xóa</label>
+                    <input type="text" name="PathRemove" class="control-group" />
+                </div>
+            </div>
+            <hr />
+            <!-- Button -->
+            <div class="form-group form-inline">
+                <button type="submit" class="btn btn-warning" id="btnRemove"><i class="glyphicon glyphicon-search"></i>Continue</button>
+            </div>
+        </div>
+        <div class="spacer"></div>
+    </div>
+}

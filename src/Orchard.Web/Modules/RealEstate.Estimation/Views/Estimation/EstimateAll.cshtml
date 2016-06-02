@@ -1,0 +1,37 @@
+﻿@model RealEstate.Estimation.ViewModels.EstimateViewModel
+@{
+    Layout.Title = T("EstimateAll").ToString();
+    Script.Require("jQuery").AtHead();
+}
+
+<script type="text/javascript">
+    
+    var settimmer = 0;
+
+    $(function () {
+
+        // Messages Toggle
+        if ($('#messages .zone-messages').height() > 45) {
+            $('#messages').append('<div class="messages-toggle icon-expand"></div>')
+            $('#messages .messages-toggle').click(function () {
+                $(this).toggleClass('icon-collapse');
+                $('#messages').toggleClass('expand');
+            })
+        }
+
+        // Countdown to refresh
+        window.setInterval(function () {
+            var timeCounter = $("b[id=show-time]").html();
+            var updateTime = eval(timeCounter) - eval(1);
+            $("b[id=show-time]").html(updateTime);
+
+            if (updateTime == 0) {
+                window.location = '@Html.Raw(Model.ReturnUrl)';
+                $('#my-timer').html('Page is redirecting...');
+            }
+        }, 1000);
+    });
+
+</script>
+
+<p id="my-timer" style="text-align:center;">Page will redirect with in <b id="show-time">5</b> seconds</p>

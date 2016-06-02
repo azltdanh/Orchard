@@ -1,0 +1,74 @@
+﻿@model RealEstate.ViewModels.AdsPaymentOptions
+@using RealEstate.ViewModels
+
+@{
+    Script.Require("jQueryUI_DatePicker");
+    Script.Require("BootstrapCombobox");
+}
+    
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Get))
+{      
+    @Html.ValidationSummary()
+
+    <fieldset>
+        <!-- Tìm kiếm cơ bản -->
+        <table class="filter-table">
+            <tbody>
+                <tr>
+                    <td class="filter-label">Loại tin VIP</td>
+                    <td class="filter-label">Người giao dịch</td>
+                    <td class="filter-label">Từ ngày</td>
+                    <td class="filter-label">Đến ngày</td>
+                    <td class="filter-label">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.DropDownListFor(m => m.TypeVipCssClass,
+                        Model.ListAdsPaymentConfig.Select(s => new SelectListItem
+                        {
+                            Selected = s.CssClass == Model.TypeVipCssClass,
+                            Text = s.Name,
+                            Value = s.CssClass.ToString()
+                        }), T("-- Tất cả --").ToString())
+                    </td>
+                    <td>
+                        @*@Html.DropDownListFor(m => m.UserId,
+                        Model.ListUsers.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.UserId,
+                            Text = s.UserName,
+                            Value = s.Id.ToString()
+                        }), T("-- Tất cả --").ToString(), new { @class = "combobox" })*@
+                        @Html.TextBoxFor(m => m.UserName, new { @class = "text text-box", placeholder="Username hoặc Email" })
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(m => m.StartDateTrading, new { @class = "text text-box date-box" })
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(m => m.EndDateTrading, new { @class = "text text-box date-box" })
+                    </td>
+                    <td>
+                        <label>
+                            @Html.CheckBoxFor(m => m.IsInternal) @T("Tin VIP nội bộ")
+                        </label>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+    </fieldset>
+    <fieldset class="bulk-actions left">
+        <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Tìm kiếm")</button>        
+    </fieldset>
+    <div class="btn-group right">
+        <a class="btn button primaryAction dropdown-toggle" data-toggle="dropdown" href="#">
+            Thêm giao dịch
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li>@Html.ActionLink("Nạp tiền từ admin", "AddPayment", "AdsPayment", new { area = "RealEstate.Admin", PaymentCssClass = "ins-admin-money" }, new { })</li>
+            <li>@Html.ActionLink("Khuyến mãi", "AddPayment", "AdsPayment", new { area = "RealEstate.Admin", PaymentCssClass = "ins-promotion-money" }, new { })</li>
+            <li>@Html.ActionLink("Trừ tiền giao dịch", "AddPayment", "AdsPayment", new { area = "RealEstate.Admin", PaymentCssClass = "ex-deduction-money" }, new { })</li>
+        </ul>
+    </div>
+}

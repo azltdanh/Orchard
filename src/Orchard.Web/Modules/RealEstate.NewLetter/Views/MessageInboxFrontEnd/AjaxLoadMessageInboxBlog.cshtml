@@ -1,0 +1,59 @@
+﻿@using RealEstate.NewLetter.ViewModels
+@model MessageInboxIndexViewModel
+
+@{var hostName = WorkContext.HttpContext.Request.Url.Host;}
+
+<article class="message-content">
+    <div class="table-responsive">
+        @if (Model.TotalCount > 0)
+        {
+            <table class="table table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <td class="thc-3">Gửi từ</td>
+                        <td>Nội dung</td>
+                        <td class="thc-2">Ngày gửi</td>
+                        <td class="thc-1">-</td>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in Model.ListMessage)
+                    {
+                        var entry = item.MessagePart;
+                        int? Id = entry.ParentId != null ? entry.ParentId : entry.Id;
+                        string _read = !entry.IsRead ? "read" : "";
+                        <tr class="@_read message-row">
+                            @if (entry.IsAdmin)
+                            {
+                                <td>
+                                    <a target="_blank" href="@Url.Action("ViewMessage", "MessageInboxFrontEnd", new { area = "RealEstate.NewLetter", id = Id })">@(entry.IsAdmin ? hostName : entry.UserSend.UserName)<strong>@(item.ReplyCount > 0 ? " (" + item.ReplyCount + ")" : "")</strong></a>
+                                </td>
+                                <td><a target="_blank" href="@Url.Action("ViewMessage", "MessageInboxFrontEnd", new { area = "RealEstate.NewLetter", id = Id })">@(entry.Content.Length > 100 ? entry.Content.Substring(0, 100) + " ..." : entry.Content)</a></td>
+                                <td class="size-11">@String.Format("{0:g}", entry.DateSend)</td>
+                                <td><a onclick="AjaxDeleteMessage(@entry.Id,this)" href="javascript:;" title="Xóa tin nhắn này"><i class="icon_silk_delete"></i></a></td>
+                            }
+                            else
+                            {
+                                <td>
+                                    <a href="@Url.Action("ViewMessageUser", "MessageInboxFrontEnd", new { area = "RealEstate.NewLetter", id = Id })">@(entry.UserSend.UserName)<strong>@(item.ReplyCount > 0 ? " (" + item.ReplyCount + ")" : "")</strong></a>
+                                </td>
+                                <td><a href="@Url.Action("ViewMessageUser", "MessageInboxFrontEnd", new { area = "RealEstate.NewLetter", id = Id })">@(entry.Content.Length > 100 ? entry.Content.Substring(0, 100) + " ..." : entry.Content)</a></td>
+                                <td class="size-11">@String.Format("{0:g}", entry.DateSend)</td>
+                                <td><a onclick="AjaxDeleteMessageUser(@entry.Id,this)" href="javascript:;" title="Xóa tin nhắn này"><i class="icon_silk_delete"></i></a></td>
+                            }
+                        </tr>
+
+                    }
+                </tbody>
+
+
+
+            </table>
+        }
+        else
+        {
+            <div>Bạn chưa có tin nhắn nào!</div>
+        }
+    </div>
+</article>

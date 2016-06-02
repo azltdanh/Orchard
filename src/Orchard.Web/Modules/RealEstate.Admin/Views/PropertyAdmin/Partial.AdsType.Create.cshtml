@@ -1,0 +1,196 @@
+﻿@model RealEstate.ViewModels.PropertyCreateViewModel
+@using RealEstate.ViewModels;
+
+<!-- Loại hình BĐS -->
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-center header-bg-green">
+                <div class="header-left header-bg-green">
+                    <div class="header-left-triangle"></div>
+                </div>
+                <h1>Loại hình BĐS</h1>
+                <div class="header-right"></div>
+            </div>
+            <div class="header-msg">
+                <p class="text-success">Các mục có dấu (<span class="text-error">*</span>) là bắt buộc nhập</p>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="form-horizontal pull-left">
+            <!-- AdsType -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Loại giao dịch:")</label>
+                <div class="controls">
+                    @{
+                        var adsTypes = Model.AdsTypes.Select(r => new SelectListItem
+                        {
+                            Text = r.Name,
+                            Value = r.CssClass
+                        }).ToList();//
+
+                        adsTypes.Insert(2, new SelectListItem() { Text = "Trao đổi BĐS", Value = "ad-exchange" });
+                    }
+                    @Html.DropDownListFor(m => m.AdsTypeCssClass,
+                    adsTypes.Select(s => new SelectListItem
+                    {
+                        Selected = s.Value == Model.AdsTypeCssClass,
+                        Text = s.Text,
+                        Value = s.Value
+                    }),
+                    new { @class = "select-box" })
+                    @Html.ValidationMessageFor(m => m.AdsTypeCssClass, "*")
+                    
+                    <!-- Published -->
+                    <label class="w130">@Html.CheckBoxFor(m => m.Published) @T("Published")</label>
+                    <!-- AdsExpirationDate -->
+                    <select id="@Html.NameOf(m => m.AddAdsExpirationDate)" name="@Html.NameOf(m => m.AddAdsExpirationDate)">
+                        @Html.SelectOption(Model.AddAdsExpirationDate, ExpirationDate.None, T("").ToString())
+                        @Html.SelectOption(Model.AddAdsExpirationDate, ExpirationDate.Day10, T("10 ngày").ToString())
+                        @Html.SelectOption(Model.AddAdsExpirationDate, ExpirationDate.Day20, T("20 ngày").ToString())
+                        @Html.SelectOption(Model.AddAdsExpirationDate, ExpirationDate.Day30, T("30 ngày").ToString())
+                        @Html.SelectOption(Model.AddAdsExpirationDate, ExpirationDate.Day60, T("60 ngày").ToString())
+                        @Html.SelectOption(Model.AddAdsExpirationDate, ExpirationDate.Day90, T("90 ngày").ToString())
+                        @*@Html.SelectOption(Model.AddAdsExpirationDate, ExpirationDate.Week1, T("1 tuần").ToString())
+                        @Html.SelectOption(Model.AddAdsExpirationDate, ExpirationDate.Week2, T("2 tuần").ToString())
+                        @Html.SelectOption(Model.AddAdsExpirationDate, ExpirationDate.Week3, T("3 tuần").ToString())
+                        @Html.SelectOption(Model.AddAdsExpirationDate, ExpirationDate.Month1, T("1 tháng").ToString())
+                        @Html.SelectOption(Model.AddAdsExpirationDate, ExpirationDate.Month2, T("2 tháng").ToString())
+                        @Html.SelectOption(Model.AddAdsExpirationDate, ExpirationDate.Month3, T("3 tháng").ToString())*@
+                    </select>
+                    @Html.TextBoxFor(m => m.AdsExpirationDate, new { @class = "text date-box date-box-full" })
+                </div>
+            </div>
+            <!-- TypeGroup -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Nhóm BĐS:")</label>
+                <div class="controls">
+                    @Html.DropDownListFor(m => m.TypeGroupCssClass,
+                    Model.TypeGroups.Select(s => new SelectListItem
+                    {
+                        Selected = s.CssClass == Model.TypeGroupCssClass,
+                        Text = s.Name,
+                        Value = s.CssClass
+                    }),
+                    new { @class = "select-box" })
+                    @Html.ValidationMessageFor(m => m.TypeGroupCssClass, "*")
+
+                    <ul class="dropdown-menu">
+                        <li>@Html.ActionLink(T("Đất ở và các loại nhà").ToString(), "Create", new { TypeGroupCssClass = "gp-house" }, new { Class = "gp-house" })</li>
+                        <li>@Html.ActionLink(T("Căn hộ, chung cư").ToString(), "Create", new { TypeGroupCssClass = "gp-apartment" }, new { Class = "gp-apartment" })</li>
+                        <li>@Html.ActionLink(T("Các loại đất khác").ToString(), "Create", new { TypeGroupCssClass = "gp-land" }, new { Class = "gp-land" })</li>
+                    </ul>
+
+                    <!-- AdsGoodDeal -->
+                    <label class="w130">@Html.CheckBoxFor(m => m.AdsGoodDeal) @T("BĐS giá rẻ")</label>
+                    <!-- AdsGoodDealExpirationDate -->
+                    <select id="@Html.NameOf(m => m.AddAdsGoodDealExpirationDate)" name="@Html.NameOf(m => m.AddAdsGoodDealExpirationDate)">
+                        @Html.SelectOption(Model.AddAdsGoodDealExpirationDate, ExpirationDate.None, T("").ToString())
+                        @Html.SelectOption(Model.AddAdsGoodDealExpirationDate, ExpirationDate.Day10, T("10 ngày").ToString())
+                        @Html.SelectOption(Model.AddAdsGoodDealExpirationDate, ExpirationDate.Day20, T("20 ngày").ToString())
+                        @Html.SelectOption(Model.AddAdsGoodDealExpirationDate, ExpirationDate.Day30, T("30 ngày").ToString())
+                        @Html.SelectOption(Model.AddAdsGoodDealExpirationDate, ExpirationDate.Day60, T("60 ngày").ToString())
+                        @Html.SelectOption(Model.AddAdsGoodDealExpirationDate, ExpirationDate.Day90, T("90 ngày").ToString())
+                    </select>
+                    @Html.TextBoxFor(m => m.AdsGoodDealExpirationDate, new { @class = "text date-box date-box-full" })
+                </div>
+            </div>
+            <!-- Type -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Loại BĐS:")</label>
+                <div class="controls">
+                    @if (Model.TypeId > 0)
+                    {
+                        @Html.DropDownListFor(m => m.TypeId,
+                        Model.Types.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.TypeId,
+                            Text = s.Name,
+                            Value = s.Id.ToString()
+                        }),
+                        new { @class = "select-box" })
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(m => m.TypeId,
+                        Model.Types.Select(s => new SelectListItem
+                        {
+                            Selected = s.Id == Model.TypeId,
+                            Text = s.Name,
+                            Value = s.Id.ToString()
+                        }),
+                        "-- Vui lòng chọn --", new { @class = "select-box" })
+                    }
+                    @Html.ValidationMessageFor(m => m.TypeId, "*")
+                    
+                    <!-- AdsHighlight -->
+                    @*<label class="w130">@Html.CheckBoxFor(m => m.AdsHighlight) @T("BĐS nổi bật")</label>*@
+                    <!-- AdsHighlightExpirationDate -->
+                    @*<select id="@Html.NameOf(m => m.AddAdsHighlightExpirationDate)" name="@Html.NameOf(m => m.AddAdsHighlightExpirationDate)">
+                        @Html.SelectOption(Model.AddAdsHighlightExpirationDate, ExpirationDate.None, T("").ToString())
+                        @Html.SelectOption(Model.AddAdsHighlightExpirationDate, ExpirationDate.Day10, T("10 ngày").ToString())
+                        @Html.SelectOption(Model.AddAdsHighlightExpirationDate, ExpirationDate.Day20, T("20 ngày").ToString())
+                        @Html.SelectOption(Model.AddAdsHighlightExpirationDate, ExpirationDate.Day30, T("30 ngày").ToString())
+                        @Html.SelectOption(Model.AddAdsHighlightExpirationDate, ExpirationDate.Day60, T("60 ngày").ToString())
+                        @Html.SelectOption(Model.AddAdsHighlightExpirationDate, ExpirationDate.Day90, T("90 ngày").ToString())
+                           -- @Html.SelectOption(Model.AddAdsHighlightExpirationDate, ExpirationDate.Week1, T("1 tuần").ToString())
+                        @Html.SelectOption(Model.AddAdsHighlightExpirationDate, ExpirationDate.Week2, T("2 tuần").ToString())
+                        @Html.SelectOption(Model.AddAdsHighlightExpirationDate, ExpirationDate.Week3, T("3 tuần").ToString())
+                        @Html.SelectOption(Model.AddAdsHighlightExpirationDate, ExpirationDate.Month1, T("1 tháng").ToString())
+                        @Html.SelectOption(Model.AddAdsHighlightExpirationDate, ExpirationDate.Month2, T("2 tháng").ToString())
+                        @Html.SelectOption(Model.AddAdsHighlightExpirationDate, ExpirationDate.Month3, T("3 tháng").ToString())--
+                    </select>
+                    @Html.TextBoxFor(m => m.AdsHighlightExpirationDate, new { @class = "text date-box date-box-full" })*@
+
+                    <!-- AdsVIP -->
+                    @*<label class="w130">@Html.CheckBoxFor(m => m.AdsVIP) @T("BĐS giao dịch gấp")</label>
+                    <!-- AdsVIPExpirationDate -->
+                    <select id="@Html.NameOf(m => m.AddAdsVIPExpirationDate)" name="@Html.NameOf(m => m.AddAdsVIPExpirationDate)">
+                        @Html.SelectOption(Model.AddAdsVIPExpirationDate, ExpirationDate.None, T("").ToString())
+                        @Html.SelectOption(Model.AddAdsVIPExpirationDate, ExpirationDate.Day10, T("10 ngày").ToString())
+                        @Html.SelectOption(Model.AddAdsVIPExpirationDate, ExpirationDate.Day20, T("20 ngày").ToString())
+                        @Html.SelectOption(Model.AddAdsVIPExpirationDate, ExpirationDate.Day30, T("30 ngày").ToString())
+                        @Html.SelectOption(Model.AddAdsVIPExpirationDate, ExpirationDate.Day60, T("60 ngày").ToString())
+                        @Html.SelectOption(Model.AddAdsVIPExpirationDate, ExpirationDate.Day90, T("90 ngày").ToString())*@
+                        @*@Html.SelectOption(Model.AddAdsVIPExpirationDate, ExpirationDate.Week1, T("1 tuần").ToString())
+                        @Html.SelectOption(Model.AddAdsVIPExpirationDate, ExpirationDate.Week2, T("2 tuần").ToString())
+                        @Html.SelectOption(Model.AddAdsVIPExpirationDate, ExpirationDate.Week3, T("3 tuần").ToString())
+                        @Html.SelectOption(Model.AddAdsVIPExpirationDate, ExpirationDate.Month1, T("1 tháng").ToString())
+                        @Html.SelectOption(Model.AddAdsVIPExpirationDate, ExpirationDate.Month2, T("2 tháng").ToString())
+                        @Html.SelectOption(Model.AddAdsVIPExpirationDate, ExpirationDate.Month3, T("3 tháng").ToString())*@
+                    @*</select>
+                    @Html.TextBoxFor(m => m.AdsVIPExpirationDate, new { @class = "text date-box date-box-full" })*@
+                    
+                    @if (Model.IsManageAddAdsPayment)
+                    {
+                        <!-- AdsVIP -->
+                        <label class="w130">@Html.CheckBoxFor(m => m.AdsVIP) @T("BĐS đăng VIP")</label>
+                        <!-- Type VIP -->
+                        <select id="@Html.NameOf(m => m.AdsTypeVIPId)" name="@Html.NameOf(m => m.AdsTypeVIPId)">
+                            @Html.SelectOption(Model.AdsTypeVIPId, AdsTypeVIP.VIP1, T("Tin VIP 1").ToString())
+                            @Html.SelectOption(Model.AdsTypeVIPId, AdsTypeVIP.VIP2, T("Tin VIP 2").ToString())
+                            @Html.SelectOption(Model.AdsTypeVIPId, AdsTypeVIP.VIP3, T("Tin VIP 3").ToString())
+                        </select>
+                        <!-- AdsVIPExpirationDate -->
+                        <select id="@Html.NameOf(m => m.AddAdsVIPExpirationDate)" name="@Html.NameOf(m => m.AddAdsVIPExpirationDate)">
+                            @Html.SelectOption(Model.AddAdsVIPExpirationDate, ExpirationDate.None, T("").ToString())
+                            @Html.SelectOption(Model.AddAdsVIPExpirationDate, ExpirationDate.Day10, T("10 ngày").ToString())
+                            @Html.SelectOption(Model.AddAdsVIPExpirationDate, ExpirationDate.Day20, T("20 ngày").ToString())
+                            @Html.SelectOption(Model.AddAdsVIPExpirationDate, ExpirationDate.Day30, T("30 ngày").ToString())
+                            @Html.SelectOption(Model.AddAdsVIPExpirationDate, ExpirationDate.Day60, T("60 ngày").ToString())
+                            @Html.SelectOption(Model.AddAdsVIPExpirationDate, ExpirationDate.Day90, T("90 ngày").ToString())
+                        </select>
+                        @Html.TextBoxFor(m => m.AdsVIPExpirationDate, new { @class = "text date-box date-box-full" })
+                    }
+                    else
+                    {
+                        <label class="text-error">Tài khoản của bạn không có quyền để chọn đăng tin VIP</label>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </article>
+    <footer></footer>
+</article>

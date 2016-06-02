@@ -1,0 +1,30 @@
+﻿@{
+    int pId = 0;
+
+    if (Session["PropertyAdminId"] != null)
+    {
+        pId = (int)Session["PropertyAdminId"];
+
+        Session["PropertyAdminId"] = null;
+    }
+}
+<script>
+    $(function () {
+        if(@pId != 0){
+            $.ajax({
+                type: 'post',
+                url: '@Url.Action("AjaxPropertyToFaceBook", "PropertySearch", new { area = "RealEstate.FrontEnd"})',
+                data: {
+                    pId: @pId,
+                    __RequestVerificationToken: antiForgeryToken
+                },
+                success: function (results) {
+                    console.log('s');
+                },
+                error: function (request, status, error) {
+                    console.log(error);
+                }
+            });
+        }
+    });
+</script>

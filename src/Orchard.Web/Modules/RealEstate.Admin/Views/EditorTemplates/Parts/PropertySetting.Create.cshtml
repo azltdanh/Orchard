@@ -1,0 +1,11 @@
+﻿@model RealEstate.ViewModels.PropertySettingCreateViewModel
+<fieldset>
+    @Html.LabelFor(m => m.Name, T("Name"))
+    @Html.TextBoxFor(m => m.Name, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.Name, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.Value, T("Value"))
+    @Html.TextBoxFor(m => m.Value, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.Value, "*")
+</fieldset>

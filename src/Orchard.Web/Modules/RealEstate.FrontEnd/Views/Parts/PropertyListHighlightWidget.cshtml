@@ -1,0 +1,38 @@
+﻿@using RealEstate.FrontEnd.ViewModels;
+@using RealEstate.Models;
+
+@{
+    IEnumerable<AdsTypePartRecord> listAdsTypes = Model.AdsTypes;
+    var adsTypeCssClass = "ad-selling";
+    if (Url.RequestContext.RouteData.Values["AdsTypeCssClass"] != null)
+    {
+        adsTypeCssClass = Url.RequestContext.RouteData.Values["AdsTypeCssClass"].ToString();
+    }
+    var CountSelling = (int)Model.CountSelling;
+    var CountLeasing = (int)Model.CountLeasing;
+}
+<div class="header-msg text-right">
+    <a rel="nofollow" class="text-success text-underline" href="@Url.Action("Create", "Home", new { AdsHighlightRequest = true })"><i class="icon_silk_layout_add"></i>Đăng tin rao</a>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="ViewResultFilterPropertiesHighlight panel panel-success ">
+            <div class="panel-heading"><h3 class="panel-title">Nhà đất bán <span class="text-danger">(@CountSelling)</span></h3></div>
+            <div id="ViewHighlight-ad-selling" class="ajax-content ajax-paging" data-url="@Url.Action("AjaxProperties", "PropertySearch", new { area = "RealEstate.FrontEnd", FlagAds = "highlight", AdsTypeCssClass = "ad-selling" })">
+                @Html.Partial("Loading")
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="ViewResultFilterPropertiesHighlight panel panel-success">
+            <div class="panel-heading" ><h3 class="panel-title">Nhà đất cho thuê <span class="text-danger">(@CountLeasing)</span></h3></div>
+            <div id="ViewHighlight-ad-leasing" class="ajax-content ajax-paging" data-url="@Url.Action("AjaxProperties", "PropertySearch", new { area = "RealEstate.FrontEnd", FlagAds = "highlight", AdsTypeCssClass = "ad-leasing" })">
+                @Html.Partial("Loading")
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,82 @@
+﻿@using RealEstate.NewLetter.ViewModels;
+@using RealEstate.NewLetter.Models;
+@model ViewMessageInboxViewModel
+
+@{
+    Layout.Title = "Xem tin nhắn - " + T(Model.ParentMessage.Title).ToString();
+    Script.Require("FrontEnd.Common");
+}
+
+<article class="content-item block_controlpanel">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left">
+                    <div class="header-title-triangle"></div>
+                </div>
+                <h2 class="header-title-text">Xem tin nhắn</h2>
+                <div class="header-title-right"></div>
+            </div>
+        </div>
+    </header>
+    <article class="message-content">
+        <div class="row">
+            <div class="col-md-11 col-xs-11">
+                <input type="hidden" id="userId" value="@WorkContext.CurrentUser.Id" />
+                <input type="hidden" id="userCurentId" value="@WorkContext.CurrentUser.Id" />
+                <input type="hidden" id="userNameCurent" value="@WorkContext.CurrentUser.UserName" />
+
+                <strong style="font-weight:bold;">@Model.ParentMessage.Title</strong> - <em>@String.Format("{0:g}", Model.ParentMessage.DateSend)</em> - <strong>@Model.ParentMessage.UserSend.UserName</strong>
+            </div>
+            <div class="col-md-1 col-xs-1"><a onclick="AjaxDeleteMessage(@Model.ParentMessage.Id,this)" href="javascript:;" title="Xóa tin nhắn này"><i class="icon_silk_delete"></i></a></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                @Html.Raw(Model.ParentMessage.Content.Replace("\r\n", "<br />\r\n"))
+            </div>
+        </div>
+        @foreach (var entry in Model.ListMessageInboxReply)
+        {
+            <div class="message-row">
+                <div class="row">
+                    <div class="col-md-11 col-xs-11">
+                        <strong style="font-weight:bold;">@entry.Title </strong>- <em>@String.Format("{0:g}", entry.DateSend)</em> - <strong>@(entry.UserSend.UserName)</strong>
+                    </div>
+                    <div class="col-md-1 col-xs-1"><a onclick="AjaxDeleteMessage(@entry.Id,this)" href="javascript:;" title="Xóa tin nhắn này"><i class="icon_silk_delete"></i></a></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.Raw(entry.Content.Replace("\r\n", "<br />\r\n"))
+                    </div>
+                </div>
+            </div>
+        }
+        <hr />
+        @using (Html.BeginFormAntiForgeryPost())
+        {
+            @Html.ValidationSummary()
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="control-label col-md-3 col-xs-3" >@T("Tiêu đề:")</label>
+                    <div class="col-md-9 col-xs-9">
+                        <input type="text" name="Title" id="Title" class="form-control" value="@Model.ParentMessage.Title" />
+                        <input type="hidden" id="ID" name="Id" value="@Model.ParentMessage.Id" />
+                        <input type="hidden" id="UserReceivedId" name="UserReceivedId" value="@Model.ParentMessage.UserSend.Id" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3 col-xs-3">@T("Nội dung:")</label>
+                    <div class="col-md-9 col-xs-9">
+                        <textarea name="Content" id="Content" class="form-control" rows="10" required="required"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3 col-xs-3">&nbsp;</label>
+                    <div class="col-md-9 col-xs-9">
+                        <button type="submit" name="Submit.Reply" class="btn btn-default" value="@T("Gửi")">@T("Trả lời")</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </article>
+</article>

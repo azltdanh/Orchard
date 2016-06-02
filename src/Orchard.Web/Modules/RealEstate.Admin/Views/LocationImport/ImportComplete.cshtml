@@ -1,0 +1,17 @@
+﻿@model IEnumerable<RealEstate.Models.LocationStreetResults>
+
+<h1>@Html.TitleForPage(T("Import Results"))</h1>
+
+@foreach (var result in Model)
+{ 
+    <div>
+        <b>@result.Input.Name</b>
+
+        @foreach(var message in result.Messages)
+        {
+            <div class="message message-@message.Type">
+                @message.Message
+            </div>
+        }
+    </div>
+}

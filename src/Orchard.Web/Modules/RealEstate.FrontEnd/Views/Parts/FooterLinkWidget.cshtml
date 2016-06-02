@@ -1,0 +1,20 @@
+﻿@using RealEstate.ViewModels;
+@using RealEstate.Models;
+@{
+    PropertyDisplayIndexOptions model = Model.ViewModel;
+}
+<div id="footerlink">
+    @Html.Partial("FooterLinks", model)
+</div>
+<div class="clearfix"></div>
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        $(document).ready(function() {
+            if (!isNaN($("#property_id").text()) && $("#property_id").text() != "") {
+                $('#footerlink').load('@Url.Action("LoadProvinceById", "PropertySearch", new {area = "RealEstate.FrontEnd"})?propertyId=' + $('#property_id').html())
+            }
+        });
+
+    </script>
+}

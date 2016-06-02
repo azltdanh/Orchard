@@ -1,0 +1,196 @@
+﻿@model RealEstate.ViewModels.FastFilterIndexViewModel
+@using RealEstate.FrontEnd.ViewModels;
+@{
+    Layout.Title = "Định giá bất động sản trực tuyến - Mua bán nhà đất - Cho thuê nhà đất";
+}
+
+@Html.Partial("FastFilter", Model.Options)
+
+@using (Html.BeginFormAntiForgeryPost())
+{    
+    <div class="left">Total: @Model.TotalCount</div>
+    <div class="right">
+        @if (Model.EnableBulkAction)
+        {
+        <fieldset class="bulk-actions">
+            <label for="publishActions" class="filter-label">@T("Tác vụ:")</label>
+            <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)" data-autopostback="truek">
+                @Html.SelectOption(Model.Options.BulkAction, FastFilterBulkAction.None, T("").ToString())
+                @Html.SelectOption(Model.Options.BulkAction, FastFilterBulkAction.AddToEstimation, T("Đưa vào danh sách dùng định giá").ToString())
+                @Html.SelectOption(Model.Options.BulkAction, FastFilterBulkAction.RemoveFromEstimation, T("Loại khỏi danh sách dùng định giá").ToString())
+                @Html.SelectOption(Model.Options.BulkAction, FastFilterBulkAction.Listing, T("Rao báo BĐS").ToString())
+                @Html.SelectOption(Model.Options.BulkAction, FastFilterBulkAction.Delete, T("Xóa BĐS").ToString())
+                @Html.SelectOption(Model.Options.BulkAction, FastFilterBulkAction.Publish, T("Publish tin rao").ToString())
+                @Html.SelectOption(Model.Options.BulkAction, FastFilterBulkAction.UnPublish, T("UnPublish tin rao").ToString())
+                @Html.SelectOption(Model.Options.BulkAction, FastFilterBulkAction.Export, T("Xuất tin rao đăng báo").ToString())
+            </select>
+            <button type="submit" name="submit.BulkEdit" value="@T("Apply")" class="hide">@T("Apply")</button>
+            @Html.Hidden("ReturnUrl")
+        </fieldset>
+        }
+        @Html.ActionLink(T("Thêm BĐS mới").ToString(), "Create", new { }, new { @class = "button primaryAction" })
+    </div>
+    <fieldset>
+        <table class="items fixed-table">
+            <thead>
+                <tr>
+                    <th scope="col" class="w20"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.Properties)" /></th>
+                    <th scope="col" class="w40">@T("Id")</th>
+                    <th scope="col" class="w40">@T("Giá")</th>
+                    @if (Model.Options.ShowEstimation)
+                    {
+                        <th scope="col" class="w76">@T("ĐG")</th>
+                    }
+                    @if (Model.ShowAddressNumber)
+                    {
+                        <th scope="col" class="w74">@T("Số nhà")</th>
+                    }
+                    <th scope="col" class="w120">@T("Đường")</th>
+                    <th scope="col" class="w46">@T("Phường")</th>
+                    <th scope="col" class="w32">@T("Quận")</th>
+                    <th scope="col">@T("DTKV")</th>
+                    <th scope="col">@T("DT hợp QH")</th>
+                    <th scope="col" class="w32">@T("Nhà")</th>
+                    <th scope="col" class="w20">@T("Hg")</th>
+                    <th scope="col" class="w38">@T("MT/H")</th>
+                    @if (Model.ShowAddressNumber)
+                    {
+                        <th scope="col" class="w28">@T("LH")</th>
+                    }
+                    <th scope="col" class="w30">@T("Ng")</th>
+                    <th scope="col" class="w52">@T("Ngày")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.Properties)
+            {
+                var item = entry.Property;
+            <tr class="@(item.LastUpdatedDate < Model.Options.NeedUpdateDate ? "bg-new" : "")">
+                <td>
+                    <input type="hidden" value="@Model.Properties[index].Property.Id" name="@Html.NameOf(m => m.Properties[index].Property.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.Properties[index].IsChecked)"/>
+                </td>
+                <td class="@(item.IsExcludeFromPriceEstimation ? "property-excluded" : "")">
+                    @if (entry.IsEditable)
+                    {
+                    @Html.ActionLink(item.Id.ToString(), "Edit", new { item.Id, returnUrl = HttpContext.Current.Request.Url }, new { Class = (item.Published ? "" : "color-unpublished") }) 
+                    }
+                    else
+                    {
+                        @item.Id.ToString()
+                    }
+                </td>
+                <td class="@item.Flag.CssClass">
+                    @Html.DisplayFor(model => item.PriceProposedInVND, "Double")
+                </td>
+                @if (Model.Options.ShowEstimation)
+                {
+                <td class="@item.Flag.CssClass">
+                    @Html.DisplayFor(model => item.PriceEstimatedInVND, "Double")
+                    @Html.DisplayFor(model => item.PriceEstimatedInVND, "Percent", new { PriceProposedInVND = item.PriceProposedInVND })
+                </td>
+                }
+                @if (Model.ShowAddressNumber)
+                {
+                <td class="@item.Status.CssClass"> @*@(item.AdsOnline ? "st-adv-online" : "") @(item.AdsNewspaper ? "st-adv" : "")*@
+                    @item.AddressNumber
+                    <span class="small">@item.Status.ShortName</span>
+                    <!-- AddressCorner -->
+                    @if (!String.IsNullOrEmpty(item.AddressCorner))
+                    {
+                    <div>@item.AddressCorner</div>
+                    }
+                </td>
+                }
+                <td class="@item.Status.CssClass"> @*@(item.AdsOnline ? "st-adv-online" : "") @(item.AdsNewspaper ? "st-adv" : "")*@
+                    @(item.Street != null ? item.Street.Name : item.OtherStreetName)
+                </td>
+                <td>
+                    @(item.Ward != null ? item.Ward.ShortName : item.OtherWardName)
+                </td>
+                <td>
+                    @(item.District != null ? item.District.ShortName : item.OtherDistrictName)
+                </td>
+                <td>
+                    @if (Model.ShowAddressNumber)
+                    {
+                        @Html.Partial("Gallery", item.Files.ToList())
+                    }
+                    @Html.Raw(item.DisplayForAreaTotal)
+                </td>
+                <td>
+                    @Html.Raw(item.DisplayForAreaLegal)
+                </td>
+                <td>
+                    @if (item.Type != null)
+                    { @item.Type.ShortName }
+                    @Html.DisplayFor(model => item.Floors, "Floors")
+                </td>
+                <td>
+                    @if (item.Direction != null)
+                    { @item.Direction.ShortName }
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Location.ShortName, "Alley", new
+               {
+                   CssClass = item.Location.CssClass,
+                   AlleyTurns = item.AlleyTurns,
+                   AlleyWidth1 = item.AlleyWidth1,
+                   AlleyWidth2 = item.AlleyWidth2,
+                   AlleyWidth3 = item.AlleyWidth3,
+                   AlleyWidth4 = item.AlleyWidth4,
+                   AlleyWidth5 = item.AlleyWidth5,
+                   AlleyWidth6 = item.AlleyWidth6,
+                   AlleyWidth7 = item.AlleyWidth7,
+                   AlleyWidth8 = item.AlleyWidth8,
+                   AlleyWidth9 = item.AlleyWidth9,
+                   DistanceToStreet = item.DistanceToStreet,
+               })                    
+                </td>
+                @if (Model.ShowAddressNumber)
+                {
+                    <td>
+                        @if (entry.ShowContactPhone)
+                        {
+                            @Html.DisplayFor(m => item.ContactPhone, "Truncate", new { Note = item.Note })
+                        }
+                    </td>
+                }
+                <td>
+                    @Html.DisplayFor(m => item.LastInfoFromUser.UserName, "UserInfo", new
+               {
+                   LastInfoFromUserName = item.LastInfoFromUser.UserName,
+                   LastUpdatedUserName = item.LastUpdatedUser.UserName,
+                   LastUpdatedDate = item.LastUpdatedDate.ToLocalTime(),
+                   FirstInfoFromUserName = item.FirstInfoFromUser.UserName,
+                   CreatedUserName = item.CreatedUser.UserName,
+                   CreatedDate = item.CreatedDate,
+               })
+                </td>
+                <td>
+                @if (entry.IsExportedRecently)
+                {
+                    <span class="tlp color-note" title="đã xuất tin ngày @(Html.DisplayFor(model => entry.LastExportedDate, "ShortDate")) bởi <strong>@entry.LastExportedUserName</strong>">
+                    @Html.DisplayFor(model => item.LastUpdatedDate.ToLocalTime(), "ShortDate")
+                    </span>
+                }
+                else if (entry.IsExportedExpired)
+                {
+                    <span class="tlp color-highlight" title="tin đăng hết hạn, xuất lần cuối ngày @(Html.DisplayFor(model => entry.LastExportedDate, "ShortDate")) bởi <strong>@entry.LastExportedUserName</strong>">
+                    @Html.DisplayFor(model => item.LastUpdatedDate.ToLocalTime(), "ShortDate")
+                    </span>
+                }
+                else
+                {
+                    @Html.DisplayFor(model => item.LastUpdatedDate.ToLocalTime(), "ShortDate")
+                }
+                </td>
+            </tr>
+                index++;
+            }
+        </table>
+        
+        @Display(Model.Pager)
+
+    </fieldset>
+}

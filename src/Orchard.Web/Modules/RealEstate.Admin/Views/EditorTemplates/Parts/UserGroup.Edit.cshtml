@@ -1,0 +1,205 @@
+﻿@model RealEstate.ViewModels.UserGroupEditViewModel
+@using System.Web.Mvc;
+@{
+    Script.Require("selectboxes");
+    Script.Require("Cookie");
+    Script.Require("BootstrapCombobox");
+    Style.Require("Select2");
+    Script.Require("Select2");
+    Script.Require("Common");
+}
+@using (Script.Head())
+{
+<script type="text/javascript">
+    $(function () {
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) { $.cookie($(this).closest('.nav-tabs').attr('id'), $(e.target).attr('href')); });
+        if (window.location.hash != '')
+            $('a[href = "' + window.location.hash + '"]').tab('show');
+        else {
+            //go to the latest tab, if it exists:
+            var lastTab = $.cookie($('.nav-tabs').attr('id'));
+            if (lastTab) $('a[href = "' + lastTab + '"]').tab('show');
+        }
+    });
+</script>
+}
+
+<div class="form-editor">
+    <span><strong>Group:</strong> @Model.Name</span>
+    <span>&nbsp;&nbsp;-&nbsp;&nbsp;<strong>GroupAdmin:</strong> @Html.ActionLink(Model.GroupAdminUserName, "Activities", new { Area = "RealEstate.Admin", Controller = "Users", Id = Model.GroupAdminUserId })</span>
+    <div class="spacer"></div>
+</div>
+
+<ul class="nav nav-tabs" id="tabsGroupActivities">
+    @if (AuthorizedFor(RealEstate.Permissions.ManageUsers))
+    {
+    <li class="active"><a href="#general" data-toggle="tab">General</a></li>
+    }
+    <li><a href="#users" data-toggle="tab">Users</a></li>
+    <li><a href="#ips" data-toggle="tab">IPs</a></li>
+    @if (AuthorizedFor(RealEstate.Permissions.ManageUsers))
+    {
+    <li>@Html.ActionLink("Locations", "Locations", new { Model.Id }, new { })</li>
+    }
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane active" id="general">
+        <fieldset>
+            @Html.LabelFor(m => m.Name, T("Name"))
+            @Html.TextBoxFor(m => m.Name, new { @class = "textMedium" })
+            @Html.ValidationMessageFor(m => m.Name, "*")
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.ShortName, T("ShortName"))
+            @Html.TextBoxFor(m => m.ShortName, new { @class = "textMedium" })
+            @Html.ValidationMessageFor(m => m.ShortName, "*")
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.SeqOrder, T("SeqOrder"))
+            @Html.TextBoxFor(m => m.SeqOrder, new { @class = "textMedium" })
+            @Html.ValidationMessageFor(m => m.SeqOrder, "*")
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.IsEnabled, T("IsEnabled"))
+            @Html.EditorFor(m => m.IsEnabled)
+            @Html.ValidationMessageFor(m => m.IsEnabled, "*")
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.GroupAdminUserId, T("GroupAdminUser:"))
+            @Html.TextBoxFor(m => m.GroupAdminUserId, new { @class = "textMedium select2-user" })
+            @Html.ValidationMessageFor(m => m.GroupAdminUserId, "*")
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.ContactPhone, T("ContactPhone"))
+            @Html.TextBoxFor(m => m.ContactPhone, new { @class = "textMedium" })
+            @Html.ValidationMessageFor(m => m.ContactPhone, "*")
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.DefaultProvinceId, T("Tỉnh / Thành phố (mặc định):"))
+            @Html.DropDownListFor(m => m.DefaultProvinceId, Model.Options.Provinces, "-- Tỉnh / Thành phố --", new { Class = "combobox" })
+            @Html.ValidationMessageFor(m => m.DefaultProvinceId, "*")
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.DefaultDistrictId, T("Quận / Huyện (mặc định):"))
+            @Html.DropDownListFor(m => m.DefaultDistrictId, Model.Options.Districts, "-- Quận / Huyện --", new { Class = "combobox" })
+            @Html.ValidationMessageFor(m => m.DefaultDistrictId, "*")
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.DefaultPropertyStatusId, T("Trạng thái tin rao (mặc định):"))
+            @Html.DropDownListFor(m => m.DefaultPropertyStatusId,
+            Model.PropertyStatus.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.DefaultPropertyStatusId,
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }), "Trạng thái tin rao (mặc định)", new { @class = "select-box" })
+            @Html.ValidationMessageFor(m => m.DefaultPropertyStatusId, "*")
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.DefaultAdsTypeId, T("Loại tin rao (mặc định):"))
+            @Html.DropDownListFor(m => m.DefaultAdsTypeId,
+            Model.AdsTypes.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.DefaultAdsTypeId,
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }), "Loại tin rao (mặc định)", new { @class = "select-box" })
+            @Html.ValidationMessageFor(m => m.DefaultAdsTypeId, "*")
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.DefaultTypeGroupId, T("Nhóm BĐS (mặc định):"))
+            @Html.DropDownListFor(m => m.DefaultTypeGroupId,
+            Model.TypeGroups.Select(s => new SelectListItem
+            {
+                Selected = s.Id == Model.DefaultTypeGroupId,
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }), "Nhóm BĐS (mặc định)", new { @class = "select-box" })
+            @Html.ValidationMessageFor(m => m.DefaultTypeGroupId, "*")
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.NumberOfAdsGoodDeal, T("Number Of AdsGoodDeal (-1 is unlimited)"))
+            @Html.TextBoxFor(m => m.NumberOfAdsGoodDeal, new { @class = "textMedium" })
+            @Html.ValidationMessageFor(m => m.NumberOfAdsGoodDeal, "*")
+        </fieldset>
+        @*<fieldset>
+            @Html.LabelFor(m => m.NumberOfAdsVIP, T("Number Of AdsVIP (-1 is unlimited)"))
+            @Html.TextBoxFor(m => m.NumberOfAdsVIP, new { @class = "textMedium" })
+            @Html.ValidationMessageFor(m => m.NumberOfAdsVIP, "*")
+        </fieldset>*@
+        <fieldset>
+            @Html.LabelFor(m => m.NumberOfAdsHighlight, T("Number Of AdsHighlight (-1 is unlimited)"))
+            @Html.TextBoxFor(m => m.NumberOfAdsHighlight, new { @class = "textMedium" })
+            @Html.ValidationMessageFor(m => m.NumberOfAdsHighlight, "*")
+        </fieldset>
+    </div>
+    <div class="tab-pane" id="users">
+        @Html.Partial("GroupUsers")        
+    </div>
+    <div class="tab-pane" id="ips">
+        @Html.TextBoxFor(m => m.AllowedAdminSingleIPs, new { @class = "textMedium" })
+        
+        <fieldset>
+            <label>IPs Setting</label>
+            <input id="txtAllowedAdminSingleIPs" type="text" class="text-box" value="@Request.UserHostAddress" />
+            <input id="btnAddIP" type="button" value="Add" class="btn button primaryAction" />
+        </fieldset>
+        <fieldset>
+            <select id="lstAllowedAdminSingleIPs" multiple="multiple" style="width:400px;height:auto;"></select>
+            <input id="btnRemoveIP" type="button" value="Remove" class="btn button primaryAction" />
+        </fieldset>
+        <script type="text/javascript">
+            $(function () {
+                $('#AllowedAdminSingleIPs').hide();
+                $('#divAllowedAdminSingleIPs').show();
+
+                var values = $.trim($('#AllowedAdminSingleIPs').val()).split(',');
+                if (values.length > 0)
+                    for (var i = 0; i < values.length; i++) {
+                        if ($.trim(values[i]) != '') $("#lstAllowedAdminSingleIPs").addOption(values[i], values[i]);
+                    }
+                $("#lstAllowedAdminSingleIPs option").removeAttr("selected");
+
+                $('#btnAddIP').click(function () {
+                    var today = new Date(); var dd = today.getDate(); var mm = today.getMonth() + 1; //January is 0!
+                    var yyyy = today.getFullYear(); var hh = today.getHours(); var m = today.getMinutes();
+                    if (dd < 10) { dd = '0' + dd }
+                    if (mm < 10) { mm = '0' + mm }
+                    if (hh < 10) { hh = '0' + hh }
+                    if (m < 10) { m = '0' + m }
+                    today = dd + '/' + mm + '/' + yyyy + ' ' + hh + ':' + m;
+                    $("#lstAllowedAdminSingleIPs").addOption($('#txtAllowedAdminSingleIPs').val(), $('#txtAllowedAdminSingleIPs').val()); // + ' - ' + '@WorkContext.CurrentUser.UserName' + ' - ' + today);
+                });
+                $('#btnRemoveIP').click(function () {
+                    $("#lstAllowedAdminSingleIPs").removeOption($("#lstAllowedAdminSingleIPs").selectedValues());
+                });
+                $("form").submit(function () {
+                    $("#lstAllowedAdminSingleIPs option").attr("selected", "selected");
+                    $('#AllowedAdminSingleIPs').val($("#lstAllowedAdminSingleIPs").val());
+                });
+            });
+        </script>
+    </div>
+    <div class="tab-pane" id="settings">
+        @*@Html.Action("Locations", new { Model.Id })*@
+    </div>
+</div>
+
+
+    <button value="submit.SaveContinue" name="submit.SaveContinue" type="submit" class="primaryAction">Save &amp; Continue</button>
+
+    @if (String.IsNullOrEmpty(Model.ReturnUrl))
+    {
+        @Html.ActionLink(T("Back").ToString(), "Index", new { }, new { @class = "button primaryAction", name = "submit.Back" })
+    }
+    else
+    {
+        <a href="@Model.ReturnUrl" class="button primaryAction" name="submit.Back">Back</a>
+    }
+    
+    <script type="text/javascript">
+        $(function () {
+            $('[name="submit.SaveContinue"],[name="submit.SaveReturn"],[name="submit.Back"]').insertAfter('fieldset.save-button button[name="submit.Save"]').css('margin-left', '4px');
+        });
+    </script>

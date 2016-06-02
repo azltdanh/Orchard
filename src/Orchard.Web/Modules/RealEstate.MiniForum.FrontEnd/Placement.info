@@ -1,0 +1,21 @@
+﻿<Placement>
+  <Place Parts_ForumIsMarketWidget= "Content:2" />
+  <Place Parts_ForumIsHeighLightWidget= "Content:2" />
+  <Place Parts_ForumIsNewestWidget= "Content:2" />
+  <Place Parts_ForumByThreadWidget= "Content:2" />
+  <Place Parts_ForumByThreadWidget_Edit= "Content:2" />
+  <Place Parts_ForumFormFilterWidget= "Content:2" />
+  <Place Parts_ForumPostOfUserWidget= "Content:2" />
+  <Place Parts_ForumIsLawHousingWidget= "Content:2" />
+  <Place Parts_UserProfilePictureWidget= "Content:2" />
+  <Place Parts_UserProfilePictureOrtherWidget= "Content:2" />
+  <Place Parts_UserProfileSideMenuWidget= "Content:2" />
+  <Place Parts_UserProfileSideMenuOrtherWidget= "Content:2" />
+  <Place Parts_UserProfileAgencyWidget= "Content:2" />
+  <Place Parts_AgencyRealEstateDetailWidget= "Content:2" />
+  <Place Parts_ForumMenuOfUserWidget= "Content:2" />
+  <Place Parts_ForumIsNewsMainWidget= "Content:2" />
+  <Place Parts_ForumIsPostInThreadWidget= "Content:2" />
+  <Place Parts_MediaVideoWidget= "Content:2" />
+  <Place Parts_ForumIsProjectWidget= "Content:2" />
+</Placement>

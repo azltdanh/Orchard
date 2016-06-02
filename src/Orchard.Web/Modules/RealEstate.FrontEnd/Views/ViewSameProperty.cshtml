@@ -1,0 +1,11 @@
+﻿@model int
+<div id="ViewSameProperties" class="ajax-paging"></div>
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        $(function() {
+            var url = '@Url.Action("ViewSameProperty", "PropertySearch", new {area = "RealEstate.FrontEnd", id = Model})';
+            $('#ViewSameProperties').load(url, function() { fixPagerTop() });
+        });
+    </script>
+}

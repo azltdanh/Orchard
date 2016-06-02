@@ -1,0 +1,28 @@
+﻿@model RealEstate.ViewModels.PropertyDisplayEntry
+@{
+    var item = Model.Property;    
+}
+<ul class="breadcrumb">
+    <li><a href="~/">Trang chủ</a></li>
+    <li><a href="@Url.Action("ResultFilter", "PropertySearch", new { area = "RealEstate.FrontEnd", AdsTypeCssClass = item.AdsType.CssClass, TypeGroupCssClass = item.TypeGroup.CssClass })">@item.AdsType.ShortName @item.TypeGroup.ShortName</a></li>
+    <!-- Province -->
+    @if (item.Province != null)
+    {
+    <li><a href="@Url.Action("ResultFilter", "PropertySearch", new { area = "RealEstate.FrontEnd", AdsTypeCssClass = item.AdsType.CssClass, TypeGroupCssClass = item.TypeGroup.CssClass, ProvinceId = item.Province.Id })">@item.Province.Name</a></li>
+    }
+    <!-- District -->
+    @if (item.District != null)
+    {
+    <li><a href="@Url.Action("ResultFilter", "PropertySearch", new { area = "RealEstate.FrontEnd", AdsTypeCssClass = item.AdsType.CssClass, TypeGroupCssClass = item.TypeGroup.CssClass, ProvinceId = item.Province.Id, DistrictIds = item.District.Id })">@item.District.Name</a></li>
+    }
+    <!-- Ward -->
+    @if (item.Ward != null)
+    {
+    <li><a href="@Url.Action("ResultFilter", "PropertySearch", new { area = "RealEstate.FrontEnd", AdsTypeCssClass = item.AdsType.CssClass, TypeGroupCssClass = item.TypeGroup.CssClass, ProvinceId = item.Province.Id, DistrictIds = item.District.Id, WardIds = item.Ward.Id })">@item.Ward.Name</a></li>
+    }
+    <!-- Street -->
+    @if (item.Street != null)
+    {
+    <li><a href="@Url.Action("ResultFilter", "PropertySearch", new { area = "RealEstate.FrontEnd", AdsTypeCssClass = item.AdsType.CssClass, TypeGroupCssClass = item.TypeGroup.CssClass, ProvinceId = item.Province.Id, StreetIds = item.Street.Id })">@item.Street.Name</a></li>
+    }
+</ul>

@@ -1,0 +1,53 @@
+﻿@model RealEstate.ViewModels.LocationDistrictCreateViewModel
+<fieldset>
+    @Html.LabelFor(m => m.ProvinceId, T("Province"))
+    @Html.DropDownListFor(m => m.ProvinceId,
+    Model.Provinces.Select(s => new SelectListItem
+    {
+        Selected = s.Id == Model.ProvinceId,
+        Text = s.Name,
+        Value = s.Id.ToString()
+    }),
+    "-- Select --")
+    @Html.ValidationMessageFor(m => m.ProvinceId, "*")
+</fieldset>           
+<fieldset>
+    @Html.LabelFor(m => m.Name, T("Name"))
+    @Html.TextBoxFor(m => m.Name, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.Name, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.ShortName, T("ShortName"))
+    @Html.TextBoxFor(m => m.ShortName, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.ShortName, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.SeqOrder, T("SeqOrder"))
+    @Html.TextBoxFor(m => m.SeqOrder, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.SeqOrder, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.IsEnabled, T("IsEnabled"))
+    @Html.EditorFor(m => m.IsEnabled)
+    @Html.ValidationMessageFor(m=>m.IsEnabled, "*")
+</fieldset>
+@*<fieldset>
+    @Html.LabelFor(m => m.ContactPhone, T("ContactPhone"))
+    @Html.TextBoxFor(m => m.ContactPhone, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.ContactPhone, "*")
+</fieldset>*@
+
+    @if (String.IsNullOrEmpty(Model.ReturnUrl))
+    {
+        @Html.ActionLink(T("Back").ToString(), "Index", new { }, new { @class = "button primaryAction", name = "submit.Back" })
+    }
+    else
+    {
+        <a href="@Model.ReturnUrl" class="button primaryAction" name="submit.Back">Back</a>
+    }
+    
+    <script type="text/javascript">
+        $(function () {
+            $('[name="submit.SaveReturn"],[name="submit.Back"]').insertAfter('fieldset.save-button button[name="submit.Save"]').css('margin-left', '4px');
+        });
+    </script>

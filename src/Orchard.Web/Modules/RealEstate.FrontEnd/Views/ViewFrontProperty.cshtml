@@ -1,0 +1,108 @@
+﻿@model RealEstate.ViewModels.PropertyDisplayIndexOptions
+@{
+    var strDistrictIds = "";
+    var strWardIds = "";
+    var strStreetIds = "";
+    var strDirectionIds = "";
+}
+@if (Model.DistrictIds != null)
+{
+    for (int i = 0; i < Model.DistrictIds.Count(); i++)
+    {
+        if (i == Model.DistrictIds.Count() - 1) { strDistrictIds = strDistrictIds + Model.DistrictIds[i]; }
+        else { strDistrictIds = strDistrictIds + Model.DistrictIds[i] + ","; }
+    }
+}
+@if (Model.WardIds != null)
+{
+    for (int i = 0; i < Model.WardIds.Count(); i++)
+    {
+        if (i == Model.WardIds.Count() - 1) { strWardIds = strWardIds + Model.WardIds[i]; }
+        else { strWardIds = strWardIds + Model.WardIds[i] + ","; }
+    }
+}
+@if (Model.StreetIds != null)
+{
+    for (int i = 0; i < Model.StreetIds.Count(); i++)
+    {
+        if (i == Model.StreetIds.Count() - 1) { strStreetIds = strStreetIds + Model.StreetIds[i]; }
+        else { strStreetIds = strStreetIds + Model.StreetIds[i] + ","; }
+    }
+}
+@if (Model.DirectionIds != null)
+{
+    for (int i = 0; i < Model.DirectionIds.Count(); i++)
+    {
+        if (i == Model.DirectionIds.Count() - 1) { strDirectionIds = strDirectionIds + Model.DirectionIds[i]; }
+        else { strDirectionIds = strDirectionIds + Model.DirectionIds[i] + ","; }
+    }
+}
+
+<div id="ViewFrontProperties" class="ajax-paging">
+    @Html.Partial("Loading")
+</div>
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var param = "";
+            if ('@Model.AdsTypeCssClass' != "") {
+                param = '?AdsTypeCssClass=@Model.AdsTypeCssClass';
+            }
+            if ('@Model.TypeGroupCssClass' != "") {
+                param = param + '&TypeGroupCssClass=@Model.TypeGroupCssClass';
+            }
+            if ('@Model.ProvinceId' != "") {
+                param = param + '&ProvinceId=@Model.ProvinceId';
+            }
+            if ('@strDistrictIds' != "") {
+                param = param + '&DistrictIds=@strDistrictIds';
+            }
+            if ('@strWardIds' != "") {
+                param = param + '&WardIds=@strWardIds';
+            }
+            if ('@strStreetIds' != "") {
+                param = param + '&StreetIds=@strStreetIds';
+            }
+            if ('@Model.ApartmentFloorThRange' != "") {
+                param = param + '&ApartmentFloorThRange=@Model.ApartmentFloorThRange';
+            }
+            if ('@Model.OtherProjectName' != "") {
+                param = param + '&OtherProjectName=@Model.OtherProjectName';
+            }
+            if ('@strDirectionIds' != "") {
+                param = param + '&DirectionIds=@strDirectionIds';
+            }
+            if ('@Model.MinAreaTotal' != "") {
+                param = param + '&MinAreaTotal=@Model.MinAreaTotal';
+            }
+            if ('@Model.MinAreaTotalWidth' != "") {
+                param = param + '&MinAreaTotalWidth=@Model.MinAreaTotalWidth';
+            }
+            if ('@Model.MinAreaTotalLength' != "") {
+                param = param + '&MinAreaTotalLength=@Model.MinAreaTotalLength';
+            }
+            if ('@Model.MinFloors' != "") {
+                param = param + '&MinFloors=@Model.MinFloors';
+            }
+            if ('@Model.MinBedrooms' != "") {
+                param = param + '&MinBedrooms=@Model.MinBedrooms';
+            }
+            if ('@Model.MinPriceProposed' != "") {
+                param = param + '&MinPriceProposed=@Model.MinPriceProposed';
+            }
+            if ('@Model.MaxPriceProposed' != "") {
+                param = param + '&MaxPriceProposed=@Model.MaxPriceProposed';
+            }
+            if ('@Model.PaymentMethodCssClass' != "") {
+                param = param + '&PaymentMethodCssClass=@Model.PaymentMethodCssClass';
+            }
+            if ('@Model.AnyType' != "") {
+                param = param + '&AnyType=@Model.AnyType';
+            }
+            var url = '@Url.Action("ViewFrontProperty", "PropertySearch", new {area = "RealEstate.FrontEnd"})' + param;
+
+            $('#ViewFrontProperties').load(url, function() { fixPagerTop() });
+        });
+    </script>
+}

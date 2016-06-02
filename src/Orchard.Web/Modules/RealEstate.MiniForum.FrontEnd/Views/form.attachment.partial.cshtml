@@ -1,0 +1,80 @@
+﻿@using Orchard.Environment.Descriptor.Models
+
+<!-- Modal -->
+  <div class="modal fade" id="UploadMediaModalId" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Upload hình ảnh</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+              <div class="col-lg-12">
+                  <ul class="nav nav-tabs">
+                        <li class="active"><a id="imginsert" href="#imginsert" data-toggle="tab"><span >Chèn ảnh</span></a></li>
+                        <li><a id="fileinsert" href="#fileinsert" data-toggle="tab"><span>File đính kèm</span></a></li>
+                  </ul>
+              </div>
+          </div>
+           
+            <div class="row">
+                <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                        <div class="field_imgupload">
+                            <h4 class="alert alert-info">Upload Hình ảnh</h4>
+                            <div class="row img_upload">
+                                <div class="col-lg-4 col-sm-4 col-md-4">
+                                    <label class="control-label">Upload ảnh từ máy: </label>
+                                </div>
+                                <div class="col-lg-6 col-sm-6 col-md-6">
+                                    <input type="file" id="file_upload_post" />
+                                </div>
+                            </div>
+                            <hr />
+                             <div class="row text_img">
+                                 <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                                    <label class="control-label">Upload ảnh từ web! Copy và paste <b>link ảnh</b> vào bên dưới, sau đó click "<b>Thêm</b>"</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 col-sm-2 col-md-2"><label class="control-label">Link ảnh:</label></div>
+                                <div class="col-lg-8 col-sm-8 col-md-8">
+                                    <input type="text" class="form-control"/>
+                                </div>
+                                <div class="col-lg-2  col-sm-2 col-md-2">
+                                    <a href="javascript:void(0)" onclick="AddImgUrl(this)" title="Thêm ảnh"><i class="icon_silk_add"></i>Thêm</a>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                    <!-- File management -->
+                        <div class="field_filemanagement" style="display:none;">
+                            <h4 class="alert alert-info">File đính kèm</h4>
+                            <div class="row">
+                                <div class="col-lg-4 col-sm-4 col-md-4">Chọn tập tin từ máy:</div>
+                                <div class="col-lg-4 col-sm-4 col-md-4"><input type="file" id="file_upload_management"/></div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 row-margin-lr">
+                                    - Hỗ trợ các file có định dạng <b>jpg, jpeg, gif, png, doc, docx, xlsx, xls, ppt, pdf</b><br/>
+                                    - Dung lượng tối đa là: <b>5 MB</b>
+                                </div>
+                            </div>
+                            <div class="img_url">
+                            </div>
+                        </div>
+                        <div id="div_img"></div>
+                        <input type="hidden" id="count_img" value="1"/>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+ </div>

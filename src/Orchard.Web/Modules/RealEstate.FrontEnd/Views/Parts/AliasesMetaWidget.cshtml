@@ -1,0 +1,37 @@
+﻿@using (Script.Foot())
+{
+    <script type="text/javascript">
+        @*$.ajax({
+        type: 'post',
+        url: '@Url.Action("LoadSEO", "PropertySearch", new { area = "RealEstate.FrontEnd"})',
+            data: {
+                path: '@Request.RawUrl',
+                __RequestVerificationToken: antiForgeryToken
+            },
+        success: function (results) {
+            if (results.description != null) {
+                if ($('meta[name=Description]').length > 0) {
+                    $('meta[name=Description]').attr('content', results.description);
+                } else {
+                    $('head').append('<meta name="Description" content="' + results.description + '">');
+                }
+            }
+            if (results.keywords != null) {
+                if ($('meta[name=keywords]').length > 0) {
+                    $('meta[name=keywords]').attr('content', results.keywords);
+                } else {
+                    $('head').append('<meta name="keywords" content="' + results.keywords + '">');
+                }
+            }
+            if (results.title != null) {
+                document.title = results.title;
+                $('.marquee-title').text(results.title);
+            }
+        },
+        error: function (request, status, error) {
+            console.log(error);
+        }
+    });*@
+    
+    </script>
+}

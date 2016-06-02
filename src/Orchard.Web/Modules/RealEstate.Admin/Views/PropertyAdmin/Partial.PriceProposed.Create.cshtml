@@ -1,0 +1,72 @@
+﻿@model RealEstate.ViewModels.PropertyCreateViewModel
+@using RealEstate.ViewModels;
+
+<!-- Giá rao -->
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-center header-bg-green">
+                <div class="header-left header-bg-green">
+                    <div class="header-left-triangle"></div>
+                </div>
+                <h1>Giá rao</h1>
+                <div class="header-right"></div>
+            </div>
+            <div class="header-msg">
+                <p class="text-success">Các mục có dấu (<span class="text-error">*</span>) là bắt buộc nhập</p>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="form-horizontal pull-left">
+            <!-- PriceEstimatedByStaff -->
+            <div class="control-group hidden">
+                <label class="control-label"><span class="text-error">*</span> @T("Định giá bởi nhân viên:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.PriceEstimatedByStaff, new { @class = "text number-box" })
+                    @Html.ValidationMessageFor(m => m.PriceEstimatedByStaff, "*")
+                </div>
+            </div>
+            <!-- PriceNegotiable -->
+            <div class="control-group">
+                <label class="control-label"></label>
+                <div class="controls">
+                    <label>@Html.CheckBoxFor(m => m.PriceNegotiable) @T("Giá thương lượng")</label>
+                </div>
+            </div>
+            <!-- PriceProposed -->
+            <div class="control-group">
+                <label class="control-label"><span class="text-error">*</span> @T("Giá rao:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.PriceProposed, new { @class = "text number-box" })
+                    @Html.DropDownListFor(m => m.PaymentMethodId,
+                    Model.PaymentMethods.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.PaymentMethodId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }),
+                    new { @class = "" })
+                    @Html.DropDownListFor(m => m.PaymentUnitId,
+                    Model.PaymentUnits.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.PaymentUnitId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }),
+                    new { @class = "" })
+                    @Html.ValidationMessageFor(m => m.PriceProposed, "*")
+
+                    <button value="submit.Estimate" name="submit.Estimate" type="submit" class="primaryAction">Định giá</button>
+
+                    <strong>@Html.Raw(String.Format("{0:Định giá BĐS: <strong>#,0.### Tỷ</strong>;N/A;N/A}", Model.PriceEstimatedInVND))</strong>
+            
+                    <div id="PriceInWords" style="font-weight:bold;color:#3F48D5;"></div>
+
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </article>
+    <footer></footer>
+</article>

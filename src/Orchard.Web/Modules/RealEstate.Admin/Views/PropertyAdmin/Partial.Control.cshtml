@@ -1,0 +1,50 @@
+﻿
+<div class="btn-group right">
+    <a class="btn button primaryAction dropdown-toggle" data-toggle="dropdown" href="#">
+        Thêm BĐS mới
+        <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+        <li>@Html.ActionLink(T("Đất ở và các loại nhà").ToString(), "Create", new { TypeGroupCssClass = "gp-house" }, new { })</li>
+        <li>@Html.ActionLink(T("Căn hộ, chung cư").ToString(), "Create", new { TypeGroupCssClass = "gp-apartment" }, new { })</li>
+        <li>@Html.ActionLink(T("Các loại đất khác").ToString(), "Create", new { TypeGroupCssClass = "gp-land" }, new { })</li>
+        <li>@Html.ActionLink(T("Trao đổi BĐS").ToString(), "Create", new { AdsTypeCssClass = "ad-exchange", TypeGroupCssClass = "gp-house" }, new { })</li>
+    </ul>
+</div>
+
+<div class="save-button">
+    @if (Model.EnableEditProperty)
+    {
+        <button value="submit.Save" name="submit.Save" type="submit" class="primaryAction">Save</button>
+        <button value="submit.Save" name="submit.SaveContinue" type="submit" class="primaryAction">Save &amp; Continue</button>
+    }
+    @if (Model.EnableCopyPropertyToGroup)
+    {
+    <button value="submit.Save" name="submit.SaveCopy" type="submit" class="primaryAction">Copy</button>
+    }
+    @if (Model.EnableCopyPropertyToAdsType)
+    {
+    <button name="submit.DialogCopyToAdsType" type="submit" class="primaryAction" data-toggle="modal" data-target="#dialogCopyPropertyToAdsType">Copy sang @(Model.AdsTypeCssClass == "ad-selling" ? "Cho thuê" : "Rao bán")</button>
+    }
+    @if (String.IsNullOrEmpty(Model.ReturnUrl))
+    {
+        @Html.ActionLink(T("Trở lại").ToString(), "Index", new { }, new { @class = "button" })
+    }
+    else
+    {
+        <a href="@Model.ReturnUrl" class="button primaryAction">Trở lại</a>
+    }
+    @Html.ActionLink(T("Xem trên web").ToString(), "RealEstateDetail", "PropertySearch", new { area = "RealEstate.FrontEnd", id = Model.Id, title = Model.DisplayForUrl }, new { @class = "button", target="_blank" })
+    @if (Model.PropertyExchange != null)
+    {
+        var propertyExchange = Model.PropertyExchange;
+        if (propertyExchange.Customer != null)
+        {
+            @Html.ActionLink(T("Cập nhật BĐS yêu cầu trao đổi").ToString(), "Edit", "CustomerAdmin", new { id = propertyExchange.Customer.Id, pExchangeId = propertyExchange.Id }, new { @class = "button", target = "_blank" })
+        }
+        else
+        {
+            @Html.ActionLink(T("Thêm mới BĐS yêu cầu trao đổi").ToString(), "Create", "CustomerAdmin", new { adsTypeId = 93, pExchangeId = propertyExchange.Id }, new { @class = "button", target = "_blank" })
+        }
+    }
+</div>

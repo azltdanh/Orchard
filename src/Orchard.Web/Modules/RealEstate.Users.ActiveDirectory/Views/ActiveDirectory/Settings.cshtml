@@ -1,0 +1,56 @@
+﻿@model RealEstate.Users.ActiveDirectory.ViewModels.SettingsViewModel
+@{ Layout.Title = T("Settings").ToString(); }
+<h2>@T("Active Directory Authentication")</h2>
+@using (Html.BeginFormAntiForgeryPost(Url.Action("Save")))
+{
+    <fieldset>
+        <div>
+            @Html.LabelFor(m => m.DefaultDomain, T("Default domain"))
+            @Html.TextBoxFor(m => m.DefaultDomain, new { @class = "textMedium" })
+        </div>
+    </fieldset>
+    <fieldset>
+        <button class="primaryAction" type="submit">@T("Save")</button>
+    </fieldset>
+}
+<fieldset>
+    <legend>@T("Domains")</legend>
+    <div class="manage">
+        @Html.ActionLink(T("Add Domain").Text, "AddDomain", new { }, new { @class = "button primaryAction" })
+    </div>
+    @if (Model.Domains.Count() == 0)
+    {
+        <span class="hint">@T("Active Directory authentication will be off until at least one domain is added.")</span>
+    }
+    else
+    { 
+        <table class="items">
+            <colgroup>
+                <col id="Col1" />
+                <col id="Col2" />
+                <col id="Col3" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th scope="col">@T("Name")
+                    </th>
+                    <th scope="col">@T("User Name")
+                    </th>
+                    <th scope="col">
+                    </th>
+                </tr>
+            </thead>
+            @foreach (var item in Model.Domains)
+            {
+                <tr>
+                    <td>@item.Name
+                    </td>
+                    <td>@item.UserName
+                    </td>
+                    <td>@Html.ActionLink(T("Delete").ToString(), "RemoveDomain", new { id = item.Id })
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+</fieldset>

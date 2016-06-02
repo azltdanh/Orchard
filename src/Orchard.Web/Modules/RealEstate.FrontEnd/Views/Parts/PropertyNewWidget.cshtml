@@ -1,0 +1,71 @@
+﻿@using RealEstate.FrontEnd.ViewModels;
+@using RealEstate.Models;
+
+@{
+    IEnumerable<AdsTypePartRecord> listAdsTypes = Model.AdsTypes;
+    var adsTypeCssClass = "ad-selling";
+    if (Url.RequestContext.RouteData.Values["AdsTypeCssClass"] != null)
+    {
+        adsTypeCssClass = Url.RequestContext.RouteData.Values["AdsTypeCssClass"].ToString();
+    }
+    var CountSelling = (int)Model.CountSelling;
+    var CountLeasing = (int)Model.CountLeasing;
+    //var CountBuying = (int)Model.CountBuying;
+    //var CountRenting = (int)Model.CountRenting;
+}
+<div class="header-msg text-right">
+    <a rel="nofollow" class="text-success text-underline" href="@Url.Action("Create", "Home")"><i class="icon_silk_layout_add"></i>Đăng tin rao miễn phí</a>
+</div>
+<div id="NewSelector">
+    <div class="row">
+        <div class="col-md-6 two-column-first">
+            <div class="ViewResultFilterPropertiesDeal panel panel-success ">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Nhà đất bán <span class="text-danger">(@CountSelling)</span></h3>
+                </div>
+                <div class="ajax-paging ajax-content" data-url="@Url.Action("AjaxProperties", "PropertySearch", new { area = "RealEstate.FrontEnd", FlagAds = "new", AdsTypeCssClass = "ad-selling" })">
+                    @Html.Partial("Loading")
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        <div class="col-md-6 two-column-last">
+            <div class="ViewResultFilterPropertiesDeal panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Nhà đất cho thuê <span class="text-danger">(@CountLeasing)</span></h3>
+                </div>
+                <div class="ajax-paging  ajax-content" data-url="@Url.Action("AjaxProperties", "PropertySearch", new { area = "RealEstate.FrontEnd", FlagAds = "new", AdsTypeCssClass = "ad-leasing" })">
+                    @Html.Partial("Loading")
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+    @*@if (CountBuying > 0 || CountRenting > 0)
+    {
+        <div class="row">
+            <div class="col-md-6 two-column-first">
+                <div class="ViewResultFilterPropertiesDeal panel panel-success ">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Cần mua nhà đất <span class="text-danger">(@CountBuying)</span></h3>
+                    </div>
+                    <div id="ViewVip-ad-buying" class="ajax-paging waiting-buying-content" data-url="@Url.Action("AjaxResultFilterRequirement", "PropertySearch", new { area = "RealEstate.FrontEnd", AdsTypeCssClass = "ad-buying" })">
+                        @Html.Partial("Loading")
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="col-md-6 two-column-last">
+                <div class="ViewResultFilterPropertiesDeal panel panel-success">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Cần thuê nhà đất <span class="text-danger">(@CountRenting)</span></h3>
+                    </div>
+                    <div id="ViewVip-ad-renting" class="ajax-paging waiting-buying-content" data-url="@Url.Action("AjaxResultFilterRequirement", "PropertySearch", new { area = "RealEstate.FrontEnd", AdsTypeCssClass = "ad-renting" })">
+                        @Html.Partial("Loading")
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    }*@
+</div>

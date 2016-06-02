@@ -1,0 +1,47 @@
+@model RealEstateForum.Service.ViewModels.AdsPriceConfigViewModel
+
+@{
+   // Script.Require("Common");
+    Layout.Title = T("Ads Price Config").ToString();
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{ 
+    @Html.ValidationSummary()
+
+    <fieldset class="bulk-actions right">
+        <div class="manage">@Html.ActionLink(T("Add AdsPriceConfig").ToString(), "Create", new { returnUrl = HttpContext.Current.Request.Url }, new { @class = "button primaryAction" })</div>
+    </fieldset>
+    
+    <fieldset>
+        <table class="items">
+            <thead>
+                <tr>
+                    <th scope="col">@T("Giá")</th>
+                    <th scope="col">@T("CssClass")</th>
+                    <th scope="col">@T("Actions")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.AdsPriceConfigs)
+            { 
+            <tr>
+                <td>
+                    @entry.AdsPriceConfig.Price
+                </td>
+                <td>
+                    @entry.AdsPriceConfig.CssClass
+                </td>
+                <td>
+                    @Html.ActionLink(T("Edit").ToString(), "Edit", new { entry.AdsPriceConfig.Id, returnUrl = HttpContext.Current.Request.Url }) |
+                    @Html.ActionLink(T("Delete").ToString(), "Delete", new { entry.AdsPriceConfig.Id, returnUrl = HttpContext.Current.Request.Url }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                </td>
+            </tr>
+                index++;
+            }
+        </table>
+
+        @Display(Model.Pager)
+
+    </fieldset>
+} 

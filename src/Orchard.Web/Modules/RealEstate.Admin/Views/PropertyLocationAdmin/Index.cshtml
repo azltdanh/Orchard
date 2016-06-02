@@ -1,0 +1,87 @@
+@model RealEstate.ViewModels.PropertyLocationsIndexViewModel
+@using RealEstate.Models;
+@using RealEstate.ViewModels;
+
+@{
+    Script.Require("Common");
+    Layout.Title = T("Property Locations").ToString();
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{ 
+    @Html.ValidationSummary()
+    <div class="manage">@Html.ActionLink(T("Add new Property Location").ToString(), "Create", new { }, new { @class = "button primaryAction" })</div>
+
+    <fieldset class="bulk-actions">
+        <label for="publishActions">@T("Actions:")</label>
+        <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+            @Html.SelectOption(Model.Options.BulkAction, PropertyLocationsBulkAction.None, T("Choose action...").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, PropertyLocationsBulkAction.Enable, T("Enable").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, PropertyLocationsBulkAction.Disable, T("Disable").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, PropertyLocationsBulkAction.Delete, T("Delete").ToString())
+        </select>
+        <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+    </fieldset>
+    <fieldset class="bulk-actions">
+        @Html.TextBoxFor(m => m.Options.Search, new { @class = "text" })        
+        <label for="filterResults">@T("Filter:")</label>
+        <select id="filterResults" name="@Html.NameOf(m => m.Options.Filter)">
+            @Html.SelectOption(Model.Options.Filter, PropertyLocationsFilter.All, T("All").ToString())
+        </select>
+        <label for="filterResults">@T("Sort by:")</label>
+        <select id="filterResults1" name="@Html.NameOf(m => m.Options.Order)">
+            @Html.SelectOption(Model.Options.Order, PropertyLocationsOrder.Name, T("Name").ToString())
+            @Html.SelectOption(Model.Options.Order, PropertyLocationsOrder.SeqOrder, T("SeqOrder").ToString())
+        </select>
+
+        <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+    </fieldset>
+    <fieldset>
+        <table class="items">
+            <thead>
+                <tr>
+                    <th scope="col"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.PropertyLocations)" /></th>
+                    <th scope="col">@T("Name")</th>
+                    <th scope="col">@T("ShortName")</th>
+                    <th scope="col">@T("CssClass")</th>
+                    <th scope="col">@T("SeqOrder")</th>
+                    <th scope="col">@T("IsEnabled")</th>
+                    <th scope="col">@T("Actions")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.PropertyLocations)
+            { 
+            <tr>
+                <td>
+                    <input type="hidden" value="@Model.PropertyLocations[index].PropertyLocation.Id" name="@Html.NameOf(m => m.PropertyLocations[index].PropertyLocation.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.PropertyLocations[index].IsChecked)"/>
+                </td>
+                <td>
+                    @Html.ActionLink(entry.PropertyLocation.Name, "Edit", new { entry.PropertyLocation.Id }) 
+                </td>
+                <td>
+                    @entry.PropertyLocation.ShortName 
+                </td>
+                <td>
+                    @entry.PropertyLocation.CssClass 
+                </td>
+                <td>
+                    @entry.PropertyLocation.SeqOrder 
+                </td>
+                <td>
+                    @entry.PropertyLocation.IsEnabled 
+                </td>
+                <td>
+                    @Html.ActionLink(T("Edit").ToString(), "Edit", new { entry.PropertyLocation.Id }) |
+                    @Html.ActionLink(T("Delete").ToString(), "Delete", new { entry.PropertyLocation.Id }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                </td>
+            </tr>
+                index++;
+            }
+        </table>
+
+    @Display(Model.Pager)
+
+    </fieldset>
+} 

@@ -1,0 +1,108 @@
+﻿@model RealEstate.ViewModels.LocationStreetCreateViewModel
+@{
+    Script.Require("BootstrapCombobox");
+}
+
+<fieldset>
+    @Html.LabelFor(m => m.ProvinceId, T("Tỉnh / Thành phố"))
+    @Html.DropDownListFor(m => m.ProvinceId,
+    Model.Provinces.Select(s => new SelectListItem
+    {
+        Selected = s.Id == Model.ProvinceId,
+        Text = s.Name,
+        Value = s.Id.ToString()
+    }), "-- Tỉnh / Thành Phố --", new { Class = "combobox" + (Model.IsRestrictedLocations ? " restricted" : ""), userid = WorkContext.CurrentUser.Id })
+    @Html.ValidationMessageFor(m => m.ProvinceId, "*")
+</fieldset>   
+<fieldset>
+    @Html.LabelFor(m => m.DistrictId, T("Quận / Huyện"))
+    @Html.DropDownListFor(m => m.DistrictId,
+    Model.Districts.Select(s => new SelectListItem
+    {
+        Selected = s.Id == Model.DistrictId,
+        Text = s.Name,
+        Value = s.Id.ToString()
+    }), "-- Quận / Huyện --", new { Class = "combobox" })
+    @Html.ValidationMessageFor(m => m.DistrictId, "*")
+</fieldset>   
+@*<fieldset>
+    @Html.LabelFor(m => m.WardId, T("Phường / Xã"))
+    @Html.DropDownListFor(m => m.WardId,
+    Model.Wards.Select(s => new SelectListItem
+    {
+        Selected = s.Id == Model.WardId,
+        Text = s.Name,
+        Value = s.Id.ToString()
+    }), "-- Phường / Xã --", new { Class = "combobox" })
+    @Html.ValidationMessageFor(m => m.WardId, "*")
+</fieldset>*@
+<fieldset>
+    @Html.CheckBoxFor(m => m.IsRelatedStreet, new { style = "float:left;" })
+    @Html.LabelFor(m => m.IsRelatedStreet, T("Nhập Đoạn đường"))
+</fieldset>
+<fieldset id="isRelatedStreet" style="display:none;">
+    @Html.LabelFor(m => m.StreetId, T("Street"))
+    @Html.DropDownListFor(m => m.StreetId,
+    Model.Streets.Select(s => new SelectListItem
+    {
+        Selected = s.Id == Model.StreetId,
+        Text = s.Name,
+        Value = s.Id.ToString()
+    }), "Đường / Phố chính", new { Class = "combobox" })
+    Số nhà từ
+    @Html.TextBoxFor(m => m.FromNumber, new { @class = "text number-box" })
+    đến
+    @Html.TextBoxFor(m => m.ToNumber, new { @class = "text number-box" })
+    @Html.ValidationMessageFor(m => m.StreetId, "*")
+    @Html.ValidationMessageFor(m => m.FromNumber, "*")
+    @Html.ValidationMessageFor(m => m.ToNumber, "*")
+</fieldset>
+<fieldset id="isNewStreet">
+    @Html.LabelFor(m => m.Name, T("Tên Đường / Phố"))
+    @Html.TextBoxFor(m => m.Name, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.Name, "*")
+</fieldset>
+<fieldset>
+    @Html.CheckBoxFor(m => m.IsEnabled, new { style = "float:left;" })
+    @Html.LabelFor(m => m.IsEnabled, T("IsEnabled"))
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.StreetWidth, T("StreetWidth"))
+    @Html.TextBoxFor(m => m.StreetWidth, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.StreetWidth, "*")
+</fieldset>
+<fieldset>
+    @Html.CheckBoxFor(m => m.IsOneWayStreet, new { style = "float:left;" })
+    @Html.LabelFor(m => m.IsOneWayStreet, T("IsOneWayStreet"))
+</fieldset>
+
+    @if (String.IsNullOrEmpty(Model.ReturnUrl))
+    {
+        @Html.ActionLink(T("Back").ToString(), "Index", new { }, new { @class = "button primaryAction", name = "submit.Back" })
+    }
+    else
+    {
+        <a href="@Model.ReturnUrl" class="button primaryAction" name="submit.Back">Back</a>
+    }
+    
+    <script type="text/javascript">
+        $(function () {
+            $('[name="submit.SaveReturn"],[name="submit.Back"]').insertAfter('fieldset.save-button button[name="submit.Save"]').css('margin-left', '4px');
+        });
+    </script>
+
+<script type="text/javascript">
+    $(function () {
+        $('#IsRelatedStreet').change(function () {
+            if ($(this).is(':checked')) {
+                $('#isRelatedStreet').show();
+                $('#isNewStreet').hide();
+            }
+            else {
+                $('#isRelatedStreet').hide();
+                $('#isNewStreet').show();
+            }
+        });
+        $('#IsRelatedStreet').change();
+    });
+</script>

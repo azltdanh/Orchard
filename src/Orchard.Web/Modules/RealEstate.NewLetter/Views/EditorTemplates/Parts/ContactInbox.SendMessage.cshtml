@@ -1,0 +1,116 @@
+﻿@model RealEstate.NewLetter.ViewModels.ContactInboxCreateViewModel
+
+@{
+    var checkUser = WorkContext.CurrentUser;
+}
+
+@*<div class="block-container">
+    <div class="messagemenu">
+        <ul class="nav nav-tabs" style="margin-bottom:0;">
+            <li class="active"><a id="contact" href="@Url.Action("SendMessageContact", "ContactInboxFrontEnd", new { area = "RealEstate.NewLetter" })"><span>Liên hệ</span></a></li>
+            <li><a id="adsprice" href="@Url.Action("AdsPrice", "AdsPrice", new { area = "RealEstateForum.FrontEnd"})"><span>Bảng giá quảng cáo</span></a></li>
+            <li><a id="valuationprice" href="@Url.Action("ValuationCertificatePrice", "AdsPrice", new { area = "RealEstateForum.FrontEnd"})"><span>Bảng giá thẩm định giá</span></a></li>
+            <li><a id="payment" href="@Url.Action("FormOfPayment", "AdsPrice", new { area = "RealEstateForum.FrontEnd"})"><span>Hình thức thanh toán</span></a></li>
+            <li><a id="banners" href="@Url.Action("FormOfPaymentBanner", "AdsPrice", new { area = "RealEstateForum.FrontEnd"})"><span>Bảng giá quảng cáo băng rôn</span></a></li>
+        </ul>
+    </div>
+    <div class="send-content">*@
+<div class="form-horizontal">
+    <div class="form-group">
+        <label class="control-label col-lg-4 col-md-4 col-sm-4 col-xs-12">&nbsp;</label>
+        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+            <span class="text-info" style="vertical-align:sub;">Vui lòng nhập đầy đủ thông tin.</span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-lg-3 col-md-3 col-sm-3 col-xs-12" for="Name">
+            <span class="text-danger">*</span>
+            Họ và tên:
+        </label>
+        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+            @Html.TextBoxFor(m => m.FullName, new { Class = "form-control" })
+            @Html.ValidationMessageFor(m => m.FullName)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-lg-3 col-md-3 col-sm-3 col-xs-12" for="Email">
+            <span class="text-danger">*</span>
+            Email:
+        </label>
+        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+            @Html.TextBoxFor(m => m.Email, new { Class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Email)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-lg-3 col-md-3 col-sm-3 col-xs-12" for="Phone">
+            Số điện thoại:
+        </label>
+        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+            @Html.TextBoxFor(m => m.Phone, new { Class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Phone)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-lg-3 col-md-3 col-sm-3 col-xs-12" for="Title">
+            Link:
+        </label>
+        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+            @Html.TextBoxFor(m => m.Link, new { Class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Link)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-lg-3 col-md-3 col-sm-3 col-xs-12" for="Title">
+            <span class="text-danger">*</span>
+            Tiêu đề:
+        </label>
+        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+            @Html.TextBoxFor(m => m.Title, new { Class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Title)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-lg-3 col-md-3 col-sm-3 col-xs-12" for="Content">
+            <span class="text-danger">*</span>
+            Nội dung(<1000 từ)
+        </label>
+        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+            @Html.TextAreaFor(m => m.Content, 5, 40, new { Class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Content)
+        </div>
+    </div>
+    @if (checkUser != null)
+    {
+        <div class="form-group">
+            <label class="control-label col-lg-3 col-md-3 col-sm-3 col-xs-12">&nbsp;</label>
+            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                <input type="submit" class="btn btn-orange col-lg-2" value="Gửi" />
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="form-group">
+            <label class="control-label col-lg-3">&nbsp;</label>
+            <div class="col-lg-9" style="color:red; font-weight:bold">
+                Bạn vui lòng <a class="logon" rel="nofollow" href="@Url.Action("LogOn", "Account", new { area = "Orchard.Users", ReturnUrl = (Request.QueryString["ReturnUrl"] ?? Request.Url.AbsolutePath) })"> <span class="btn btn-warning">ĐĂNG NHẬP</span></a> để thực hiện chức năng này.
+            </div>
+        </div>
+    }
+ 
+
+</div>
+@*</div>
+    </div>*@
+<style>
+    .edit-item-secondary.group {
+        display: none;
+    }
+</style>

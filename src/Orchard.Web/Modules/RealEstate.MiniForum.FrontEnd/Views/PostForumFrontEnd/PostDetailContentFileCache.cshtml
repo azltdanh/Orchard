@@ -1,0 +1,102 @@
+﻿@using RealEstateForum.Service.ViewModels
+@model PostForumFrontEnDetailViewModel
+@using RealEstate.Helpers;
+
+<article>
+    <span id="FriendRightLink" style="display: none;"><a href="@Url.Action("ViewFriendForUser", "UserFriend", new { Area = "RealEstateForum.FrontEnd", id = Model.PostDetail.UserInfo.Id, username = Model.PostDetail.UserInfo.UserName })">Danh sách bạn của <strong>@Model.PostDetail.UserInfo.DisplayName</strong></a></span>
+    <div>
+        <input type="hidden" id="pageId" value="@Model.PostDetail.Id" />
+        <input type="hidden" id="userId" value="@(Model.PostDetail.UserInfo != null ? Model.PostDetail.UserInfo.Id : -1)" />
+        <input type="hidden" id="userNameSelect" value="@(Model.PostDetail.UserInfo != null ? Model.PostDetail.UserInfo.UserName : "no-name")" />
+        <input type="hidden" id="userCurentId" value="@(Model.UserCurrent != null ? Model.UserCurrent.Id : -1)" />
+        <input type="hidden" id="userNameCurent" value="@(Model.UserCurrent != null ? Model.UserCurrent.UserName : "")" />
+        <input type="hidden" id="pageCount" value="@ViewBag.So_Trang" />
+        <input type="hidden" id="pageCurrent" />
+        <input type="hidden" id="pagefriend_count" />
+
+        <div class="profile-right-large media-body append-tags">
+            @if (Model.UserCurrent != null && Model.UserCurrent.Id == Model.PostDetail.UserInfo.Id)
+            {
+                <div class="btn-group-change-detail">
+                    <div id="change-status-image" class="pull-right">
+                        @if (Model.PostDetail.PostStatus != null)
+                        {
+                            if (Model.PostDetail.PostStatus.CssClass == "st-none")
+                             {
+                                 <a href="javascript:;" rel="nofollow" onclick="ChangeStatusPost(@Model.PostDetail.Id) "><i class="icon_rev_cross pointer" title="Xóa bài viết này"></i></a>
+                             }
+                             else if (Model.PostDetail.PostStatus.CssClass == "st-bin")
+                             {
+                                 <a href="javascript:;" rel="nofollow" onclick=" ChangeStatusPost(@Model.PostDetail.Id) "><i class="icon_rev_tick pointer" title="Phục hồi bài viết này"></i></a>
+                             }
+                        }
+                    </div>
+                    <div class="link-edit-image pull-right">
+                        <a rel="nofollow" href="@Url.Action("Edit", "PostForumFrontEnd", new { area = "RealEstate.MiniForum.FrontEnd", Id = Model.PostDetail.Id, title = Model.PostDetail.DisplayForNameForUrl })">
+                            <i class="icon_rev_building_edit" title="Sửa bài viết này"></i>
+                        </a>&nbsp;
+                    </div>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.PostDetail.Title))
+            {
+                <h1 class="media-heading" itemprop="name">
+                    @Model.PostDetail.Title
+                </h1>
+            }
+
+            <p><small class="text-muted">@Model.PostDetail.DateUpdated</small></p>
+
+            @if (!string.IsNullOrEmpty(Model.PostDetail.Description))
+            {
+                <strong>@Html.Raw(Model.PostDetail.Description)</strong>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.PostDetail.Content))
+            {
+                <div itemprop="description" class="post-detail-content">
+                    @Html.Raw(Model.PostDetail.Content)
+                </div>
+            }
+
+            @if (Model.IsShowSignature && Model.PostDetail.UserInfo.Signature.Length > 0)
+            {
+                <div class="page_signature">
+                    <div class="page_sigature_first">
+                        Chữ ký của <b>@Model.PostDetail.UserInfo.DisplayName</b>
+                    </div>
+                    <div class="page_sigature_second">@Html.Raw(Model.PostDetail.UserInfo.Signature)</div>
+                </div>
+            }
+        </div>
+        @if (!Model.PostDetail.IsPinned)
+        {
+            <div class="plugin-like">
+                <span class="fb-like" data-send="true" data-width="450" data-show-faces="false" data-href="@Request.Url.AbsoluteUri" data-layout="button_count"></span>
+                <!-- Place this tag where you want the +1 button to render. -->
+                <div class="g-plusone"></div>
+                <!-- Place this tag where you want the share button to render. -->
+                <span class="g-plus" data-action="share" data-annotation="bubble"></span>
+                <!--annotation="inline"-->
+                <!-- Place this tag after the last +1 button tag. -->
+                <script type="text/javascript">
+                    (function () {
+                        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+                        po.src = 'https://apis.google.com/js/platform.js';
+                        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+                    })();
+                </script>
+                <div id="fb-root"></div>
+                <script>
+                    (function (d, s, id) {
+                        var js, fjs = d.getElementsByTagName(s)[0];
+                        if (d.getElementById(id)) return;
+                        js = d.createElement(s); js.id = id;
+                        js.src = "//connect.facebook.net/vi_VN/all.js#xfbml=1";
+                        fjs.parentNode.insertBefore(js, fjs);
+                    }(document, 'script', 'facebook-jssdk'));</script>
+            </div>
+        }
+    </div>
+</article>

@@ -1,0 +1,87 @@
+﻿@model List<RealEstate.ViewModels.PropertyEntry>
+           
+@{
+    ViewBag.Title = "Print";
+    List<int> q1 = new List<int>() { 1, 3, 14, 16 }; // Q1(1), Q2(2), Q. Bình Thạnh (14), Q. Phú Nhuận (16)
+    List<int> q2 = new List<int>() { 5 }; // Q5(5)
+    List<int> q3 = new List<int>() { 17, 18 }; // Q. Tân Bình (17), Q. Tân Phú (18)
+}
+
+<h2>Print</h2>
+<ol class="print-list">
+@foreach (var entry in Model)
+{
+    var item = entry.Property;
+    <li>
+    <div class="print-title">
+        <b>
+        Bán nhà
+        @Html.DisplayFor(model => item.Location.ShortName, "Alley", new
+               {
+                   CssClass = item.Location.CssClass,
+                   AlleyTurns = item.AlleyTurns,
+                   AlleyWidth1 = item.AlleyWidth1,
+                   AlleyWidth2 = item.AlleyWidth2,
+                   AlleyWidth3 = item.AlleyWidth3,
+                   AlleyWidth4 = item.AlleyWidth4,
+                   AlleyWidth5 = item.AlleyWidth5,
+                   AlleyWidth6 = item.AlleyWidth6,
+                   AlleyWidth7 = item.AlleyWidth7,
+                   AlleyWidth8 = item.AlleyWidth8,
+                   AlleyWidth9 = item.AlleyWidth9,
+                   DistanceToStreet = item.DistanceToStreet,
+               }) 
+        @(item.Street != null ? item.Street.Name : item.OtherStreetName)
+        @(item.District != null ? item.District.ShortName : item.OtherDistrictName),        
+        @Html.DisplayFor(model => item.AreaTotal, "AreaFull", new { Width = item.AreaTotalWidth, Length = item.AreaTotalLength, BackWidth = item.AreaTotalBackWidth }),
+        @Html.DisplayFor(model => item.Floors, "Floors"),
+        @Html.DisplayFor(model => item.PriceProposedInVND, "Double")
+        @item.PaymentMethod.ShortName
+        </b>
+    </div>
+    <div class="print-content">
+        <div>
+            Bán nhà 
+            @Html.DisplayFor(model => item.Location.ShortName, "Alley", new
+                   {
+                       CssClass = item.Location.CssClass,
+                       AlleyTurns = item.AlleyTurns,
+                       AlleyWidth1 = item.AlleyWidth1,
+                       AlleyWidth2 = item.AlleyWidth2,
+                       AlleyWidth3 = item.AlleyWidth3,
+                       AlleyWidth4 = item.AlleyWidth4,
+                       AlleyWidth5 = item.AlleyWidth5,
+                       AlleyWidth6 = item.AlleyWidth6,
+                       AlleyWidth7 = item.AlleyWidth7,
+                       AlleyWidth8 = item.AlleyWidth8,
+                       AlleyWidth9 = item.AlleyWidth9,
+                       DistanceToStreet = item.DistanceToStreet,
+                   })  
+            đường 
+            @(item.Street != null ? item.Street.Name : item.OtherStreetName), 
+            @(item.Ward != null ? item.Ward.ShortName : item.OtherWardName), 
+            @(item.District != null ? item.District.ShortName : item.OtherDistrictName),
+            @(item.Province != null ? item.Province.ShortName : item.OtherProvinceName)
+        </div>
+        <div>
+            Diện tích @Html.DisplayFor(model => item.AreaTotal, "AreaFull", new { Width = item.AreaTotalWidth, Length = item.AreaTotalLength, BackWidth = item.AreaTotalBackWidth }),
+            @if (item.AreaLegal.HasValue || item.AreaLegalWidth.HasValue || item.AreaLegalLength.HasValue)
+            {
+                <text>Diện tích hợp quy hoạch @Html.DisplayFor(model => item.AreaLegal, "AreaFull", new { Width = item.AreaLegalWidth, Length = item.AreaLegalLength, BackWidth = item.AreaLegalBackWidth })</text>
+            }
+        </div>
+        <div>
+            @item.Type.Name,
+            @Html.DisplayFor(model => item.Floors, "Floors")@(item.HaveBasement ? ", có tầng hầm" : "")@(item.HaveMezzanine ? ", có lửng" : "")@(item.HaveTerrace ? ", có sân thượng" : "")@(item.HaveSkylight ? ", có giếng trời" : "")@(item.HaveGarage ? ", có gara" : "")@(item.HaveGarden ? ", có sân vườn" : "")@(item.HaveElevator ? ", có thang máy" : "")@(item.HaveSwimmingPool ? ", có bể bơi" : "")
+        </div>
+        <div>
+            Giá bán @string.Format("{0:#,0.##} {1} / {2}", item.PriceProposedInVND, item.PaymentMethod.Name, item.PaymentUnit.Name)
+        </div>
+        <div>
+            @(q1.Contains(item.District.Id) ? " LH: 0919225599 - 0988006166" : (q2.Contains(item.District.Id) ? "LH: 0919225599" : (q3.Contains(item.District.Id) ? "LH: 0919225599 - 0903002067" : "LH: 0919225599 - 0942841668")))
+        </div>
+    </div>
+    <hr />
+    </li>
+}
+</ol>

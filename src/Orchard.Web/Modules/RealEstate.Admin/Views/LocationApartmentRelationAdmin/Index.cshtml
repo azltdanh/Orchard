@@ -1,0 +1,177 @@
+﻿@model RealEstate.ViewModels.LocationApartmentRelationsIndexViewModel
+@using RealEstate.Models;
+@using RealEstate.ViewModels;
+
+@{
+    Script.Require("BootstrapCombobox");
+    Script.Require("Common");
+    Layout.Title = T("LocationApartment Relations").ToString();
+}
+
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Get))
+{ 
+    @Html.ValidationSummary()
+
+    <fieldset class="bulk-actions">
+        <table class="filter-table">
+            <tr>
+                <td></td>
+                <td>@Html.LabelFor(m => m.Options.ProvinceId, @T("Tỉnh / Thành phố:"))</td>
+                <td>
+                    @Html.DropDownListFor(m => m.Options.ProvinceId,
+                    Model.Options.Provinces.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.Options.ProvinceId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }), "-- Tỉnh / Thành phố --", new { Class = "combobox" + (Model.Options.IsRestrictedLocations ? " restricted" : ""), userid = WorkContext.CurrentUser.Id })
+                </td>
+                <td>@Html.LabelFor(m => m.Options.DistrictId, @T("Quận / Huyện:"))</td>
+                <td>
+                    @Html.DropDownListFor(m => m.Options.DistrictId,
+                    Model.Options.Districts.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.Options.DistrictId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }), "-- Quận / Huyện --", new { Class = "combobox" })
+                </td>
+                <td>@Html.LabelFor(m => m.Options.ApartmentId, @T("Chung cư:"))</td>
+                <td>
+                    @Html.DropDownListFor(m => m.Options.ApartmentId,
+                    Model.Options.Apartments.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.Options.ApartmentId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }), "-- Chung cư --", new { Class = "combobox" })
+                </td>
+            </tr>
+            <tr>
+                <td>@T("Related")&nbsp;</td>
+                <td>@Html.LabelFor(m => m.Options.RelatedProvinceId, @T("Tỉnh / Thành phố:"))</td>
+                <td>
+                    @Html.DropDownListFor(m => m.Options.RelatedProvinceId,
+                    Model.Options.RelatedProvinces.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.Options.RelatedProvinceId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }), "-- Tỉnh / Thành phố --", new { Class = "combobox" + (Model.Options.IsRestrictedLocations ? " restricted" : ""), userid = WorkContext.CurrentUser.Id })
+                </td>
+                <td>@Html.LabelFor(m => m.Options.RelatedDistrictId, @T("Quận / Huyện:"))</td>
+                <td>
+                    @Html.DropDownListFor(m => m.Options.RelatedDistrictId,
+                    Model.Options.RelatedDistricts.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.Options.RelatedDistrictId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }), "-- Quận / Huyện --", new { Class = "combobox" })
+                </td>
+                <td>@Html.LabelFor(m => m.Options.RelatedApartmentId, @T("Chung cư:"))</td>
+                <td>
+                    @Html.DropDownListFor(m => m.Options.RelatedApartmentId,
+                    Model.Options.RelatedApartments.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.Options.RelatedApartmentId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }), "-- Chung cư --", new { Class = "combobox" })
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>@Html.LabelFor(m => m.Options.Order, @T("Sort by:"))</td>
+                <td>
+                    <select id="filterSortby" name="@Html.NameOf(m => m.Options.Order)" style="width:142px;">
+                        @Html.SelectOption(Model.Options.Order, LocationApartmentRelationsOrder.Province, T("Province").ToString())
+                        @Html.SelectOption(Model.Options.Order, LocationApartmentRelationsOrder.District, T("District").ToString())
+                        @Html.SelectOption(Model.Options.Order, LocationApartmentRelationsOrder.LocationApartment, T("LocationApartment").ToString())
+                        @Html.SelectOption(Model.Options.Order, LocationApartmentRelationsOrder.RelatedProvince, T("RelatedProvince").ToString())
+                        @Html.SelectOption(Model.Options.Order, LocationApartmentRelationsOrder.RelatedDistrict, T("RelatedDistrict").ToString())
+                        @Html.SelectOption(Model.Options.Order, LocationApartmentRelationsOrder.RelatedLocationApartment, T("RelatedLocationApartment").ToString())
+                    </select>
+                </td>
+                <td>
+                    <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+}
+    
+@using (Html.BeginFormAntiForgeryPost())
+{        
+    <fieldset class="bulk-actions right">
+        @if (AuthorizedFor(RealEstate.Permissions.ManageAddressLocations))
+        {
+        <label for="publishActions">@T("Actions:")</label>
+        <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+            @Html.SelectOption(Model.Options.BulkAction, LocationApartmentRelationsBulkAction.None, T("Choose action...").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, LocationApartmentRelationsBulkAction.Delete, T("Delete").ToString())
+        </select>
+        <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+        }
+        @Html.ActionLink(T("Add new LocationApartment Relation").ToString(), "Create", new { }, new { @class = "button primaryAction" })
+    </fieldset>
+    
+    <fieldset>
+    @ViewBag.RCount
+        <table class="items fixed-table">
+            <thead>
+                <tr>
+                    <th scope="col" class="w13"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.LocationApartmentRelations)" /></th>
+                    <th scope="col">@T("Name")</th>
+                    <th scope="col">@T("District")</th>
+                    <th scope="col">@T("Province")</th>
+                    <th scope="col">@T("Equal")</th>
+                    <th scope="col">@T("Name")</th>
+                    <th scope="col">@T("District")</th>
+                    <th scope="col">@T("Province")</th>
+                    <th scope="col">@T("Actions")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.LocationApartmentRelations)
+            {
+                var s = entry.LocationApartmentRelation;
+            <tr>
+                <td>
+                    <input type="hidden" value="@Model.LocationApartmentRelations[index].LocationApartmentRelation.Id" name="@Html.NameOf(m => m.LocationApartmentRelations[index].LocationApartmentRelation.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.LocationApartmentRelations[index].IsChecked)"/>
+                </td>
+                <td>
+                    @entry.LocationApartmentRelation.LocationApartment.Name
+                </td>
+                <td>
+                    @entry.LocationApartmentRelation.District.ShortName
+                </td>
+                <td>
+                    @entry.LocationApartmentRelation.Province.ShortName
+                </td>
+                <td>
+                    @Html.DisplayFor(model => entry.LocationApartmentRelation.RelatedValue, "Double")%
+                </td>
+                <td>
+                    @entry.LocationApartmentRelation.RelatedLocationApartment.Name
+                </td>
+                <td>
+                    @entry.LocationApartmentRelation.RelatedDistrict.ShortName
+                </td>
+                <td>
+                    @entry.LocationApartmentRelation.RelatedProvince.ShortName
+                </td>
+                <td>
+                    @Html.ActionLink(T("Edit").ToString(), "Edit", new { entry.LocationApartmentRelation.Id, returnUrl = HttpContext.Current.Request.Url }) |
+                    @Html.ActionLink(T("Delete").ToString(), "Delete", new { entry.LocationApartmentRelation.Id, returnUrl = HttpContext.Current.Request.Url }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                </td>
+            </tr>
+                index++;
+            }
+        </table>
+
+    @Display(Model.Pager)
+
+    </fieldset>
+} 

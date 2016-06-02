@@ -1,0 +1,107 @@
+﻿@using RealEstateForum.Service.ViewModels;
+@model ThreadAdminIndexViewModel
+@{
+    Layout.Title = T("Danh sách Chuyên mục").ToString();
+    var hostname = Request.QueryString.Get("hostname");
+}
+
+@using (Script.Head())
+{
+    <script type="text/javascript">
+        var antiForgeryToken = '@Html.AntiForgeryTokenValueOrchard()';
+    </script>
+}
+@using (Html.BeginFormAntiForgeryPost())
+{ 
+    <div class="manage">@Html.ActionLink(T("Tạo mới một Chuyên mục").ToString(), "HThreadCreate", new { returnUrl = HttpContext.Current.Request.Url, hostname = hostname }, new { @class = "button primaryAction" })</div>    
+    <fieldset class="bulk-actions">
+        <label for="publishActions">@T("Actions:")</label>
+        <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)"> 
+            @Html.SelectOption(Model.Options.BulkAction, ThreadBulkAction.None, T("Choose action...").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, ThreadBulkAction.Enable, T("Is Open").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, ThreadBulkAction.Disable, T("Is Close").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, ThreadBulkAction.Delete, T("Delete").ToString())
+        </select>
+        <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+    </fieldset>
+    <fieldset class="bulk-actions">
+        <label for="filterResults">@T("Sort by:")</label>
+        <select id="filterResults1" name="@Html.NameOf(m => m.Options.Order)">
+            @Html.SelectOption(Model.Options.Order, ThreadOrder.Id, T("Id").ToString())
+            @Html.SelectOption(Model.Options.Order, ThreadOrder.Name, T("Name").ToString())
+            @Html.SelectOption(Model.Options.Order, ThreadOrder.ShortName, T("ShortName").ToString())
+        </select>
+        <button type="submit" name="submit.Filter" value="@T("Order")">@T("Order")</button>
+    </fieldset>
+    <fieldset>
+        <table class="items">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        <input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.ListThreadEntry)" /></th>
+                    <th scope="col">@T("ID")</th>
+                    <th scope="col">@T("Name")</th>
+                    <th scope="col">@T("ShortName")</th>
+                    <th scope="col">@T("Icon")</th>
+                    <th scope="col">@T("Order")</th>
+                    <th scope="col">@T("CountTopic")</th>
+                    <th scope="col">@T("IsOpen")</th>
+                    <th scope="col">@T("DateCreated")</th>
+                    <th scope="col" style="padding-left: 20px; padding-right: 20px;">@T("Action")</th>
+                </tr>
+            </thead>
+            @if (Model.ListThreadEntry.Count() > 0)
+            {
+                var index = 0;
+                foreach (var entry in Model.ListThreadEntry)
+                { 
+                <tr>
+                    <td>
+                        <input type="hidden" value="@Model.ListThreadEntry[index].ThreadPart.Id" name="@Html.NameOf(m => m.ListThreadEntry[index].ThreadPart.Id)"/>
+                        <input type="checkbox" value="true" name="@Html.NameOf(m => m.ListThreadEntry[index].IsChecked)"/>
+                    </td>
+                    <td>
+                        @entry.ThreadPart.Id
+                    </td>
+                    <td>
+                        @Html.ActionLink(entry.ThreadPart.Name, "TopicIndex", new { entry.ThreadPart.Id,})
+                    </td>
+                    <td>
+                        @entry.ThreadPart.ShortName
+                    </td>
+                    <td>
+                        @if (!String.IsNullOrEmpty(entry.ThreadPart.DefaultImage))
+                         {
+                             <span><img title="Đã có hình ảnh đại diện" alt="OK" src="/Modules/Orchard.Users/Content/Admin/images/online.gif " class="icon">OK</span> 
+                         }
+                         else
+                         {
+                             <span><img title="Chưa có hình ảnh đại diện" alt="KO " src="/Modules/Orchard.Users/Content/Admin/images/offline.gif " class="icon">KO</span> 
+                         }
+                    </td>
+                    <td>
+                        @entry.ThreadPart.SeqOrder
+                    </td>
+                    <td>
+                        @entry.CountChild
+                    </td>
+                    <td>
+                        @entry.ThreadPart.IsOpen
+                    </td>
+                    <td>
+                        @Convert.ToDateTime(entry.ThreadPart.DateCreated).ToString("dd/MM/yyyy")
+                    </td>
+                    <td>
+                        @Html.ActionLink(T("Edit").ToString(), "HThreadEdit", new { entry.ThreadPart.Id, returnUrl = HttpContext.Current.Request.Url, hostname = hostname }) |
+                    @Html.ActionLink(T("Delete").ToString(), "HThreadDelete", new { entry.ThreadPart.Id, returnUrl = HttpContext.Current.Request.Url, hostname = hostname }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                    </td>
+                </tr>
+                    index++;
+                }
+            }
+        </table>
+
+        @Display(Model.Pager)
+
+    </fieldset>
+}

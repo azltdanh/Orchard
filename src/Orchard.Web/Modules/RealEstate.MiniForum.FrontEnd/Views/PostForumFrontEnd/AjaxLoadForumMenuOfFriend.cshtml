@@ -1,0 +1,95 @@
+﻿@{
+    var count = (Dictionary<string, int>)ViewBag.Count;
+}
+<div id="menuHomePage" class="menu-home-page">
+    <ul class="media-list media-list-condensed">
+        @if (WorkContext.CurrentUser != null)
+        {
+            <li class="media">
+                <span id="menufriendsendmessage">
+                    <a rel="nofollow" data-toggle="modal" href="#messageModal" data-target="#messageModal">
+                        <i class="icon_silk_comment"></i> Gửi tin nhắn
+                    </a>
+                </span>
+            </li>
+        }
+        <li class="media">
+            <a href="@Url.Action("YourListFriend", "PersonalPage", new { Area = "RealEstate.MiniForum.FrontEnd", Id = count["UserId"], UserName = ViewBag.UserName.Split('@')[0]})" title="Danh sách bạn">
+                <i class="icon_rev_group"></i> Danh sách bạn
+            </a>
+            <span class="pull-right">(<strong class="listfriend-user">@count["friend"]</strong>)</span>
+        </li>
+        <li class="media">
+            <a href="@Url.Action("ResultFilter", "PropertySearch", new { area = "RealEstate.FrontEnd", Create_Id = count["UserId"] })" title="Danh sách BĐS">
+                <i class="icon_rev_house"></i> Danh sách BĐS
+            </a>
+            <span class="pull-right">(<strong class="listproperty-user">@count["PropertyCount"]</strong>)</span>
+        </li>
+    </ul>
+</div>
+@if (WorkContext.CurrentUser != null)
+{
+        <script>
+            $('#FormMessageUser').submit(function (event) {
+                // Stop form from submitting normally
+                event.preventDefault();
+                //
+                var $form = $(this);
+                $.ajax({
+                    type: "post",
+                    dataType: "",
+                    url: "/ajax/realestatenewletter/AjaxSendMessageUser",
+                    data:
+                        $form.serialize(),
+                    __RequestVerificationToken: antiForgeryToken
+                    ,
+                    success: function (response) {
+                        if (response.status) {
+                            $('#messageModal').modal('hide');
+                            alert('Tin nhắn đã được gửi thành công!');
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function (request, status, error) {
+                        console.log(error);
+                    }
+                });
+            });
+        </script>
+    <!-- Modal -->
+    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                @using (Html.BeginFormAntiForgeryPost(null, FormMethod.Post, new { @class = "FormMessageUser", id = "FormMessageUser" }))
+                {
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Gửi tin nhắn</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-xs-3">@T("Tiêu đề:")</label>
+                                <div class="col-md-9 col-xs-9">
+                                    <input type="text" name="Title" id="Title" class="form-control" />
+                                    <input type="hidden" id="UserIdMessage" name="UserIdMessage" value="@count["UserId"]" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-xs-3">@T("Nội dung:")</label>
+                                <div class="col-md-9 col-xs-9">
+                                    <textarea name="Content" id="Content" class="form-control" required="required"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="margin-top:0">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Đóng lại</button>
+                        <button type="submit" class="btn btn-primary Gui">Gửi</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}

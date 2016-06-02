@@ -1,0 +1,123 @@
+﻿@using RealEstateForum.Service.ViewModels
+@model PostIndexAdminViewModel
+@using RealEstateForum.Service.Models;
+
+@{
+    Layout.Title = T("Danh sách các bài viết").ToString();
+} @{
+    Style.Require("jQueryUI_Orchard");
+    Script.Require("jQueryUI");
+    Script.Require("jQueryUI_DatePicker");
+    Script.Require("Common");
+
+    Script.Require("realEstate.MiniForum.Admin");
+}
+@using (Script.Head())
+{
+<script type="text/javascript">
+//<![CDATA[
+    var antiForgeryToken = '@Html.AntiForgeryTokenValueOrchard()';
+//]]>
+</script>
+}
+@Html.Partial("Part.FilterForumPost", Model.Options)
+
+@using (Html.BeginFormAntiForgeryPost())
+{ 
+    <div class="manage">@Html.ActionLink(T("Tạo bài viết mới").ToString(), "Create", new { returnUrl = HttpContext.Current.Request.Url }, new { @class = "button primaryAction" })</div>
+    <fieldset class="bulk-actions">
+        <legend></legend>
+        <label for="publishActions">@T("Actions:")</label>
+        <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+            @Html.SelectOption(Model.Options.BulkAction, PostBulkAction.None, T("Choose action...").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, PostBulkAction.Delete, T("Delete").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, PostBulkAction.UnDelete, T("UnDelete").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, PostBulkAction.Approve, T("Approve").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, PostBulkAction.UpdateMetaKeyWord, T("Cập nhật tất cả Meta Keyword").ToString())
+        </select>
+        <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+    </fieldset>
+    <fieldset class="bulk-actions">
+        <legend></legend>
+        @Html.TextBoxFor(m => m.Options.SearchText, new { @class = "text" })        
+        <label for="filterResults">@T("Filter:")</label>
+        <select id="filterResults" name="@Html.NameOf(m => m.Options.Filter)">
+            @Html.SelectOption(Model.Options.Filter, PostFilter.All, T("All").ToString())
+        </select>
+        <label for="filterResults">@T("Sort by:")</label>
+        <select id="filterResults1" name="@Html.NameOf(m => m.Options.Order)">
+            @Html.SelectOption(Model.Options.Order, PostOrder.DateUpdated, T("DateUpdated").ToString())
+            @Html.SelectOption(Model.Options.Order, PostOrder.Id, T("Id").ToString())
+            @Html.SelectOption(Model.Options.Order, PostOrder.Name, T("Name").ToString())
+            @Html.SelectOption(Model.Options.Order, PostOrder.DateCreated, T("DateCreated").ToString())
+        </select>
+
+        <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+    </fieldset>
+    <fieldset>
+        <legend></legend>
+        <table class="items">
+            <thead>
+                <tr>
+                    <th scope="col"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.ForumPostEntry)" /></th>
+                    <th scope="col">@T("Chuyên đề | Bài viết")</th>
+                    <th scope="col">@T("Status")</th>
+                    <th scope="col">@T("Published")</th>
+                    <th scope="col">@T("Ghim")</th> 
+                    <th scope="col">@T("Nổi bật")</th> 
+                    <th scope="col">@T("Thị trường")</th> 
+                    <th scope="col">@T("Dự án")</th> 
+                    <th scope="col">@T("User")</th>
+                    <th scope="col">@T("DateUpdate")</th>
+                    <th scope="col">@T("Action")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.ForumPostEntry)
+            { 
+            <tr>
+                <td>
+                    <input type="hidden" value="@Model.ForumPostEntry[index].ForumPostItem.Id" name="@Html.NameOf(m => m.ForumPostEntry[index].ForumPostItem.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.ForumPostEntry[index].IsChecked)"/>
+                </td>
+                <td>
+                    @Html.ActionLink((entry.ForumPostItem.Thread.Name).ToString(), "Edit", "PostAdminForum", new { entry.ForumPostItem.Id, returnUrl = HttpContext.Current.Request.Url }, new { }) | 
+                    @Html.ActionLink(entry.ForumPostItem.Title, "Edit", "PostAdminForum", new { entry.ForumPostItem.Id, returnUrl = HttpContext.Current.Request.Url }, new { })
+                </td>
+                 <td>
+                     @entry.ForumPostItem.StatusPost.Name
+                </td>
+                 <td>
+                    @entry.ForumPostItem.PublishStatus.Name
+                </td>
+                 <td>
+                    @entry.ForumPostItem.IsPinned
+                </td>
+                 <td>
+                    @entry.ForumPostItem.IsHeighLight
+                </td>
+                 <td>
+                    @entry.ForumPostItem.IsMarket
+                </td>
+                 <td>
+                    @entry.ForumPostItem.IsProject
+                </td>
+                 <td>
+                     @entry.ForumPostItem.UserPost.UserName
+                </td>
+                <td>
+                     @string.Format("{0:dd/MM/yyyy}", entry.ForumPostItem.DateUpdated)
+                </td>
+                <td>
+                    @Html.ActionLink(T("Delete").ToString(), "Delete", new { entry.ForumPostItem.Id, returnUrl = HttpContext.Current.Request.Url }, new { itemprop = "RemoveUrl UnsafeUrl" })|
+                    @Html.ActionLink(T("Edit").ToString(), "Edit", "PostAdminForum", new { entry.ForumPostItem.Id, returnUrl = HttpContext.Current.Request.Url }, new { })
+                </td>
+            </tr>
+                index++;
+            }
+        </table>
+
+    @Display(Model.Pager)
+
+    </fieldset>
+} 

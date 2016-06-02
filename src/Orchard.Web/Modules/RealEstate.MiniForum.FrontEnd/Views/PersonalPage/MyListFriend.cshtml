@@ -1,0 +1,46 @@
+﻿@using RealEstate.MiniForum.FrontEnd.ViewModels
+
+@{
+    Layout.Title = T("Danh sách bạn").ToString();
+}
+@using (Script.Foot())
+{
+    Script.Require("realEstate.MiniForum.FrontEnd");    
+}
+
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left">
+                    <div class="header-title-triangle"></div>
+                </div>
+                <h1 class="header-title-text">Danh sách bạn</h1>
+                <div class="header-title-right"></div>
+                <input type="hidden" id="userId" value="@WorkContext.CurrentUser.Id" />
+                <input type="hidden" id="userCurentId" value="@WorkContext.CurrentUser.Id" />
+                <input type="hidden" id="userNameCurent" value="@WorkContext.CurrentUser.UserName" />
+            </div>
+        </div>
+    </header>
+    <article class="search-friend">
+        <div class="alert alert-success last">
+            <div class="row">
+                <div class="col-md-2">Tìm kiếm</div>
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <input type="text" id="f-kw" name="f-kw" class="form-control" placeholder="Nhập tên user cần tìm">
+                        <span class="input-group-addon pointer" id="btnSearchFriend">Search</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+    <article class="list-friend">
+            <div class="row">
+                <div class="col-md-12 ajax-content ajax-paging-forum" data-url="@Url.Action("AjaxGetListFriend", "PersonalPage", new { area = "RealEstate.MiniForum.FrontEnd", Id = WorkContext.CurrentUser.Id })">
+                    @Html.Partial("Loading")
+                </div>
+            </div>
+    </article>
+</article>

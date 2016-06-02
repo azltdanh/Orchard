@@ -1,0 +1,82 @@
+﻿@using RealEstate.NewLetter.ViewModels;
+@using RealEstate.NewLetter.Models;
+@model ViewMessageInboxViewModel
+
+@{
+    Layout.Title = T(Model.ParentMessage.Title).ToString();
+}
+
+<fieldset>
+    <table class="items">
+        <thead>
+            <tr >
+                <td>&nbsp;</td>
+                <td style="font-weight:bold;">Người gửi</td>
+                <td style="width: 120px;">&nbsp;</td>
+            </tr>
+        </thead>
+        <tr>
+            <td>
+                <div><strong style="font-weight:bold;">@Model.ParentMessage.Title </strong> - <em>@String.Format("{0:g}", Model.ParentMessage.DateSend)</em></div>
+                <div>@Html.Raw(Model.ParentMessage.Content.Replace("\r\n", "<br />\r\n"))</div>
+            </td>
+            <td>
+                @Model.ParentMessage.UserSend.UserName
+            </td>
+            <td>
+                @Html.ActionLink(T("Reply").ToString(), "ViewMessage", new { Model.ParentMessage.Id, returnUrl = HttpContext.Current.Request.Url }, new { itemprop = "" }) |
+                @Html.ActionLink(T("Delete").ToString(), "DeleteMessageInbox", new { Model.ParentMessage.Id, returnUrl = HttpContext.Current.Request.Url }, new { itemprop = "RemoveUrl UnsafeUrl" })
+            </td>
+        </tr>
+        @{var index = 0;}
+        @foreach (var entry in Model.ListMessageInboxReply)
+        {
+            <tr>
+                <td>
+                    <div><strong style="font-weight:bold;">@entry.Title </strong>- <em>@String.Format("{0:g}", entry.DateSend)</em></div>
+                    <div>@Html.Raw(entry.Content.Replace("\r\n", "<br />\r\n"))</div>
+                </td>
+                <td>
+                    @(entry.UserSend.UserName)
+                </td>
+                <td>
+                    <a href="javascript:ReplyMessage(@entry.Id)">Reply</a> |
+                    @Html.ActionLink(T("Delete").ToString(), "DeleteMessageInbox", new { entry.Id, returnUrl = HttpContext.Current.Request.Url }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                </td>
+            </tr>
+            index++;
+        }
+    </table>
+</fieldset>
+
+@using (Html.BeginFormAntiForgeryPost())
+{
+    @Html.ValidationSummary()
+    <div class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label">@T("Tiêu đề:")</label>
+            <div class="controls form-inline">
+                <input type="text" name="Title" class="text text-box-medium" id="Title" value="@Model.ParentMessage.Title" />
+                <input type="hidden" id="ID" name="Id" value="@Model.ParentMessage.Id" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">@T("Nội dung:")</label>
+            <div class="controls form-inline">
+                <textarea name="Content" id="Content"></textarea>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&nbsp;</label>
+            <div class="controls form-inline">
+                <button type="submit" name="submit.reply" value="@T("Gửi")">@T("Gửi")</button>
+            </div>
+        </div>
+    </div>
+}
+<script>
+    function ReplyMessage(id) {
+        $('#ID').val(id);
+        $('html,body').animate({ scrollTop: $('.form-horizontal').offset().top - 90 }, 1000);
+    }
+</script>

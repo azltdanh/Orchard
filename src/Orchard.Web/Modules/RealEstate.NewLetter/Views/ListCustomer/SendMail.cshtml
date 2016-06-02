@@ -1,0 +1,71 @@
+﻿@model RealEstate.NewLetter.ViewModels.ListCustomerLetterSendMailViewModel
+@using RealEstate.NewLetter.Models;
+@using RealEstate.NewLetter.ViewModels;
+
+@{
+    Script.Require("newletter.common");
+    Layout.Title = T("Gửi BĐS cho khách").ToString();
+    string _lstId = "";
+    foreach (var n in Model.listcustomerId)
+    {
+        _lstId += n + ",";
+    }
+}
+
+
+<div class="form-horizontal">
+    <div class="control-group">
+        <label class="control-label">@T("Danh sách Email:")</label>
+        <div class="controls form-inline"><h2>
+            @for (int i = 0; i < Model.listcustomerEmail.Count; i++)
+            {
+                <span style="margin-right: 5px;">@Model.listcustomerEmail[i]</span>
+            }</h2>
+        </div>
+    </div>
+    <div class="control-group">
+        @Model.link
+    </div>
+</div>
+
+@using (Html.BeginFormAntiForgeryPost())
+{
+    
+    <div class="control-group">
+        <label class="control-label">@T("Tiêu đề:")</label>
+        <div class="controls form-inline">
+            @Html.TextBoxFor(m => m.MailTitle, new { @class = "span2" })
+            <input type="hidden" name="_lstcustomerId" id="_lstcustomerId" value="@_lstId" />
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label">@T("Nội dung:")</label>
+        <div class="controls form-inline">
+            @Html.TextAreaFor(userMessage => userMessage.MailContent, 10, 40, new { @class = "text textMedium span6" })
+            @Html.ValidationMessageFor(userMessage => userMessage.MailContent)
+        </div>
+    </div>
+    <button type="submit" name="submit.BulkSend" id="btnSubmit" value="@T("Apply")">@T("Apply")</button>
+}
+<style>
+    .span2 {
+        width: 400px;
+    }
+</style>
+<script>
+    $(function () {
+        $("#btnSubmit").click(function () {
+            if ($("#MailTitle").val() == null || $("#MailTitle").val() == "") {
+                alert("Vui lòng nhập tiêu đề thư!");
+                $("#MailTitle").focus();
+                return false;
+            }
+            if ($("#MailContent").val() == null || $("#MailContent").val() == "") {
+                alert("Vui lòng nhập nội dung thư!");
+                $("#MailContent").focus();
+                return false;
+            }
+        });
+    });
+</script>

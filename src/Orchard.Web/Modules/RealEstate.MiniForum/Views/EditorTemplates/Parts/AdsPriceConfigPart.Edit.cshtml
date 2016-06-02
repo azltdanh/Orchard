@@ -1,0 +1,21 @@
+﻿@model RealEstateForum.Service.ViewModels.AdsPriceConfigEditViewModel
+
+
+
+<fieldset>
+    @Html.LabelFor(m => m.Price, T("Nhập Giá:"))
+    @Html.TextBoxFor(m => m.Price, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.Price, "*")
+</fieldset>
+
+<fieldset>
+    @Html.LabelFor(m => m.CssClass, T("CssClass"))
+    @Html.TextBoxFor(m => m.CssClass, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.CssClass, "*")
+</fieldset>
+
+<script type="text/javascript">
+    $(function () {
+        $('[name="submit.SaveReturn"],[name="submit.Back"]').insertAfter('fieldset.save-button button[name="submit.Save"]').css('margin-left', '4px');
+    });
+</script>

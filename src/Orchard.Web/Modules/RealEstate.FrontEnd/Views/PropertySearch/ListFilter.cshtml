@@ -1,0 +1,15 @@
+﻿@model RealEstate.ViewModels.PropertyDisplayIndexViewModel
+@if (Model.Properties.Count() != 0)
+{
+    <div class="pager-top">
+    </div>
+    @Html.Partial("ListPropertiesDeal", Model.Properties)
+    <div class="pager-bottom">
+        @Display(Model.Pager)
+    </div>
+    <div class="clearfix"></div>
+}
+else
+{
+    @Html.Partial("NoResult")
+}

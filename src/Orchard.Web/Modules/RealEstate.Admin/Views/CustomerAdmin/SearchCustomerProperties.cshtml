@@ -1,0 +1,213 @@
+﻿@model RealEstate.ViewModels.CustomerEditViewModel
+@{
+    Script.Require("Floatheader");
+    Script.Require("Bootstrap");
+    Script.Require("Common");
+} 
+
+<table id="tblProperties" class="items fixed-table float-header">
+    <thead>
+        <tr>
+            @if (Model.EnableDeleteCustomerProperty)
+            {
+            <th scope="col" class="w16"></th>
+            }
+            <th scope="col" class="w20"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.Properties)" /></th>
+            <th scope="col" class="w42">@T("Id")</th>
+            <th scope="col" class="w40">@T("Giá")</th>
+            <th scope="col" class="w240">@T("Địa chỉ")</th>
+            <th scope="col" class="w40">@T("Nhà")</th>
+            <th scope="col" class="w14">@T("Hg")</th>
+            <th scope="col" class="w40">@T("MT/H")</th>
+            <th scope="col" class="w40">@T("LH")</th>
+            <th scope="col" class="w120">@T("Ý kiến KH")</th>
+            <th scope="col" class="w100">@T("NV")</th>
+            <th scope="col" class="w68">@T("Ngày")</th>
+        </tr>
+    </thead>
+    <tbody>
+    @{int index = 0;}
+    @foreach (var entry in Model.Properties)
+    {
+        var item = entry.PropertyPart;
+        <tr>
+            @if (Model.EnableDeleteCustomerProperty)
+            {
+            <td>
+                @Html.ActionLink(T("Delete").ToString(), "Delete", new { entry.Id }, new { Class = "ui-icon icon-delete", cpId = entry.Id })
+            </td>
+            }
+            <td>
+                <input type="hidden" value="@Model.Properties[index].CustomerPropertyRecord.PropertyPartRecord.Id" name="@Html.NameOf(m => m.Properties[index].CustomerPropertyRecord.PropertyPartRecord.Id)"/>
+                <input type="checkbox" value="true" name="@Html.NameOf(m => m.Properties[index].IsChecked)" />
+            </td>
+            <!-- ID -->
+            <td>
+                <span class="@(item.IsExcludeFromPriceEstimation ? "property-excluded" : "")">
+                    @Html.ActionLink(item.Id.ToString(), "Edit", "PropertyAdmin", new { item.Id }, new { }) 
+                </span>
+                <div>
+                    <!-- UserGroup -->
+                    @Html.Raw(item.UserGroup != null ? ("<small class=\"small\">" + item.UserGroup.ShortName + "</small>") : "")
+                </div>
+            </td>
+            <!-- PriceProposedInVND -->
+            <td class="@(item.Flag != null ? item.Flag.CssClass : "")">
+                <span data-toggle="tooltip" title="
+                    <div><em><strong>Giá rao:</strong></em> @item.PriceProposed @(item.PaymentMethod != null ? item.PaymentMethod.ShortName : "")  / @(item.PaymentUnit != null ? item.PaymentUnit.ShortName : "")</div>
+                    <div>
+                        <em><strong>Định giá:</strong></em>
+                        @if (item.PriceEstimatedInVND != null)
+                        {
+                            @Html.DisplayFor(model => item.PriceEstimatedInVND, "Double") <text>Tỷ</text>
+                            if (item.PriceProposedInVND > 0)
+                            {
+                                @Html.DisplayFor(model => item.PriceEstimatedInVND, "Percent", new { PriceProposedInVND = item.PriceProposedInVND })
+                            }
+                        }
+                        else
+                        {
+                            <text>?</text>
+                        }
+                    </div>
+                    ">@Html.DisplayFor(model => item.PriceProposedInVND, "Double", new { PaymentMethodCssClass = item.PaymentMethod.CssClass })
+                </span>
+                @*<div data-tooltip-content="" style="display:none">
+                    
+                </div>*@
+            </td>
+            <!-- AddressNumber -->
+            <td class="@item.Status.CssClass">
+                @string.Format("{0:0} {1:0}",
+                item.AddressNumber,
+                string.Join(", ", new string[]{
+                    (item.Street != null ? item.Street.Name : item.OtherStreetName),
+                    (item.Ward != null ? item.Ward.ShortName : item.OtherWardName),
+                    (item.District != null ? item.District.ShortName : item.OtherDistrictName)
+                }))
+                <span class="small">@item.Status.ShortName</span>
+                <!-- Area -->
+                @if (item.TypeGroup != null)
+                {
+                    switch (item.TypeGroup.CssClass)
+                    {
+                        case "gp-house":
+                            // AreaTotal
+                            if (!String.IsNullOrEmpty(item.DisplayForAreaTotal))
+                            {
+                                <div>DTKV: @Html.Raw(item.DisplayForAreaTotal)</div>
+                            }
+                            // AreaLegal
+                            if (!String.IsNullOrEmpty(item.DisplayForAreaLegal))
+                            {
+                                <div>DTQH: @Html.Raw(item.DisplayForAreaLegal)</div>
+                            }
+                            break;
+                        case "gp-apartment":
+                            // AreaUsable
+                            if (item.AreaUsable > 0)
+                            {
+                                <div>DT căn hộ: @String.Format("{0:#,0.##}", item.AreaUsable) m<sup>2</sup></div>
+                            }
+                            break;
+                        case "gp-land":
+                            // AreaTotal
+                            if (!String.IsNullOrEmpty(item.DisplayForAreaTotal))
+                            {
+                                <div>DTKV: @Html.Raw(item.DisplayForAreaTotal)</div>
+                            }
+                            // AreaResidential
+                            if (item.AreaResidential > 0)
+                            {
+                                <div>DT đất thổ cư: @String.Format("{0:#,0.##}", item.AreaResidential) m<sup>2</sup></div>
+                            }
+                            break;
+                    }
+                }
+                
+                    <!-- Title -->
+                    <!-- Content -->
+                    <!-- Advantages -->
+                    @if (!String.IsNullOrEmpty(item.Title) || !String.IsNullOrEmpty(item.Content) || (entry.Advantages != null && entry.Advantages.Any()))
+{
+    <a href="#" data-toggle="tooltip" title="
+        <div style='width:400px'>
+            <!-- Title -->
+            @Html.Raw(String.IsNullOrEmpty(item.Title) ? "" : ("<div><em><strong>Tiêu đề:</strong></em> " + item.Title + "</div>"))
+            <!-- Content -->
+            @Html.Raw(String.IsNullOrEmpty(item.Content) ? "" : ("<div><em><strong>Nội dung:</strong></em> " + item.Content + "</div>"))
+            <!-- Advantages -->
+            @Html.Raw((entry.Advantages != null && entry.Advantages.Any()) ? ("<div><em><strong>Đặc điểm:</strong></em> " + String.Join(", ", entry.Advantages.Select(a => a.Name).ToList()) + "</div>") : "")
+        </div>
+        ">chi tiết...
+    </a>
+                                            @*<div data-tooltip-content="" style="display: none">
+                            
+                        </div>*@
+}
+            </td>
+            <!-- PropertyType -->
+            <td>
+                @if (item.Type != null)
+                { @item.Type.ShortName }
+                @Html.DisplayFor(model => item.Floors, "Floors")
+            </td>
+            <!-- Direction -->
+            <td>
+                @if (item.Direction != null)
+                { @item.Direction.ShortName }
+            </td>
+            <!-- Location -->
+            <td>
+                <span data-toggle="tooltip" title="@item.DisplayForLocationInfo">@item.DisplayForAlley</span>
+            </td>
+            <!-- ContactPhone -->
+            <td>
+                @if (entry.ShowContactPhone)
+                {
+                    @Html.DisplayFor(m => item.ContactPhone, "Truncate", new { Note = item.Note, Email = item.ContactEmail })
+                }
+            </td>
+            <!-- CustomerFeedback -->
+            <td>
+                @Html.DropDownListFor(m => entry.CustomerFeedbackId,
+                Model.Feedbacks.Select(s => new SelectListItem
+                {
+                    Selected = s.Id == entry.CustomerFeedbackId,
+                    Text = s.Name,
+                    Value = s.Id.ToString()
+                }), "",
+                new { @class = "select-box w120 " + entry.CustomerFeedbackCssClass, staffs = entry.CustomerStaff })
+            </td>
+            <!-- CustomerStaff -->
+            <td>
+                @entry.CustomerStaff
+            </td>
+            <!-- CustomerVisitedDate -->
+            <td>
+                @if (!string.IsNullOrEmpty(entry.CustomerStaff))
+                {
+                    @Html.DisplayFor(model => entry.CustomerVisitedDate, "Date")
+                    if (entry.IsWorkOverTime)
+                    { <span class='small'>NG</span>}
+                }
+            </td>
+        </tr>
+                index++;
+    }
+    </tbody>
+</table>
+
+@Display(Model.Pager)
+
+<div class="spacer"></div>
+
+<script type="text/javascript">
+    $("select[id^='entry_CustomerFeedbackId'],#FeedbackId").each(function () {
+        var options = $(this).children('option');
+        var css = new Array('', 'fb-wait-visit', 'fb-visited', 'fb-dislike', 'fb-considering', 'fb-dealing', 'fb-wait-deposit', 'fb-deposited', 'fb-bought-successful', 'fb-bought-failed')
+        for (var i = 0; i < options.length; i++) {
+            $(options[i]).attr("class", css[i]);
+        }
+    });
+</script>

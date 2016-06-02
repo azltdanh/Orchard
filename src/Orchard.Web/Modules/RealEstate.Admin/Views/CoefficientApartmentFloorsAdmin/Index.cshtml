@@ -1,0 +1,63 @@
+@model RealEstate.ViewModels.CoefficientApartmentFloorsIndexViewModel
+@using RealEstate.Models;
+@using RealEstate.ViewModels;
+
+@{
+    Script.Require("Common");
+    Layout.Title = T("Coefficient ApartmentFloors").ToString();
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{ 
+    @Html.ValidationSummary()
+
+    <div class="manage">@Html.ActionLink(T("Add new CoefficientApartmentFloors").ToString(), "Create", new { }, new { @class = "button primaryAction" })</div>
+
+    <fieldset class="bulk-actions">
+        <label for="publishActions">@T("Actions:")</label>
+        <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+            @Html.SelectOption(Model.Options.BulkAction, CoefficientApartmentFloorsBulkAction.None, T("Choose action...").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, CoefficientApartmentFloorsBulkAction.Enable, T("Enable").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, CoefficientApartmentFloorsBulkAction.Disable, T("Disable").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, CoefficientApartmentFloorsBulkAction.Delete, T("Delete").ToString())
+        </select>
+        <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+    </fieldset>
+    
+    <fieldset>
+        <table class="items">
+            <thead>
+                <tr>
+                    <th scope="col"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.CoefficientApartmentFloors)" /></th>
+                    <th scope="col">@T("Floors")</th>
+                    <th scope="col">@T("CoefficientApartmentFloors")</th>
+                    <th scope="col">@T("Actions")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.CoefficientApartmentFloors)
+            { 
+            <tr>
+                <td>
+                    <input type="hidden" value="@Model.CoefficientApartmentFloors[index].CoefficientApartmentFloorsPart.Id" name="@Html.NameOf(m => m.CoefficientApartmentFloors[index].CoefficientApartmentFloorsPart.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.CoefficientApartmentFloors[index].IsChecked)"/>
+                </td>
+                <td>
+                    @Html.DisplayFor(model => entry.CoefficientApartmentFloorsPart.Floors, "Double")
+                </td>
+                <td>
+                    @Html.DisplayFor(model => entry.CoefficientApartmentFloorsPart.CoefficientApartmentFloors, "Double")
+                </td>
+                <td>
+                    @Html.ActionLink(T("Edit").ToString(), "Edit", new { entry.CoefficientApartmentFloorsPart.Id }) |
+                    @Html.ActionLink(T("Delete").ToString(), "Delete", new { entry.CoefficientApartmentFloorsPart.Id }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                </td>
+            </tr>
+                index++;
+            }
+        </table>
+
+    @Display(Model.Pager)
+
+    </fieldset>
+} 

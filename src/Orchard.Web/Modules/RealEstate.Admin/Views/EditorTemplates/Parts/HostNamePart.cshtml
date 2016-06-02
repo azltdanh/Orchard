@@ -1,0 +1,37 @@
+﻿@model RealEstate.Models.HostNamePart
+
+<fieldset>
+    @Html.LabelFor(m => m.Name, T("Tên host"))
+    @Html.TextBoxFor(m => m.Name, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.Name, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.ShortName, T("Shortname"))
+    @Html.TextBoxFor(m => m.ShortName, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.ShortName, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.CssClass, T("CssClass"))
+    @Html.TextBoxFor(m => m.CssClass, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.CssClass, "*")
+</fieldset>
+<fieldset>
+    <label>@Html.EditorFor(m => m.IsEnabled) @T("IsEnabled")</label>
+</fieldset>
+
+<fieldset>
+    @Html.LabelFor(m => m.GoogleAnalyticsKey, T("Google Analytics Tracking Key (UA-XXXXXXX-X)"))
+    @Html.TextBoxFor(m => m.GoogleAnalyticsKey, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.GoogleAnalyticsKey, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.DomainName, T("Override Domain Name (optional)"))
+    @Html.TextBoxFor(m => m.DomainName, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.DomainName, "*")
+</fieldset>
+<fieldset>
+    <label>@Html.EditorFor(m => m.UseAsyncTracking) @T("Use Async Tracking")</label>
+</fieldset>
+<fieldset>
+    <label>@Html.EditorFor(m => m.TrackOnAdmin) @T("Include on /Admin Pages")</label>
+</fieldset>

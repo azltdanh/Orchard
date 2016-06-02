@@ -1,0 +1,16 @@
+﻿@model RealEstate.ViewModels.PropertyDisplayIndexViewModel
+
+@if (Model.Properties.Count() > 0)
+{
+    @Html.Partial("ListPropertiesAuction", Model.Properties)
+    <div class="pull-right view-continue">
+        <a class="text-bold" href="@Url.Action("SearchProperties", "PropertySearch", new { area = "RealEstate.FrontEnd", AdsTypeCssClass = Model.Options.AdsTypeCssClass, FlagAds = "new-auction" })">>> Xem thêm bđs</a>
+    </div>
+    <div class="clearfix"></div>
+}
+else
+{
+    <div class="margin">
+        @Html.Partial("NoResult")
+    </div>
+}

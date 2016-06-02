@@ -1,0 +1,31 @@
+﻿@using RealEstate.MiniForum.ViewModels
+@model ImportDataViewModel
+
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Post, new { }))
+{
+    @Html.ValidationSummary()
+
+    <div class="control-group">
+        <div class="controls">
+            <label class="control-label" for="">ID cũ</label>
+        </div>
+    </div>
+    <div class="control-group">
+        @Html.EditorFor(m => m.OldTopicId, new { @class = "textMedium" })
+        @Html.ValidationMessageFor(r => r.OldTopicId, "*")
+    </div>
+    
+    <div class="control-group">
+        <div class="controls">
+            <label class="control-label" for="Description">ID mới</label>
+        </div>
+    </div>
+    <div class="control-group">
+        @Html.EditorFor(m => m.NewTopicId, new { @class = "textMedium" })
+        @Html.ValidationMessageFor(r => r.NewTopicId, "*")
+    </div>
+    
+    <div class="control-group">
+        <input type="submit" value="Import" class="btn-primary" />
+    </div>
+}

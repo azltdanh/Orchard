@@ -1,0 +1,52 @@
+﻿@using RealEstateForum.Service.ViewModels
+@model PostOfUserWidgetViewModel
+
+@if (Model.ListPostTitle != null && Model.ListPostTitle.Count() > 0)
+{
+    <div id="ListPostOfUser" class="listpostofuser">
+        <div>
+            <ul class="media-list media-list-condensed">
+                <li class="media"><strong>Bài viết đã đăng</strong></li>
+                @foreach (var item in Model.ListPostTitle)
+                {
+                    <li class="media">
+                        <div class="@(Model.IsOwner ? "title-content pull-left" : "") text-ellipsis">
+                            - @Html.ActionLink(item.Title, "PostDetail", new { controller = "PostForumFrontEnd", area = "RealEstate.MiniForum.FrontEnd", Id = item.Id, title = item.DisplayNameUrl, ThreadShortName = item.ThreadShortName, TopicShortName = item.TopicShortName }, new { title = item.Title })
+                        </div>
+                        @if (Model.IsOwner)
+                        {
+                            <div class="btn-group pull-right">
+                                <button class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="topic-item-act-edit" target="_blank" href="@Url.Action("Edit", "PostForumFrontEnd", new { area = "RealEstate.MiniForum.FrontEnd", Id = item.Id, title = item.DisplayNameUrl })">Sửa bài viết</a></li>
+                                    @if (item.PostStatus == "st-none")
+                                    {
+                                        <li><a rel="nofollow" href="javascript:;" class="topic-item-status-true" onclick="WidgetChangeStatus(@item.Id)">Tạm dừng đăng bài viết</a></li>
+                                    }
+                                    else if (item.PostStatus == "st-bin")
+                                    {
+                                        <li><a rel="nofollow" href="javascript:;" class="topic-item-status-false" onclick="WidgetChangeStatus(@item.Id)">Kích hoạt đăng bài viết</a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><a class="topic-item-act-edit" target="_blank" href="@Url.Action("Edit", "PostForumFrontEnd", new { area = "RealEstate.MiniForum.FrontEnd", Id = item.Id, title = item.DisplayNameUrl })">Tiếp tục soạn</a></li>
+                                    }
+                                    <li><a href="javascript:;" rel="nofollow" class="topic-item-act-delete" onclick="WidgetDeletePost(@item.Id)">Xoá bài viết</a></li>
+                                </ul>
+                            </div>
+                            <div class="clearfix"></div>
+                        }
+                    </li>
+                }
+            </ul>
+        </div>
+        <div class="pager-bottom">
+            @Display(Model.Pager)
+        </div>
+        <div class="clearfix"></div>
+    </div>
+}
+else
+{
+    <h4>Chưa có bài viết nào.</h4>
+}

@@ -1,0 +1,133 @@
+﻿@model RealEstate.ViewModels.PropertyCreateViewModel
+@using RealEstate.ViewModels;
+
+<!-- Thông tin nội bộ -->
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-center header-bg-green">
+                <div class="header-left header-bg-green">
+                    <div class="header-left-triangle"></div>
+                </div>
+                <h1>Thông tin nội bộ</h1>
+                <div class="header-right"></div>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="form-horizontal pull-left">
+            <!-- LastInfoFromUser -->
+            <div class="control-group">
+                <label class="control-label">@T("Nguồn:")</label>
+                <div class="controls">
+                    @Html.DropDownListFor(m => m.LastInfoFromUserId,
+                    Model.Users.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.LastInfoFromUserId,
+                        Text = s.UserName,
+                        Value = s.Id.ToString()
+                    }),
+                    new { @class = "select-box" })
+                    @Html.ValidationMessageFor(m => m.LastInfoFromUserId, "*")
+
+                    @*<label>@Html.CheckBoxFor(m => m.IsAuthenticatedInfo) @T("BĐS đã xác thực")</label>*@
+                </div>
+            </div>
+            <!-- Flag -->
+            <div class="control-group">
+                <label class="control-label">@T("Đánh dấu:")</label>
+                <div class="controls">
+                    @Html.DropDownListFor(m => m.FlagId,
+                    Model.Flags.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.FlagId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }),
+                    new { @class = "select-box" })
+                    @Html.ValidationMessageFor(m => m.FlagId, "*")
+
+                    @if (Model.TypeGroupCssClass == "gp-house")
+                    {
+                        <label>@Html.CheckBoxFor(m => m.IsExcludeFromPriceEstimation) @T("Loại khỏi định giá")</label>
+                    }
+                </div>
+            </div>
+            <!-- Status -->
+            <div class="control-group">
+                <label class="control-label">@T("Tình trạng:")</label>
+                <div class="controls">
+                    @Html.DropDownListFor(m => m.StatusCssClass,
+                    Model.Status.Select(s => new SelectListItem
+                    {
+                        Selected = s.CssClass == Model.StatusCssClass,
+                        Text = s.Name,
+                        Value = s.CssClass
+                    }),
+                    new { @class = "select-box" })
+                    @Html.ValidationMessageFor(m => m.StatusCssClass, "*")
+                    <label>@Html.CheckBoxFor(m => m.IsSoldByGroup) @T("Được bán bởi Group")</label>
+                </div>
+            </div>
+            <!-- Note -->
+            <div class="control-group">
+                <label class="control-label">@T("Ghi chú nội bộ:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.Note, new { maxlength = 250, @class = "text text-box-medium" })
+                </div>
+            </div>
+            <!-- ContactPhoneToDisplay -->
+            @if (AuthorizedFor(RealEstate.Permissions.EditContactPhoneToDisplay))
+            {
+                <div class="control-group">
+                    <label class="control-label">@T("ĐT hiển thị:")</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.ContactPhoneToDisplay, new { maxlength = 250, @class = "text text-box-medium" })
+                    </div>
+                </div>
+            }
+            <!-- Images -->
+            <div class="control-group">
+                <label class="control-label">@T("Hình ảnh:")</label>
+                <div class="controls">
+                    <div class="upload-container">
+                        <div class="upload">
+                            <input type="file" name="files" id="file1" />
+                            <span class="ui-icon icon-delete"></span>
+                        </div>
+                    </div>
+                    <script type="text/javascript">
+                        $(document).ready(function () {
+                            var currentImage = 1;
+                            $("body").on("change", "input[name='files']", function () {
+                                currentImage = currentImage + 1;
+                                var htmlToAppend = '<div class="upload"><input type="file" name="files" id="file' + currentImage + '" /><span class="ui-icon icon-delete"></span></div>';
+                                $('.upload-container').append(htmlToAppend);
+                            }).on("click", ".upload .icon-delete", function () {
+                                if ($(this).parent().siblings().length > 0) {
+                                    $(this).parent().remove();
+                                }
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+            <!-- Youtube Video -->
+            <div class="control-group">
+                <label class="control-label">@T("Youtube Id:")</label>
+                <div class="controls">
+                    @*<a href="#form_youtube_upload" class="inline-youtube button primaryAction">Chọn Video</a>*@
+                    @Html.TextBoxFor(r => r.YoutubeId, new { @class = "text text-box", placeholder = "Dán YoutubeId vào đây" })
+                    <label>@Html.CheckBoxFor(m => m.YoutubePublish) @T("Publish video")</label>
+                    <div>
+                        Vào <a href="https://www.youtube.com/upload" target="_blank"><strong>Youtube.com</strong></a> để upload video, <br />
+                        sau đó copy YoutubeId giống như hình bên dưới và dán(paste) vào ô trên<br />
+                        <a href="#colorbox_youtube_guide" title="Click để xem hướng dẫn copy YoutubeId trên link" class="inline-youtube_guide"><i class="icon-help ui-icon"></i> Xem hình</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </article>
+    <footer></footer>
+</article>

@@ -1,0 +1,84 @@
+﻿@using RealEstateForum.Service.ViewModels;
+@using RealEstateForum.Service.Models;
+@{
+    Style.Require("jQueryUI_Orchard");
+    PostFilterOptions viewmodel = Model;
+}
+@using (Script.Foot())
+{
+    Script.Require("jQueryUI_DatePicker");
+    Script.Require("realEstate.MiniForum.FrontEnd");
+    <script type="text/javascript">
+        $(function () {
+            // Load DatePicker
+            $(".date-box").datepicker({ dateFormat: "dd/mm/yy" });
+        });
+    </script>
+}
+@using (Html.BeginFormAntiForgeryPost("/dien-dan/ket-qua-tim-kiem-bai-viet", FormMethod.Get))
+{      
+    <div class="form-horizontal-filter">
+        @*<input type="hidden" id='val_PageId' value="@Request.QueryString.Get("PageId")" />
+        <input type="hidden" id='val_TopicId' value="@Request.QueryString.Get("TopicId")" />
+        <input type="hidden" id='val_Name' value="@Request.QueryString.Get("NameTopic")" />
+        <input type="hidden" id='val_UserNameTopic' value="@Request.QueryString.Get("UserNameTopic")" />
+        <input type="hidden" id='val_DateCreatedFrom' value="@Request.QueryString.Get("DateCreatedFrom")" />
+        <input type="hidden" id='val_DateCreatedTo' value="@Request.QueryString.Get("DateCreatedTo")" />*@
+        <div id="formFilter" class="form-horizontal">
+            <div class="form-group">
+                <div class="col-lg-12">
+                    @Html.DropDownList("ThreadId",
+                            viewmodel.ListThread.Select(s => new SelectListItem
+                            {
+                                Selected = s.Id == viewmodel.ThreadId,
+                                Text = s.Name,
+                                Value = s.Id.ToString()
+                            }), T("-- Vui lòng chọn chuyên mục --").ToString(), new { Class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-12">
+                        @Html.DropDownList( "TopicId",
+                                        viewmodel.ListTopic.Select(s => new SelectListItem
+                                        {
+                                            Selected = s.Id == viewmodel.TopicId,
+                                            Text = s.Name,
+                                            Value = s.Id.ToString()
+                                        }), T("-- Vui lòng chọn chuyên đề --").ToString(), new { Class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-12">
+                    @Html.TextBox("Title", "",new { placeholder = "Tên bài viết", @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-12">
+                    @Html.TextBox("SearchText", "",new { placeholder = "Nội dung bài viết", @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-12">
+                    @Html.TextBox("UserNameOrEmail","", new { placeholder = "Tên người viết", @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-12">
+                    @Html.TextBox("DateCreateFrom", "", new { @placeholder = "Từ ngày", @class = "form-control date-box" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-12">
+                    @Html.TextBox("DateCreateTo", "", new { @placeholder = "Đến ngày", @class = "form-control date-box" })
+                </div>
+            </div>
+            <div class="form-group form-inline">
+                <div class="col-lg-12">
+                    <button type="submit" class="primarykeySearch btn btn-primary" id="btSearch"><i class="glyphicon glyphicon-search"></i>Tìm Kiếm</button>
+                    <a href="javascript:;" id="btnrefresh" title="Xoá, làm mới tìm kiếm"><i class="glyphicon glyphicon-refresh"></i></a>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+}

@@ -1,0 +1,13 @@
+﻿@model dynamic
+@if (Model > 0)
+{
+    @String.Format("{0:#,0.##}", Model)<text>m<sup>2</sup></text>
+}
+@if(ViewBag.Width > 0 && ViewBag.Length > 0)
+{
+    @String.Format("{0:#,0.##}", ViewBag.Width) <text>x</text> @String.Format("{0:#,0.##}", ViewBag.Length)
+}
+@if (ViewBag.BackWidth > 0)
+{
+    <text>Hậu</text> @String.Format("{0:#,0.##}", ViewBag.BackWidth)
+}

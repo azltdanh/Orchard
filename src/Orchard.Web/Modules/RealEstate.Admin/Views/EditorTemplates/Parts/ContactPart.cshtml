@@ -1,0 +1,30 @@
+@model RealEstate.Models.ContactPart
+@using Orchard.ContentManagement;
+
+@{ Layout.Title = T("Edit ContactPart").ToString(); }
+
+<fieldset>
+    <legend>@T("ContactPart settings")</legend>
+        <div>
+            @Html.LabelFor(m => m.Name, @T("Name"))
+            @Html.EditorFor(m => m.Name)
+            @Html.ValidationMessageFor(m => m.Name, "*")
+        </div>
+        <div>
+            @Html.LabelFor(m => m.Phone, @T("Phone"))
+            @Html.EditorFor(m => m.Phone)
+            @Html.ValidationMessageFor(m => m.Phone, "*")
+        </div>
+        <div>
+            @Html.LabelFor(m => m.Address, @T("Address"))
+            @Html.EditorFor(m => m.Address)
+            @Html.ValidationMessageFor(m => m.Address, "*")
+        </div>
+        <div>
+            @Html.LabelFor(m => m.Email, @T("Email"))
+            @Html.EditorFor(m => m.Email)
+            @Html.ValidationMessageFor(m => m.Email, "*")
+        </div>
+
+</fieldset>
+

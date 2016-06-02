@@ -1,0 +1,91 @@
+@model RealEstate.ViewModels.CoefficientAlleysIndexViewModel
+@using RealEstate.Models;
+@using RealEstate.ViewModels;
+
+@{
+    Script.Require("Common");
+    Layout.Title = T("Coefficient Alley").ToString();
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{ 
+    @Html.ValidationSummary()
+    <div class="manage">@Html.ActionLink(T("Add new CoefficientAlley").ToString(), "Create", new { }, new { @class = "button primaryAction" })</div>
+
+    <fieldset class="bulk-actions">
+        <label for="publishActions">@T("Actions:")</label>
+        <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+            @Html.SelectOption(Model.Options.BulkAction, CoefficientAlleysBulkAction.None, T("Choose action...").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, CoefficientAlleysBulkAction.Enable, T("Enable").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, CoefficientAlleysBulkAction.Disable, T("Disable").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, CoefficientAlleysBulkAction.Delete, T("Delete").ToString())
+        </select>
+        <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+    </fieldset>
+    <fieldset class="bulk-actions">
+        @Html.TextBoxFor(m => m.Options.Search, new { @class = "text" })        
+        <label for="filterResults">@T("Filter:")</label>
+        <select id="filterResults" name="@Html.NameOf(m => m.Options.Filter)">
+            @Html.SelectOption(Model.Options.Filter, CoefficientAlleysFilter.All, T("All").ToString())
+        </select>
+        <label for="filterResults">@T("Sort by:")</label>
+        <select id="filterResults1" name="@Html.NameOf(m => m.Options.Order)">
+            @Html.SelectOption(Model.Options.Order, CoefficientAlleysOrder.Name, T("Name").ToString())
+            @Html.SelectOption(Model.Options.Order, CoefficientAlleysOrder.SeqOrder, T("SeqOrder").ToString())
+        </select>
+
+        <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+    </fieldset>
+    <fieldset>
+        <table class="items">
+            <thead>
+                <tr>
+                    <th scope="col"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.CoefficientAlleys)" /></th>
+                    <th scope="col">@T("StreetUnitPrice")</th>
+                    <th scope="col">@T("H1 Max")</th>
+                    <th scope="col">@T("H1 Min")</th>
+                    <th scope="col">@T("Hn Max")</th>
+                    <th scope="col">@T("Hn Min")</th>
+                    <th scope="col">@T("Hn Equal")</th>
+                    <th scope="col">@T("Actions")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.CoefficientAlleys)
+            { 
+            <tr>
+                <td>
+                    <input type="hidden" value="@Model.CoefficientAlleys[index].CoefficientAlley.Id" name="@Html.NameOf(m => m.CoefficientAlleys[index].CoefficientAlley.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.CoefficientAlleys[index].IsChecked)"/>
+                </td>
+                <td>
+                    @Html.DisplayFor(model => entry.CoefficientAlley.StreetUnitPrice, "Double")
+                </td>
+                <td>
+                    @Html.DisplayFor(model => entry.CoefficientAlley.CoefficientAlley1Max, "Double")
+                </td>
+                <td>
+                    @Html.DisplayFor(model => entry.CoefficientAlley.CoefficientAlley1Min, "Double")
+                </td>
+                <td>
+                    @Html.DisplayFor(model => entry.CoefficientAlley.CoefficientAlleyMax, "Double")
+                </td>
+                <td>
+                    @Html.DisplayFor(model => entry.CoefficientAlley.CoefficientAlleyMin, "Double")
+                </td>
+                <td>
+                    @Html.DisplayFor(model => entry.CoefficientAlley.CoefficientAlleyEqual, "Double")
+                </td>
+                <td>
+                    @Html.ActionLink(T("Edit").ToString(), "Edit", new { entry.CoefficientAlley.Id }) |
+                    @Html.ActionLink(T("Delete").ToString(), "Delete", new { entry.CoefficientAlley.Id }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                </td>
+            </tr>
+                index++;
+            }
+        </table>
+
+    @Display(Model.Pager)
+
+    </fieldset>
+} 

@@ -1,0 +1,67 @@
+﻿@using RealEstateForum.Service.ViewModels
+@using RealEstate.Helpers
+@model ForumSearchResults
+@{
+    SetMeta("keywords", "Tìm kiếm bài viết - Diễn đàn bất động sản - Mạng xã hội bất động sản");
+    SetMeta("Description", "Diễn đàn bất động sản - Mạng xã hội bất động sản");
+    Layout.Title = "Kết quả tìm kiếm bài viết - Diễn đàn bât động sản";
+}
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left">
+                    <div class="header-title-triangle"></div>
+                </div>
+                <h1 class="header-title-text">Tìm được @Model.TotalCount bài viết</h1>
+                <div class="header-title-right"></div>
+            </div>
+        </div>
+    </header>
+    <article>
+        @if (Model.ListPostItem != null && Model.ListPostItem.Count > 0)
+        {
+            <div class="pager-top"></div>
+            
+            <ul class="media-list media-list-solid last">
+                @foreach (var item in Model.ListPostItem)
+                {
+                    var userDisplayName = !string.IsNullOrEmpty(item.UserInfo.DisplayName) ? item.UserInfo.DisplayName : item.UserInfo.UserName;
+
+                    var urlUserProfile = (WorkContext.CurrentUser != null && item.UserInfo.Id == WorkContext.CurrentUser.Id) ?
+                                             Url.Action("MyPage", "PersonalPage", new { Area = "RealEstate.MiniForum.FrontEnd" })
+                                    :
+                                    Url.Action("FriendPage", "PersonalPage", new { Area = "RealEstate.MiniForum.FrontEnd", UserName = item.UserInfo.UserName.ToSlug(), UserId = item.UserInfo.Id });
+
+                    <li class="media@(Model.ListPostItem.IndexOf(item) == 0 ? " first" : "")@(Model.ListPostItem.IndexOf(item) == Model.ListPostItem.Count - 1 ? " last" : "")">
+                        <a class="pull-left" href="@Url.Action("PostDetail", new { controller = "PostForumFrontEnd", area = "RealEstate.MiniForum.FrontEnd", Id = item.Id, title = item.DisplayForNameForUrl, ThreadShortName = item.ThreadShortName, TopicShortName = item.TopicShortName })" title="@item.Title">
+                            <img src="@item.DefaultImage?width=140&height=113" alt="@item.Title" class="media-object img-thumbnail" />
+                        </a>
+                        <div class="media-body">
+                            <h2 class="media-heading">
+                                @Html.ActionLink(item.Title, "PostDetail", new { controller = "PostForumFrontEnd", area = "RealEstate.MiniForum.FrontEnd", Id = item.Id, title = item.DisplayForNameForUrl, ThreadShortName = item.ThreadShortName, TopicShortName = item.TopicShortName }, new { title = item.Title })
+                            </h2>
+                            <a class="text-success" href="@urlUserProfile">@userDisplayName</a>
+                            <small class="text-muted">@string.Format("{0:h:mm tt (dd/MM/yyyy)}", @item.DateUpdated)</small>
+                            <div class="block-ellipsis block-ellipsis-4">
+                                @if (!String.IsNullOrEmpty(item.Description))
+                                {
+                                    @Html.Raw(item.Description.Normalize().Trim())<br />
+                                }
+                                @Html.Raw(item.SubContent.Normalize().Trim())
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ul>
+            
+            <div class="pager-bottom">
+                @Display(Model.Pager)
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-success">Không có bài viết nào được tìm thấy.</div>
+        }
+    </article>
+</article>

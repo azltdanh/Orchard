@@ -1,0 +1,104 @@
+﻿@using RealEstate.ViewModels;
+@using RealEstate.Models;
+@using RealEstate.Services;
+@model CustomerDisplayIndexViewModel
+
+@using RealEstate.Helpers;
+<div id="ViewResultFilterRequirement" class="ViewResultFilterRequirement">
+    @if (Model.Customers.Count() > 0)
+    {
+        <table class="table table-bordered table-condensed table-striped table-row-height-5">
+            <tbody>
+                @foreach (var entry in Model.Customers)
+                {
+                    var item = entry.Customer;
+                    var groupIds = item.Requirements.Select(a => a.GroupId).Distinct().ToList();
+                    foreach (int groupId in groupIds)
+                    {
+                        IEnumerable<CustomerRequirementRecord> requirements = item.Requirements.Where(a => a.GroupId == groupId && a.AdsTypePartRecord.CssClass == "ad-buying" || a.AdsTypePartRecord.CssClass == "ad-renting").ToList();
+                        if (Model.Options.AdsTypeCssClass != null)
+                        {
+                            requirements = item.Requirements.Where(a => a.GroupId == groupId && a.AdsTypePartRecord.CssClass == Model.Options.AdsTypeCssClass).ToList();
+                        }
+                        <tr data-toggle="popover" data-html="true" data-placement="auto" data-trigger="hover" data-content="">
+                            <td class="text-ellipsis">
+                                @if (requirements.Any(r => r.LocationProvincePartRecord != null))
+                                {
+                                    var province = requirements.Where(r => r.LocationProvincePartRecord != null).First().LocationProvincePartRecord;
+                                    <strong>@(String.IsNullOrEmpty(province.ShortName) ? province.Name : province.ShortName)</strong>
+                                }
+                                <div class="popover-data-content hidden-xs hidden-sm" style="height: 0; overflow: hidden;">
+                                    @if (entry.Purposes.Count() > 0)
+                                    { <div>
+                                        <strong>Mục đích: </strong>@string.Join(", ", entry.Purposes.Select(r => r.Name).ToArray())
+                                    </div> }
+                                    @if (!string.IsNullOrEmpty(item.Note))
+                                    { <div>
+                                        <strong>Ghi chú: </strong><span class="color-note">@item.Note</span>
+                                    </div> }
+                                    <div>
+                                        @Html.Partial("ViewCustomerRequirements", requirements)
+                                    </div>
+                                    <span><strong class="text-danger">Liên hệ:</strong> @item.ContactName </span>
+                                    @if (item.ContactPhone != null)
+                                    {  <span>@item.ContactPhone </span> }
+                                    @if (item.ContactAddress != null)
+                                    {  <span>@item.ContactAddress </span> }
+                                    @if (item.ContactEmail != null)
+                                    {  <span>@item.ContactEmail </span> }
+                                </div>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("NewRequirmentDetail", "PropertySearch", new { area = "RealEstate.FrontEnd", url = item.DisplayForUrl, id = @item.Id })">
+                                    <div class="text-ellipsify-2 text-bold">
+                                        @if (requirements.Any(r => r.AdsTypePartRecord != null))
+                                        {
+                                            <span>@requirements.Where(r => r.AdsTypePartRecord != null).First().AdsTypePartRecord.ShortName </span>
+                                        }
+                                        @if (requirements.Any(r => r.PropertyTypeGroupPartRecord != null))
+                                        {
+                                            <span>@requirements.Where(r => r.PropertyTypeGroupPartRecord != null).First().PropertyTypeGroupPartRecord.Name,</span>
+                                        }
+                                        @if (requirements.Any(r => r.LocationDistrictPartRecord != null))
+                                        {
+                                            <span><strong>Khu vực:</strong> @string.Join(", ", requirements.Where(r => r.LocationDistrictPartRecord != null).Select(r => r.LocationDistrictPartRecord.Name).Distinct().ToArray()),</span>
+                                        }
+                                        @if (requirements.Any(r => r.LocationStreetPartRecord != null))
+                                        {
+                                            <span><strong>Đường:</strong> @string.Join(", ", requirements.Where(r => r.LocationStreetPartRecord != null).Select(r => r.LocationStreetPartRecord.Name).Distinct().ToArray()),</span>
+                                        }
+                                        @if (requirements.Any(r => r.LocationWardPartRecord != null))
+                                        {
+                                            <span><strong>Phường / Xã:</strong> @string.Join(", ", requirements.Where(r => r.LocationWardPartRecord != null).Select(r => r.LocationWardPartRecord.Name).Distinct().ToArray()),</span>
+                                        }
+                                        @if (requirements.Any(r => r.LocationProvincePartRecord != null))
+                                        {
+                                            <span>@requirements.Where(r => r.LocationProvincePartRecord != null).First().LocationProvincePartRecord.Name </span>
+                                        }
+                                    </div>
+                                    @if (requirements.Min(r => r.MinPrice).HasValue || requirements.Max(r => r.MaxPrice).HasValue)
+                                    {
+                                        <span>
+                                            <strong class="text-danger">Giá: </strong>@string.Format("{0: từ #,0.##}{1: đến #,0.##} {2:0}", requirements.Min(r => r.MinPrice), requirements.Max(r => r.MaxPrice), requirements.First().PaymentMethodPartRecord.Name)
+                                        </span>
+                                    }
+                                </a>
+                            </td>
+                            <td class="text-ellipsis">
+                                @Html.Raw(String.Format("{0:dd/MM/yyyy<br> hh:mm tt}", item.LastUpdatedDate.ToLocalTime()))
+                        </td>
+                    </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    <div class="pull-right view-continue">
+        <a class="text-bold" href="@Url.Action("ResultFilterRequirement", "PropertySearch", new { area = "RealEstate.FrontEnd", AdsTypeCssClass = Model.Options.AdsTypeCssClass })">>> Xem thêm</a>
+    </div>
+    }
+    else
+    {
+        <div>Không có tin rao nào!</div>
+    }
+    <div class="clearfix"></div>
+</div>

@@ -1,0 +1,686 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{24C1BA85-4A93-44AA-897A-3267E11A8DFF}</ProjectGuid>
+    <ProjectTypeGuids>{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RealEstate.FrontEnd</RootNamespace>
+    <AssemblyName>RealEstate.FrontEnd</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>4.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkProfile />
+    <UseIISExpress>false</UseIISExpress>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Contrib.OnlineUsers">
+      <HintPath>..\Contrib.OnlineUsers\bin\Contrib.OnlineUsers.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Contrib.Voting, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Contrib.Voting\bin\Contrib.Voting.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Maps">
+      <HintPath>..\Maps\bin\Maps.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="NGM.ContentViewCounter">
+      <HintPath>..\NGM.ContentViewCounter\bin\NGM.ContentViewCounter.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Orchard.Alias">
+      <HintPath>..\Orchard.Alias\bin\Orchard.Alias.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Orchard.Comments">
+      <HintPath>..\Orchard.Comments\bin\Orchard.Comments.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Orchard.Core">
+      <HintPath>..\..\bin\Orchard.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Orchard.Framework">
+      <HintPath>..\..\bin\Orchard.Framework.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Orchard.Users">
+      <HintPath>..\Orchard.Users\bin\Orchard.Users.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Orchard.Widgets">
+      <HintPath>..\Orchard.Widgets\bin\Orchard.Widgets.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="RealEstate, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\RealEstate\bin\RealEstate.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="RealEstate.NewLetter">
+      <HintPath>..\RealEstate.NewLetter\bin\RealEstate.NewLetter.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="RealEstateForum.Service">
+      <HintPath>..\RealEstateForum.Service\bin\RealEstateForum.Service.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.ComponentModel.DataAnnotations">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\System.Web.Mvc.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\System.Web.Razor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Scripts\additional-methods.min.js" />
+    <Content Include="Scripts\autoNumeric.js" />
+    <Content Include="Scripts\autoNumeric.min.js" />
+    <Content Include="Scripts\jquery.flexslider-min.js" />
+    <Content Include="Scripts\jquery.flexslider.js" />
+    <Content Include="Scripts\images\layers-2x.png" />
+    <Content Include="Scripts\images\layers.png" />
+    <Content Include="Scripts\images\marker-icon-2x.png" />
+    <Content Include="Scripts\images\marker-icon.png" />
+    <Content Include="Scripts\images\marker-shadow.png" />
+    <Content Include="Scripts\leaflet-0.7.3\leaflet-src.js" />
+    <Content Include="Scripts\leaflet-0.7.3\leaflet.css" />
+    <Content Include="Scripts\leaflet-0.7.3\leaflet.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\brunob-leaflet.fullscreen-10c1762\Control.FullScreen.css" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\brunob-leaflet.fullscreen-10c1762\Control.FullScreen.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\brunob-leaflet.fullscreen-10c1762\icon-fullscreen-2x.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\brunob-leaflet.fullscreen-10c1762\icon-fullscreen.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\brunob-leaflet.fullscreen-10c1762\index.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\build\build.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\build\build.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\build\deps.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\build\hintrc.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\build\leaflet.draw-include.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\dist\images\spritesheet-2x.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\dist\images\spritesheet.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\dist\leaflet.draw-src.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\dist\leaflet.draw.css" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\dist\leaflet.draw.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\examples\basic.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\examples\edithandlers.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\examples\full.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\examples\libs\images\layers-2x.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\examples\libs\images\layers.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\examples\libs\images\marker-icon%402x.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\examples\libs\images\marker-icon-2x.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\examples\libs\images\marker-icon.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\examples\libs\images\marker-shadow.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\examples\libs\leaflet-src.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\examples\libs\leaflet.css" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\Jakefile.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\MIT-LICENCE.txt" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\spec\after.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\spec\before.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\spec\expect.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\spec\happen.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\spec\index.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\spec\karma.conf.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\spec\sinon.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\spec\spec.hintrc.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\spec\suites\DrawControlSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\spec\suites\EditSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\spec\suites\GeometryUtilSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\spec\suites\LatLngUtilSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\spec\suites\SpecHelper.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\Control.Draw.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\copyright.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\draw\DrawToolbar.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\draw\handler\Draw.Circle.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\draw\handler\Draw.Feature.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\draw\handler\Draw.Marker.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\draw\handler\Draw.Polygon.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\draw\handler\Draw.Polyline.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\draw\handler\Draw.Rectangle.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\draw\handler\Draw.SimpleShape.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\edit\EditToolbar.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\edit\handler\Edit.Circle.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\edit\handler\Edit.Marker.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\edit\handler\Edit.Poly.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\edit\handler\Edit.Rectangle.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\edit\handler\Edit.SimpleShape.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\edit\handler\EditToolbar.Delete.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\edit\handler\EditToolbar.Edit.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\ext\GeometryUtil.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\ext\LatLngUtil.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\ext\LineUtil.Intersect.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\ext\Polygon.Intersect.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\ext\Polyline.Intersect.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\Leaflet.draw.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\Toolbar.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\Tooltip.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\css\marker-extend.css" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\examples\editable-circle.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\examples\measuring-tool.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\examples\polygon-labels.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\lib\bootstrap\css\bootstrap-responsive.css" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\lib\bootstrap\css\bootstrap-responsive.min.css" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\lib\bootstrap\css\bootstrap.css" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\lib\bootstrap\css\bootstrap.min.css" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\lib\bootstrap\img\glyphicons-halflings-white.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\lib\bootstrap\img\glyphicons-halflings.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\lib\bootstrap\js\bootstrap.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\lib\bootstrap\js\bootstrap.min.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\lib\jquery-1.6.4.min.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\lib\leaflet-0.6.4\images\layers-2x.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\lib\leaflet-0.6.4\images\layers.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\lib\leaflet-0.6.4\images\marker-icon-2x.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\lib\leaflet-0.6.4\images\marker-icon.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\lib\leaflet-0.6.4\images\marker-shadow.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\lib\leaflet-0.6.4\leaflet-src.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\lib\leaflet-0.6.4\leaflet.css" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\lib\leaflet-0.6.4\leaflet.ie.css" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\lib\leaflet-0.6.4\leaflet.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\lib\Leaflet.draw-0.2.0\dist\images\spritesheet.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\lib\Leaflet.draw-0.2.0\dist\leaflet.draw-src.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\lib\Leaflet.draw-0.2.0\dist\leaflet.draw.css" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\lib\Leaflet.draw-0.2.0\dist\leaflet.draw.ie.css" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\lib\Leaflet.draw-0.2.0\dist\leaflet.draw.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\src\L.CircleEditor.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\src\L.MeasuringTool.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\src\L.PolySideLabel.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\build\build.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\build\deps.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\build\hint.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\build\hintrc.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\dist\images\death.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\dist\leaflet.label-src.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\dist\leaflet.label.css" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\dist\leaflet.label.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\example\label.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\Jakefile.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\libs\leaflet\images\layers-2x.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\libs\leaflet\images\layers.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\libs\leaflet\images\marker-icon%402x.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\libs\leaflet\images\marker-icon-2x.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\libs\leaflet\images\marker-icon.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\libs\leaflet\images\marker-shadow.png" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\libs\leaflet\leaflet-src.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\libs\leaflet\leaflet.css" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\libs\leaflet\leaflet.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\MIT-LICENCE.txt" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\src\BaseMarkerMethods.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\src\CircleMarker.Label.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\src\copyright.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\src\FeatureGroup.Label.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\src\Label.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\src\Leaflet.label.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\src\Map.Label.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\src\Marker.Label.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\src\Path.Label.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\build\build.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\build\deps.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\build\hintrc.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\dist\leaflet.markercluster-src.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\dist\leaflet.markercluster.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\dist\MarkerCluster.css" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\dist\MarkerCluster.Default.css" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\geojson-sample.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\geojson.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\marker-clustering-convexhull.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\marker-clustering-custom.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\marker-clustering-everything.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\marker-clustering-geojson.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\marker-clustering-realworld-maxzoom.388.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\marker-clustering-realworld-mobile.388.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\marker-clustering-realworld.10000.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\marker-clustering-realworld.388.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\marker-clustering-realworld.50000.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\marker-clustering-singlemarkermode.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\marker-clustering-spiderfier.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\marker-clustering-zoomtobounds.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\marker-clustering-zoomtoshowlayer.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\marker-clustering.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\mobile.css" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\old-bugs\add-1000-after.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\old-bugs\add-markers-offscreen.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\old-bugs\add-remove-before-addtomap.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\old-bugs\animationless-zoom.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\old-bugs\click-cluster-at-screen-edge.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\old-bugs\disappearing-marker-from-spider.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\old-bugs\doesnt-update-cluster-on-bottom-level.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\old-bugs\remove-add-clustering.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\old-bugs\remove-when-spiderfied.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\old-bugs\removelayer-after-remove-from-map.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\old-bugs\setView-doesnt-remove.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\old-bugs\zoomtoshowlayer-doesnt-need-to-zoom.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\old-bugs\zoomtoshowlayer-doesnt-zoom-if-centered-on.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\realworld.10000.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\realworld.388.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\realworld.50000.1.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\realworld.50000.2.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\example\screen.css" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\Jakefile.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\MIT-LICENCE.txt" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\after.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\expect.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\happen.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\index.html" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\karma.conf.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\sinon.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\suites\AddLayer.MultipleSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\suites\AddLayer.SingleSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\suites\AddLayersSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\suites\ChildChangingIconSupportSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\suites\CircleMarkerSupportSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\suites\CircleSupportSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\suites\clearLayersSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\suites\DistanceGridSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\suites\eachLayerSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\suites\eventsSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\suites\getBoundsSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\suites\getLayersSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\suites\getVisibleParentSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\suites\LeafletSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\suites\NonPointSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\suites\onAddSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\suites\onRemoveSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\suites\QuickHullSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\suites\RememberOpacity.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\suites\RemoveLayerSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\suites\removeLayersSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\suites\SpecHelper.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\suites\spiderfySpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\spec\suites\zoomAnimationSpec.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\src\copyright.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\src\DistanceGrid.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\src\MarkerCluster.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\src\MarkerCluster.QuickHull.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\src\MarkerCluster.Spiderfier.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\src\MarkerClusterGroup.js" />
+    <Content Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\src\MarkerOpacity.js" />
+    <Content Include="Scripts\leaflet\plugins\label\images\death.png" />
+    <Content Include="Scripts\leaflet\plugins\label\leaflet.label-src.js" />
+    <Content Include="Scripts\leaflet\plugins\label\leaflet.label.css" />
+    <Content Include="Scripts\leaflet\plugins\label\leaflet.label.js" />
+    <Content Include="Scripts\realestate.frontend.common.min.js">
+      <DependentUpon>realestate.frontend.common.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\realestate.frontend.property.edit.min.js">
+      <DependentUpon>realestate.frontend.property.edit.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\realestate.frontend.property.filter.js" />
+    <Content Include="Scripts\realestate.frontend.property.filter.min.js">
+      <DependentUpon>realestate.frontend.property.filter.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\realestate.frontend.viewmap-0.7.3.js" />
+    <Content Include="Scripts\realestate.frontend.viewmap.min.js" />
+    <Content Include="Scripts\realestate.frontend.viewmap-src.js" />
+    <Content Include="Scripts\jquery.html5-placeholder-shim.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\leaflet\images\layers-2x.png" />
+    <Content Include="Scripts\leaflet\images\layers.png" />
+    <Content Include="Scripts\leaflet\images\marker-icon-2x.png" />
+    <Content Include="Scripts\leaflet\images\marker-icon.png" />
+    <Content Include="Scripts\leaflet\images\marker-shadow.png" />
+    <Content Include="Scripts\leaflet\leaflet-src.js" />
+    <Content Include="Scripts\leaflet\leaflet.css" />
+    <Content Include="Scripts\leaflet\leaflet.ie.css" />
+    <Content Include="Scripts\leaflet\leaflet.js" />
+    <Content Include="Scripts\leaflet\plugins\draw\images\spritesheet-2x.png" />
+    <Content Include="Scripts\leaflet\plugins\draw\images\spritesheet.png" />
+    <Content Include="Scripts\leaflet\plugins\draw\leaflet.draw-src.js" />
+    <Content Include="Scripts\leaflet\plugins\draw\leaflet.draw.css" />
+    <Content Include="Scripts\leaflet\plugins\draw\leaflet.draw.js" />
+    <Content Include="Scripts\leaflet\plugins\EditableHandlers\L.CircleEditor.js" />
+    <Content Include="Scripts\leaflet\plugins\EditableHandlers\L.MeasuringTool.js" />
+    <Content Include="Scripts\leaflet\plugins\EditableHandlers\L.PolySideLabel.js" />
+    <Content Include="Scripts\leaflet\plugins\fullscreen\Control.FullScreen.css" />
+    <Content Include="Scripts\leaflet\plugins\fullscreen\Control.FullScreen.js" />
+    <Content Include="Scripts\leaflet\plugins\fullscreen\icon-fullscreen.png" />
+    <Content Include="Scripts\realestate.frontend.common.js" />
+    <Content Include="Scripts\realestate.frontend.property.edit.js" />
+    <Content Include="Styles\images\death.png" />
+    <Content Include="Styles\images\icon-fullscreen.png" />
+    <Content Include="Styles\images\layers-2x.png" />
+    <Content Include="Styles\images\layers.png" />
+    <Content Include="Styles\images\marker-icon-2x.png" />
+    <Content Include="Styles\images\marker-icon.png" />
+    <Content Include="Styles\images\marker-shadow.png" />
+    <Content Include="Styles\images\spritesheet-2x.png" />
+    <Content Include="Styles\images\spritesheet.png" />
+    <Content Include="Styles\realestate.frontend.viewmap.ie.css" />
+    <Content Include="Styles\realestate.frontend.viewmap.css" />
+    <Content Include="Styles\print.css" />
+    <Content Include="Styles\images\btn_tim.gif" />
+    <Content Include="Styles\images\center_thanhxanh.png" />
+    <Content Include="Styles\images\icon-collapse.png" />
+    <Content Include="Styles\images\icon-expand.png" />
+    <Content Include="Styles\images\logo.jpg" />
+    <Content Include="Styles\images\logocty.jpg" />
+    <Content Include="Styles\images\vangosang.png" />
+    <Content Include="Styles\validationEngine.jquery.css" />
+    <Content Include="Views\EditorTemplates\Parts\EstimateEdit.cshtml" />
+    <Content Include="Views\EditorTemplates\Parts\PropertyEdit.cshtml" />
+    <Content Include="Views\PropertySearch\RegisterCustomerSuccess.cshtml" />
+    <Content Include="Views\PropertySearch\Index.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\PropertySearch\RealEstateDetail.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\PropertySearch\ResultFilter.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Web.config" />
+    <Content Include="Scripts\Web.config" />
+    <Content Include="Styles\Web.config" />
+    <Content Include="Properties\AssemblyInfo.cs" />
+    <Content Include="Module.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AdminMenu.cs" />
+    <Compile Include="Controllers\AliasesMetaController.cs" />
+    <Compile Include="Controllers\CommentsController.cs" />
+    <Compile Include="Controllers\PlanningMapController.cs" />
+    <Compile Include="Controllers\FrontEndSettingController.cs" />
+    <Compile Include="Controllers\EstimateController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PropertyExchangeController.cs" />
+    <Compile Include="Controllers\PropertySearchController.cs" />
+    <Compile Include="Drivers\AsideFirstLinkPartDriver.cs" />
+    <Compile Include="Drivers\BreadcrumbPartDriver.cs" />
+    <Compile Include="Drivers\AliasesMetaPartDriver.cs" />
+    <Compile Include="Drivers\FilterApartmentWidgetPartDriver.cs" />
+    <Compile Include="Drivers\ApartmentHighlightsPartDriver.cs" />
+    <Compile Include="Drivers\PropertyGoodDealIsAuctionPartDriver.cs" />
+    <Compile Include="Drivers\PropertyLeasingNewPartDriver.cs" />
+    <Compile Include="Drivers\PropertyListHighlightWidgetPartDriver.cs" />
+    <Compile Include="Drivers\FilterHeaderPartDriver.cs" />
+    <Compile Include="Drivers\FilterProperyWidgetSidebarPartDriver.cs" />
+    <Compile Include="Drivers\MapPlanningPropertyPartDriver.cs" />
+    <Compile Include="Drivers\EstimatePropertyPartDriver.cs" />
+    <Compile Include="Drivers\FrontEndSettingPartDriver.cs" />
+    <Compile Include="Drivers\PropertyHighlightsPartDriver.cs" />
+    <Compile Include="Drivers\PropertyNewIsAuctionPartDriver.cs" />
+    <Compile Include="Drivers\PropertyListCompactPartDriver.cs" />
+    <Compile Include="Drivers\PropertyNewPartDriver.cs" />
+    <Compile Include="Drivers\PropertyVipPartDriver.cs" />
+    <Compile Include="Drivers\PropertyGoodDealPartDriver.cs" />
+    <Compile Include="Drivers\FooterLinkPartDriver.cs" />
+    <Compile Include="Drivers\PropertyTagsDriver.cs" />
+    <Compile Include="Drivers\FilterPartDriver.cs" />
+    <Compile Include="Drivers\OnlineSupportPartDriver.cs" />
+    <Compile Include="Handlers\AliasesMetaPartHandler.cs" />
+    <Compile Include="Handlers\FrontEndSettingPartHandler.cs" />
+    <Compile Include="Migrations.cs" />
+    <Compile Include="Models\AliasesMetaPart.cs" />
+    <Compile Include="Models\AsideFirstLinkWidgetPart.cs" />
+    <Compile Include="Models\BreadcrumbWidgetPart.cs" />
+    <Compile Include="Models\FilterApartmentWidgetPart.cs" />
+    <Compile Include="Models\ApartmentHighlightsWidgetPart.cs" />
+    <Compile Include="Models\PropertyGoodDealIsAuctionWidgetPart.cs" />
+    <Compile Include="Models\PropertyLeasingNewWidgetPart.cs" />
+    <Compile Include="Models\PropertyListHighlightWidgetPart.cs" />
+    <Compile Include="Models\FilterHeaderPart.cs" />
+    <Compile Include="Models\FilterProperyWidgetSidebarPart.cs" />
+    <Compile Include="Models\MapPlanningWidgetPart.cs" />
+    <Compile Include="Models\EstimatePropertyWidgetPart.cs" />
+    <Compile Include="Models\FrontEndSettingPart.cs" />
+    <Compile Include="Models\PropertyHighlightsWidgetPart.cs" />
+    <Compile Include="Models\PropertyNewIsAuctionWidgetPart.cs" />
+    <Compile Include="Models\PropertyListCompactWidgetPart.cs" />
+    <Compile Include="Models\PropertyNewWidgetPart.cs" />
+    <Compile Include="Models\PropertyVipWidgetPart.cs" />
+    <Compile Include="Models\PropertyGoodDealWidgetPart.cs" />
+    <Compile Include="Models\FooterLinkWidgetPart.cs" />
+    <Compile Include="Models\PropertyTagsWidgetPart.cs" />
+    <Compile Include="Models\FilterWidgetPart.cs" />
+    <Compile Include="Models\OnlineSupportWidgetPart.cs" />
+    <Compile Include="ResourceManifest.cs" />
+    <Compile Include="Routes.cs" />
+    <Compile Include="Services\FastFilterService.cs" />
+    <Compile Include="ViewModels\CommentsCreateViewModel.cs" />
+    <Compile Include="ViewModels\CommentsEditViewModel.cs" />
+    <Compile Include="ViewModels\CommentsIndexViewModel.cs" />
+    <Compile Include="ViewModels\AliasesMetaViewModel.cs" />
+    <Compile Include="ViewModels\FronEndSettingViewModel.cs" />
+    <Compile Include="ViewModels\EstimateViewModel.cs" />
+    <Compile Include="ViewModels\PropertyFrontEndViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Placement.info">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="Views\Estimate\Index.cshtml" />
+    <Content Include="Views\FastFilter\FastFilter.cshtml" />
+    <Content Include="Views\FastFilter\Gallery.cshtml" />
+    <Content Include="Views\FastFilter\Index.cshtml" />
+    <Content Include="Views\Parts\FilterWidget.cshtml" />
+    <Content Include="Views\EditorTemplates\Parts\EstimateCreate.cshtml" />
+    <Content Include="Views\Estimate\Create.cshtml" />
+    <Content Include="Views\Home\Create.cshtml" />
+    <Content Include="Views\Home\Edit.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Estimate\Edit.cshtml" />
+    <Content Include="Views\DisplayTemplates\Parts\RealEstateDetail.cshtml" />
+    <Content Include="Views\EditorTemplates\Parts\CustomerCreate.cshtml" />
+    <Content Include="Views\PropertySearch\ListFrontProperties.cshtml" />
+    <Content Include="Views\PropertySearch\ListSameProperties.cshtml" />
+    <Content Include="Views\PropertySearch\ResultFilterRequirement.cshtml" />
+    <Content Include="Views\PropertySearch\AjaxListPropertiesDeal.cshtml" />
+    <Content Include="Views\PropertySearch\AjaxListPropertiesVip.cshtml" />
+    <Content Include="Views\PropertySearch\AjaxListPropertiesNew.cshtml" />
+    <Content Include="Views\Parts\PropertyTagsWidget.cshtml" />
+    <Content Include="Views\PropertySearch\AjaxPropertyTags.cshtml" />
+    <Content Include="Views\Parts\FooterLinkWidget.cshtml" />
+    <Content Include="Views\Parts\AsideFirstLinkWidget.cshtml" />
+    <Content Include="Views\PropertySearch\RequirmentDetail.cshtml" />
+    <Content Include="Views\Parts\BreadcrumbWidget.cshtml" />
+    <Content Include="Views\PropertySearch\AjaxBreadcrumb.cshtml" />
+    <Content Include="Views\Parts\PropertyGoodDealWidget.cshtml" />
+    <Content Include="Views\Parts\PropertyNewWidget.cshtml" />
+    <Content Include="Views\Parts\PropertyVipWidget.cshtml" />
+    <Content Include="Views\Parts\PropertyHighlightsWidget.cshtml" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\brunob-leaflet.fullscreen-10c1762\.jshintrc" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\brunob-leaflet.fullscreen-10c1762\bower.json" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\brunob-leaflet.fullscreen-10c1762\LICENSE" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\brunob-leaflet.fullscreen-10c1762\package.json" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\brunob-leaflet.fullscreen-10c1762\README.md" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\.gitattributes" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\.gitignore" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\bower.json" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\BREAKINGCHANGES.md" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\CHANGELOG.md" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\package.json" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\README.md" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\src\images\spritesheet.svg" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\Leaflet.draw-master\TODO.md" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\LICENSE" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\Leaflet.EditableHandlers-master\README.md" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\.gitattributes" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\.gitignore" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\bower.json" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\CHANGELOG.md" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\package.json" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\Leaflet.label-master\README.md" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\.gitignore" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\.travis.yml" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\bower.json" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\CHANGELOG.md" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\package.json" />
+    <None Include="Scripts\leaflet-0.7.3\plugins\Leaflet.markercluster-master\README.md" />
+    <None Include="Scripts\realestate.frontend.common.min.js.map">
+      <DependentUpon>realestate.frontend.common.min.js</DependentUpon>
+    </None>
+    <None Include="Scripts\realestate.frontend.property.edit.min.js.map">
+      <DependentUpon>realestate.frontend.property.edit.min.js</DependentUpon>
+    </None>
+    <None Include="Scripts\realestate.frontend.property.filter.min.js.map">
+      <DependentUpon>realestate.frontend.property.filter.min.js</DependentUpon>
+    </None>
+    <None Include="Views\AliasesMeta\AliasCollectionApartmentCreate.cshtml" />
+    <None Include="Views\AliasesMeta\AliasCollectionCreate.cshtml" />
+    <None Include="Views\AliasesMeta\AliasSearch.cshtml" />
+    <None Include="Views\CommentAuthor.cshtml" />
+    <None Include="Views\CommentMetadata.cshtml" />
+    <None Include="Views\Comments\Create.cshtml" />
+    <None Include="Views\Comments\Edit.cshtml" />
+    <None Include="Views\Comments\Index.cshtml" />
+    <None Include="Views\AdminListOfComments.cshtml" />
+    <None Include="Views\AliasesMeta\Create.cshtml" />
+    <None Include="Views\AliasesMeta\Edit.cshtml" />
+    <None Include="Views\AliasesMeta\Index.cshtml" />
+    <Content Include="Views\EditorTemplates\Parts\AliasesMetaPart.cshtml" />
+    <None Include="Views\CaptchaPartial.cshtml" />
+    <Content Include="Views\DisplayTemplates\Parts\LocationApartment.Detail.cshtml" />
+    <Content Include="Views\DisplayTemplates\Parts\PropertyExchangeDetail.cshtml" />
+    <None Include="Views\EditorTemplates\Parts\PropertyCreate.cshtml">
+      <SubType>Code</SubType>
+    </None>
+    <None Include="Views\EditorTemplates\Parts\RequirementExchange.Create.cshtml" />
+    <None Include="Views\EditorTemplates\Parts\RequirementExchange.Edit.cshtml" />
+    <None Include="Views\GuideModal.cshtml" />
+    <None Include="Views\NoResult.cshtml" />
+    <None Include="Views\EditorTemplates\Parts\CustomerEdit.cshtml" />
+    <None Include="Views\FooterLinks.cshtml" />
+    <Content Include="Views\Home\EditCustomerRequirements.cshtml" />
+    <None Include="Views\Loading.cshtml" />
+    <None Include="Views\EditorTemplates\Parts\AliasesMeta.Create.cshtml" />
+    <None Include="Views\EditorTemplates\Parts\AliasesMeta.Edit.cshtml" />
+    <None Include="Views\ManagerComments.cshtml" />
+    <None Include="Views\DisplayTemplates\Parts\OnlineSupportWidget.cshtml" />
+    <None Include="Views\EditorTemplates\Parts\FrontEndSetting.Edit.cshtml" />
+    <None Include="Views\EditorTemplates\Parts\FrontEndSetting.Create.cshtml" />
+    <Content Include="Views\EditorTemplates\Parts\FrontEndSettingPart.cshtml" />
+    <None Include="Views\FrontEndSetting\Create.cshtml" />
+    <None Include="Views\FrontEndSetting\Edit.cshtml" />
+    <None Include="Views\FrontEndSetting\Index.cshtml" />
+    <Content Include="Views\Parts\FrontEndSettingPart.cshtml" />
+    <Content Include="Views\Parts\EstimatePropertyWidget.cshtml" />
+    <Content Include="Views\PlanningMap\Index.cshtml" />
+    <None Include="Views\MapGuidePartial.cshtml" />
+    <None Include="Views\Parts.Comment.cshtml" />
+    <Content Include="Views\PropertySearch\ListPropertiesVIP-front.cshtml" />
+    <Content Include="Views\PropertySearch\RealEstateDetail.Images.cshtml" />
+    <Content Include="Views\PropertySearch\RealEstateDetail.Description.cshtml" />
+    <Content Include="Views\PropertySearch\RealEstateDetail.Compact.cshtml" />
+    <Content Include="Views\PropertySearch\ListReferencedProperties.cshtml" />
+    <Content Include="Views\Parts\AliasesMetaWidget.cshtml" />
+    <Content Include="Views\Parts\MapPlanningWidget.cshtml" />
+    <Content Include="Views\Parts\FilterPropertyWidgetSidebar.cshtml" />
+    <Content Include="Views\Parts\FilterHeader.cshtml" />
+    <Content Include="Views\PropertySearch\AjaxSearchPropertiesByCustomer.cshtml" />
+    <Content Include="Views\PropertySearch\AjaxListPropertiesHighlight.cshtml" />
+    <Content Include="Views\PropertySearch\ListPropertiesHighlight.cshtml" />
+    <Content Include="Views\Parts\PropertyListHighlightWidget.cshtml" />
+    <Content Include="Views\Parts\FilterApartmentWidget.cshtml" />
+    <Content Include="Views\Parts\PropertyLeasingNewWidget.cshtml" />
+    <Content Include="Views\Parts\ApartmentHighlightsWidget.cshtml" />
+    <Content Include="Views\PropertyExchange\RequirementExchangeEdit.cshtml" />
+    <Content Include="Views\PropertyExchange\RequirementExchangeCreate.cshtml" />
+    <Content Include="Views\PropertySearch\RealEstateDetail.Social.cshtml" />
+    <Content Include="Views\PropertyExchange\AjaxLoadRequirementDetail.cshtml" />
+    <Content Include="Views\Parts\PropertyNewIsAuctionWidget.cshtml" />
+    <Content Include="Views\Parts\PropertyGoodDealIsAuctionWidget.cshtml" />
+    <Content Include="Views\PropertySearch\AjaxListPropertiesNewAuction.cshtml" />
+    <Content Include="Views\PropertySearch\AjaxListPropertiesNewLeasing.cshtml" />
+    <Content Include="Views\Parts\PropertyListCompactWidget.cshtml" />
+    <None Include="Views\PropertySearch\CustomerRequirements.cshtml" />
+    <None Include="Views\PropertySearch\CompareApartment.Form.cshtml" />
+    <None Include="Views\PropertySearch\ListFilter.cshtml" />
+    <None Include="Views\PropertySearch\AjaxResultFilterRequirement.cshtml" />
+    <None Include="Views\PropertySearch\ListProperties.cshtml" />
+    <None Include="Views\PropertySearch\ListPropertiesAuction.cshtml" />
+    <None Include="Views\PropertySearch\ListPropertiesDeal.cshtml" />
+    <None Include="Views\PropertySearch\ListRequirements.cshtml" />
+    <Content Include="Views\PropertySearch\SearchProperties.cshtml" />
+    <Content Include="Views\PropertySearch\ResultFilterApartment.cshtml" />
+    <Content Include="Views\PropertySearch\LocationApartmentDetail.cshtml" />
+    <Content Include="Views\PropertySearch\LocationApartmentDetail.Images.cshtml" />
+    <Content Include="Views\PropertySearch\CompareApartment.cshtml" />
+    <Content Include="Views\PropertySearch\CompareDetail.cshtml" />
+    <Content Include="Views\PropertySearch\PropertyDetail.Description.cshtml" />
+    <Content Include="Views\PropertySearch\LocationApartmentCart.cshtml" />
+    <None Include="Views\ViewSameProperty.cshtml" />
+    <None Include="Views\ViewFrontProperty.cshtml" />
+    <Content Include="Views\PropertySearch\DisplayEntries.cshtml" />
+    <Content Include="Views\Home\CreateCustomerRequirements.cshtml" />
+    <Content Include="Views\PropertySearch\NotViewDetail.cshtml" />
+    <None Include="Views\FrontEndUploadImages.cshtml" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target> -->
+  <Target Name="AfterBuild" DependsOnTargets="AfterBuildCompiler">
+    <PropertyGroup>
+      <AreasManifestDir>$(ProjectDir)\..\Manifests</AreasManifestDir>
+    </PropertyGroup>
+    <!-- If this is an area child project, uncomment the following line:
+    <CreateAreaManifest AreaName="$(AssemblyName)" AreaType="Child" AreaPath="$(ProjectDir)" ManifestPath="$(AreasManifestDir)" ContentFiles="@(Content)" />
+    -->
+    <!-- If this is an area parent project, uncomment the following lines:
+    <CreateAreaManifest AreaName="$(AssemblyName)" AreaType="Parent" AreaPath="$(ProjectDir)" ManifestPath="$(AreasManifestDir)" ContentFiles="@(Content)" />
+    <CopyAreaManifests ManifestPath="$(AreasManifestDir)" CrossCopy="false" RenameViews="true" />
+    -->
+  </Target>
+  <Target Name="AfterBuildCompiler" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(ProjectDir)\..\$(ProjectName)" />
+  </Target>
+  <ProjectExtensions />
+</Project>

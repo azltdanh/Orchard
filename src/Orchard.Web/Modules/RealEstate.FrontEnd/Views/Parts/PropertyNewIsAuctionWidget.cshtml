@@ -1,0 +1,30 @@
+﻿@using RealEstate.FrontEnd.ViewModels;
+@using RealEstate.Models;
+
+@{
+    IEnumerable<AdsTypePartRecord> listAdsTypes = Model.AdsTypes;
+    var adsTypeCssClass = "ad-selling";
+    if (Url.RequestContext.RouteData.Values["AdsTypeCssClass"] != null)
+    {
+        adsTypeCssClass = Url.RequestContext.RouteData.Values["AdsTypeCssClass"].ToString();
+    }
+    var CountSelling = (int)Model.CountSelling;
+    var CountLeasing = (int)Model.CountLeasing;
+    //var CountBuying = (int)Model.CountBuying;
+    //var CountRenting = (int)Model.CountRenting;
+}
+<div class="header-msg text-right">
+    <a rel="nofollow" class="text-success text-underline" href="@Url.Action("Create", "Home")"><i class="icon_silk_layout_add"></i>Đăng tin rao miễn phí</a>
+</div>
+<div class="row padding-top-5">
+    <div class="padding-left-8 padding-right-9">
+        <div class="col-md-12 no-padding">
+            <div class="ViewResultFilterPropertiesDeal">
+                <div id="ViewGoodDeal-ad-selling" class="ajax-content ajax-paging" data-url="@Url.Action("AjaxProperties", "PropertySearch", new { area = "RealEstate.FrontEnd", FlagAds = "new-auction", AdsTypeCssClass = "ad-selling" })">
+                    @Html.Partial("Loading")
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>

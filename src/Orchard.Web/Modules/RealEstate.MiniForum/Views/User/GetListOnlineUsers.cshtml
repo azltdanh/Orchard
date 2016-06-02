@@ -1,0 +1,44 @@
+﻿@model Contrib.OnlineUsers.ViewModels.OnlineUsersViewModel
+@using RealEstate.Helpers;
+
+@using Contrib.OnlineUsers.Models;
+@using Contrib.OnlineUsers.ViewModels;
+@{
+    var userIndex = 0;
+    Layout.Title = T("Danh sách Users Online: " + Model.TotalCount + " users online.").ToString();
+}
+
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Post))
+{
+    @Html.ValidationSummary()
+
+    <fieldset>
+        <table class="items">
+            <thead>
+                <tr>
+                    <th scope="col">&nbsp;&darr; </th>
+                    <th scope="col">@T("Name")</th>
+                    <th scope="col">@T("Email")</th>
+                    <th scope="col">@T("Actions")</th>
+                </tr>
+            </thead>
+            @foreach (var entry in Model.OnlineUsers)
+            {
+                <tr>
+                    <td>
+                        <img class="icon" src="@Href("~/Modules/Orchard.Users/Content/Admin/images/online.gif") " alt="@T("Approved") " title="@T("User is online") " />
+                    </td>
+                    <td>
+                        @Html.ActionLink(entry.UserDisplayName, "FriendPage", new { Controller = "PersonalPage", Area = "RealEstate.MiniForum.FrontEnd", UserId = entry.id, UserName = entry.UserName.ToSlug() }, new { @target = "_blank", @title = "Đến trang cá nhân của " + entry.UserDisplayName })
+                    </td>
+                    <td>
+                        @entry.Email
+                    </td>
+                    <td></td>
+                </tr>
+                userIndex++;
+            }
+        </table>
+        @Display(Model.Pager)
+    </fieldset>
+} 

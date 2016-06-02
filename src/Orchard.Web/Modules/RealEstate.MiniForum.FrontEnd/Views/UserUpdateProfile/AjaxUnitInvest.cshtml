@@ -1,0 +1,37 @@
+﻿@using RealEstate.Helpers
+@using RealEstateForum.Service.ViewModels;
+@{
+    var model = Model;
+    List<UnitInvestEntry> UnitInvests = model;
+}
+
+@if (UnitInvests != null)
+{
+    <div id="hnreacrawler">
+        <ul class="list-unit-invest">
+            @foreach (var item in UnitInvests)
+            {
+                <li>
+                    <a href="@item.UnitInvestPartPart.Website">
+                        <img src="@item.UnitInvestPartPart.Avatar" alt="@item.UnitInvestPartPart.Name" title="@item.UnitInvestPartPart.Name" />
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+}
+
+<script>
+    $(function () {
+        $('#hnreascroll').scrollbox({
+            direction: 'h',
+            distance: 134
+        });
+        $('#hnreascroll-backward').click(function () {
+            $('#demo5').trigger('backward');
+        });
+        $('#hnreascroll-forward').click(function () {
+            $('#demo5').trigger('forward');
+        });
+    });
+</script>

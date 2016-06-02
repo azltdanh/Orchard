@@ -1,0 +1,32 @@
+﻿@model RealEstateForum.Service.ViewModels.UnitInvestCreateViewModel
+
+<fieldset>
+    @Html.LabelFor(m => m.Name, T("Tên đơn vị tài trợ"))
+    @Html.TextBoxFor(m => m.Name, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.Name, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.Website, T("Website của đơn vị tài trợ"))
+    @Html.TextBoxFor(m => m.Website, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.Website, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.Content, T("Thông tin mô tả"))
+    @Html.TextAreaFor(m => m.Content, new { })
+    @Html.ValidationMessageFor(m => m.Content, "*")
+</fieldset>
+<fieldset>
+    <label for="IsEnabled">@Html.CheckBoxFor(r => r.IsEnabled) Ẩn / Hiện</label>
+</fieldset>
+
+<fieldset>
+    @Html.LabelFor(m => m.Avatar, T("Cần chọn ảnh đại diện cho đơn vị tài trợ"))
+    <input type="file" name="Avatar" id="Avatar" />
+</fieldset>
+
+<fieldset>
+    @Html.LabelFor(m => m.SeqOrder, T("Vị trí sắp xếp"))
+    @Html.TextBoxFor(m => m.SeqOrder, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.SeqOrder, "*")
+</fieldset>
+

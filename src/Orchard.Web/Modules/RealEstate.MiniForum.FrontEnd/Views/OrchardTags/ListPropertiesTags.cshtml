@@ -1,0 +1,37 @@
+﻿@*@model List<RealEstate.ViewModels.PropertyDisplayEntry>*@
+@model RealEstate.ViewModels.PropertyDisplayIndexViewModel
+
+@if (Model.Properties.Count() > 0)
+{
+<table class="table table-bordered table-condensed table-striped">
+    <tbody>
+    @foreach (var entry in Model.Properties)
+    {
+        var item = entry.Property;
+
+        <tr>@*@Html.Partial("RealEstateDetail.Compact", entry)*@
+            <td class="text-ellipsis">
+                <a class="text-success" href="@Url.Action("ResultFilter", "PropertySearch",
+                    new { area = "RealEstate.FrontEnd", AdsTypeCssClass = item.AdsType.CssClass, ProvinceId = item.Province.Id, TypeGroupCssClass = item.TypeGroup.CssClass })">
+                    <strong>@(String.IsNullOrEmpty(item.Province.ShortName) ? item.Province.Name : item.Province.ShortName)</strong>
+                </a>
+            </td>
+            <td>
+                <a href="@Url.Action("RealEstateDetail" ,"PropertySearch", new {area = "RealEstate.FrontEnd", id = item.Id, title = item.DisplayForUrl })"><strong>@Html.Raw(item.DisplayForTitleWithPriceProposed)</strong></a>
+                @if ((DateTime.Now - item.LastUpdatedDate).TotalDays < 1)
+                {
+                    <i class="icon-silk-new"></i>
+                }
+            </td>
+            <td>@String.Format("{0:dd/MM/yyyy hh:mm tt}", item.LastUpdatedDate)</td>
+            <td class="text-ellipsis">@Html.Raw(String.Format("{0:dd/MM/yyyy<br> hh:mm tt}", item.LastUpdatedDate))</td>
+        </tr>
+    }
+    </tbody>
+</table>
+    @Display(Model.Pager)
+}
+else
+{
+    <div class="not-result"><div class="alert alert-success">Không có BĐS nào!</div></div>
+}

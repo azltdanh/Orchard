@@ -1,0 +1,146 @@
+﻿@model RealEstate.ViewModels.PropertyEditViewModel
+@using RealEstate.ViewModels;
+
+<!-- Navigation -->
+
+<ul class="nav nav-tabs">
+    <!-- Property -->
+    <li class="active"><a href="#property" data-toggle="tab">BĐS</a></li>
+    @*<li><a href="#map" data-toggle="tab">Map</a></li>*@
+    <li><a href="#seo" data-toggle="tab">SEO</a></li>
+    @if (Model.EnableEditContactPhone)
+    {
+        <li><a href="#revisions" data-toggle="tab">Lịch sử thay đổi</a></li>
+        <li><a href="#customers" data-toggle="tab">Danh sách khác hàng</a></li>
+    }
+</ul>
+
+<div class="tab-content">
+    <!-- Property -->
+    <div class="tab-pane active" id="property">
+
+        @Html.Partial("Partial.Control", Model)
+
+        <div class="form-editor">
+
+            <span id="Id" style="display:none;">@Html.DisplayFor(m => m.Id)</span>
+
+            @Html.CheckBoxFor(m => m.IsChanged, new { style = "display:none" })
+
+            <!-- StaffInfo -->
+            @Html.Partial("Partial.StaffInfo.Edit", Model)
+
+            <!-- GalleryManager -->
+            @Html.Partial("GalleryManager", new RealEstate.ViewModels.PropertyImagesViewModel { Images = Model.Files, EnableEditImages = Model.EnableEditImages })
+
+            @if (!string.IsNullOrEmpty(Model.YoutubeId))
+            {
+            <!-- Youtube Video -->
+                @Html.Partial("Partial.YoutubeVideo", Model)
+            }
+
+            <!-- AdsType, TypeGroup, Type -->
+            @Html.Partial("Partial.AdsType.Edit", Model)
+
+            <!-- AddressInfo -->
+            @Html.Partial("Partial.AddressInfo.Edit", Model)
+
+            @if (Model.TypeGroupCssClass == "gp-apartment")
+            {
+            <!-- Apartment -->
+                @Html.Partial("Partial.AreaInfo.Edit", Model)
+            }
+
+            @if (Model.TypeGroupCssClass == "gp-house" || Model.TypeGroupCssClass == "gp-land")
+            {
+            <!-- Legal Status, Direction, Location, Alley -->
+                @Html.Partial("Partial.LocationInfo.Edit", Model)
+
+            <!-- AreaTotal, AreaLegal, AreaResidential -->
+                @Html.Partial("Partial.AreaInfo.Edit", Model)
+            }
+
+            @if (Model.TypeGroupCssClass == "gp-house" || Model.TypeGroupCssClass == "gp-apartment")
+            {
+            <!-- Construction -->
+                @Html.Partial("Partial.ConstructionInfo.Edit", Model)
+            }
+
+            @if (Model.TypeGroupCssClass == "gp-house")
+            {
+            <!-- Advantage & Disadvantage -->
+                @Html.Partial("Partial.Advantages.Edit", Model)
+            }
+
+            <!-- ContactInfo -->
+            @Html.Partial("Partial.ContactInfo.Edit", Model)
+
+            <!-- PriceProposed -->
+            @Html.Partial("Partial.PriceProposed.Edit", Model)
+
+            <!-- AdsContent -->
+            @Html.Partial("Partial.AdsContent.Edit", Model)
+
+            @Html.HiddenFor(r => r.IsPropertyExchange)
+        </div>
+    </div>
+    <!-- Map -->
+    <div class="tab-pane" id="map"></div>
+    <!-- SEO -->
+    <div class="tab-pane" id="seo">
+        <!-- Comments -->
+        <div id="comments">
+            @Html.ActionLink(T("Comments").ToString(), "Index", "Comments", new { area = "RealEstate.FrontEnd", id = Model.Id }, new { @class = "button hidden lazy-loading-url" })
+            <div class="overlay-content">
+                <p><img src="@Url.Content("~/Modules/RealEstate.Admin/Styles/images/bigrotation2.gif")" alt="loading..." /> Loading...</p>
+            </div>
+        </div>
+    </div>
+    <!-- Revisions -->
+    <div class="tab-pane" id="revisions">
+        @Html.ActionLink(T("Xem lịch sử thay đổi").ToString(), "Details", "PropertyAdmin", new { area = "RealEstate.Admin", id = Model.Id }, new { @class = "button hidden lazy-loading-url" })
+        <div class="overlay-content">
+            <p><img src="@Url.Content("~/Modules/RealEstate.Admin/Styles/images/bigrotation2.gif")" alt="loading..." /> Loading...</p>
+        </div>
+    </div>
+    <!-- Customers -->
+    <div class="tab-pane" id="customers">
+        @Html.ActionLink(T("Xem danh sách khách hàng").ToString(), "ViewCustomers", "CustomerAdmin", new { area = "RealEstate.Admin", id = Model.Id }, new { @class = "button hidden lazy-loading-url" })
+        <div class="overlay-content">
+            <p><img src="@Url.Content("~/Modules/RealEstate.Admin/Styles/images/bigrotation2.gif")" alt="loading..." /> Loading...</p>
+        </div>
+    </div>
+</div>
+@Html.Partial("Partial.ColorboxAddressCorner")
+@Html.Partial("Partial.YoutubeImageGuide")
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        $(function () {
+
+            // validation
+            $(".form-serialize").validate({
+                errorClass: "text-error",
+                rules: {
+                    PriceProposedCopy:
+                    {
+                        required: true
+                    },
+                    email: {
+                        email: true
+                    }
+                },
+                messages: {
+                    PriceProposedCopy:
+                    {
+                        required: "Vui lòng nhập giá @(Model.AdsTypeCssClass == "ad-selling" ? "Cho thuê" : "Rao bán")."
+                    },
+                    email: {
+                        email: "Your email address must be in the format of name@domain.com"
+                    }
+                }
+            });
+
+        });
+    </script>
+}

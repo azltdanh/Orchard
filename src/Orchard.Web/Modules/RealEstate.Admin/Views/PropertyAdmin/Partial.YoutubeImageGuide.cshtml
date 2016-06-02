@@ -1,0 +1,15 @@
+﻿<div style="display: none">
+    <div style="padding: 10px; background: #fff;" id="colorbox_youtube_guide">
+        <img class="img-youtube-guide" src="/Modules/RealEstate.Admin/Styles/images/youtubeid.jpg" alt="youtubeId" />
+    </div>
+</div>
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        $(function () {
+            $('.inline-youtube_guide').click(function () {
+                $(this).colorbox({ inline: true, width: "50%" });
+            });
+        });
+    </script>
+}

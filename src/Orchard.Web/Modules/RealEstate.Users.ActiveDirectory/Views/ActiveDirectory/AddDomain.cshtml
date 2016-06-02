@@ -1,0 +1,22 @@
+﻿@model RealEstate.Users.ActiveDirectory.Models.DomainRecord
+@{ Layout.Title = T("Add a domain").ToString(); }
+<h2>@T("Add a domain")</h2>
+@using (Html.BeginFormAntiForgeryPost(Url.Action("AddDomain")))
+{
+    @Html.ValidationSummary()
+    <fieldset>
+            @Html.LabelFor(m => m.Name, T("Name"))
+            @Html.TextBoxFor(m => m.Name, new { @class = "textMedium" })
+    </fieldset>
+    <fieldset>
+            @Html.LabelFor(m => m.UserName, T("User name"))
+            @Html.TextBoxFor(m => m.UserName, new { @class = "textMedium" })
+    </fieldset>
+    <fieldset>
+            @Html.LabelFor(m => m.Password, T("Password"))
+            @Html.PasswordFor(m => m.Password, new { @class = "textMedium" })
+    </fieldset>
+    <fieldset>
+        <button class="primaryAction" type="submit">@T("Save")</button>
+    </fieldset>
+}

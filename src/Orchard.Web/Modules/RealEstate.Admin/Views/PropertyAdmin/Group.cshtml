@@ -1,0 +1,190 @@
+﻿@model RealEstate.ViewModels.PropertyIndexViewModel
+@using RealEstate.ViewModels;
+
+@{
+    Style.Require("Rating");
+    Script.Require("Rating");
+
+    Script.Require("Floatheader");
+    Script.Require("Common");
+
+    Layout.Title = T("Properties").ToString();
+}
+
+<style>
+    #main {
+        min-width: 976px;
+    }
+</style>
+@using (Script.Foot())
+{
+<script>
+
+    // auto reload a page if there is no activity for 5 minutes on the page
+
+    var time = new Date().getTime();
+
+    $(document.body).bind("mousemove keypress", function (e) {
+        time = new Date().getTime();
+    });
+
+    function refresh() {
+        if (new Date().getTime() - time >= 300000)
+            window.location.reload(true);
+        else
+            setTimeout(refresh, 10000);
+    }
+
+    setTimeout(refresh, 10000);
+
+</script>
+}
+@if (Model.Options != null)
+{
+    @Html.Partial("GroupFilter", Model.Options)
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{
+    <div class="left">@Html.Raw(String.Format("Tìm được <strong>{0:#,0}</strong> kết quả ({1:#,0.##} giây)", Model.TotalCount, Model.TotalExecutionTime))</div>
+    <div class="right">
+        @if (AuthorizedFor(RealEstate.Permissions.BulkActionProperties))
+        {
+            <fieldset class="bulk-actions">
+                <label for="publishActions" class="filter-label">@T("Tác vụ:")</label>
+                <select class="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+                    @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.None, T("--Chọn tác vụ--").ToString())
+                    @if (Model.Options.IsApproveAllGroup == false)
+                    { 
+                        if (Model.Options.GroupApproved == "Approved")
+                        {
+                             @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.RemoveShareToGroup, T("Xóa tin").ToString())
+                        }
+                        else if(Model.Options.GroupApproved == "NotApproved")
+                        {
+                            @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.UnRemoveShareToGroup, T("Khôi phục tin").ToString())
+                        }
+                        else
+                        {
+                            @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.ShareToGroup, T("Duyệt tin").ToString())
+                            @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.NotShareToGroup, T("Xóa tin").ToString())
+                        }
+                    }
+                    else
+                    {
+                        if(Model.Options.GroupApproved == "NotApproved")
+                        {
+                            @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.UnRemoveShareToGroup, T("Khôi phục tin").ToString())
+                        }
+                        else
+                        {
+                            @Html.SelectOption(Model.Options.BulkAction, PropertyBulkAction.NotShareToGroup, T("Xóa tin").ToString())
+                        }
+                    }
+                   
+                </select>
+                <button type="submit" name="submit.BulkEdit" value="@T(" apply")">@T("Apply")</button>
+
+                @Html.Hidden("ReturnUrl")
+            </fieldset>
+        }
+</div>
+    
+<fieldset>
+    <table class="items fixed-table float-header">
+        <thead>
+            <tr>
+                <th scope="col" class="w20 align-center"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.Properties)" /></th>
+                <th scope="col" class="w58">@T("Id")</th>
+                <th scope="col" class="">@T("Nội dung tin đăng")</th>
+                <th scope="col" class="w200">@T("Ngày")</th>
+                <th scope="col" class="w200">@T("Website")</th>
+            </tr>
+        </thead>
+        <tbody>
+        @{var index = 0;}
+        @foreach (var entry in Model.Properties)
+        {
+            var item = entry.PropertyPart;
+            <tr data-id="@item.Id">
+                    
+                <td class="align-center">
+                    <input type="hidden" value="@Model.Properties[index].Property.Id" name="@Html.NameOf(m => m.Properties[index].Property.Id)" />
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.Properties[index].IsChecked)" />
+                </td>
+
+                <td>
+                    <!-- ID -->
+                    <span class="@(item.IsExcludeFromPriceEstimation ? " property-excluded" : "")">
+                        @item.Id
+                    </span>
+
+                    <!-- CopyToGroup -->
+                    <div>
+                        <small class="small">
+                        @Html.ActionLink("CopyBĐS NB", "CopyToGroup", new { item.Id, returnUrl = HttpContext.Current.Request.Url }, new { Class = "p-id" })
+                        </small>
+                        <small class="small">
+                            @Html.ActionLink("CopyBĐS KH", "CopyToApproved", new { item.Id, returnUrl = HttpContext.Current.Request.Url }, new { Class = "p-id ", style = "color:red" })
+                        </small>
+                   </div>
+
+                </td>
+                <td>
+                    <div class="media" data-id="@item.Id">
+                        <div class="media-body@(item.IsAuthenticatedInfo == true ? " bg-authenticated" : "")">
+                            <div class="block-ellipsis block-ellipsis-4">
+                                <div style="color:black; font-weight:bold">
+                                    @Html.Raw(item.DisplayForTitle)                                  
+                                    ,<strong style="color:red; font-weight:bold">Giá: @item.PriceProposed @(item.PaymentMethod != null ? item.PaymentMethod.ShortName : "")</strong>
+                                </div>
+                                @Html.Raw(item.DisplayForAreaConstructionLocationInfo), 
+                                @if (!String.IsNullOrEmpty(item.Title))
+                                {
+                                    @item.DisplayForLocationFullAddress
+                                }
+                                <div style="color:blue; font-weight:bold">
+                                    Liên hệ: @entry.DisplayForContact @(item.PublishContact ? item.ContactEmail : "")
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <!-- Date -->
+                <td>
+                    <!-- Date -->
+                    @if (entry.IsExportedRecently == true)
+{
+                        <span data-toggle="tooltip" class="color-note" title="đã xuất tin ngày @(Html.DisplayFor(model => item.LastExportedDate, "ShortDate")) bởi
+                            <strong>@item.LastExportedUser.UserName</strong>">
+                            @Html.DisplayFor(model => item.LastUpdatedDate, "ShortDate")
+                        </span>
+}
+                    else if (entry.IsExportedExpired == true)
+                    {
+                        <span data-toggle="tooltip" class="color-highlight" title="tin đăng hết hạn, xuất lần cuối ngày @(Html.DisplayFor(model => item.LastExportedDate, "ShortDate")) bởi
+                            <strong>@(item.LastExportedUser != null ? item.LastExportedUser.UserName : "...")</strong>">
+                            @Html.DisplayFor(model => item.LastUpdatedDate, "ShortDate")
+                        </span>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(model => item.LastUpdatedDate, "ShortDate")
+                    }
+                </td>
+                <td>
+                   @if(entry.HostNamePart != null)
+                   { 
+                       @(entry.HostNamePart.DomainName) <span> - </span><strong>@entry.HostNamePart.Id</strong>
+                   }
+                </td>
+            </tr>
+            index++;
+        }
+        </tbody>
+    </table>
+
+    @Display(Model.Pager)
+
+</fieldset>
+}

@@ -1,0 +1,17 @@
+﻿@model IEnumerable<RealEstate.Models.CustomerPropertyRecord>
+@{
+    List<string> staffs = new List<string>();
+    foreach (var entry in Model)
+    {
+        if (entry.Users != null)
+        {
+            staffs.AddRange(entry.Users.Select(a => a.UserPartRecord.UserName));
+        }
+    }
+    staffs = staffs.Distinct().ToList();
+}
+@*@string.Join(", ", staffs)*@
+@foreach (string staff in staffs)
+{
+    <div>- @staff</div>
+}

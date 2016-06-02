@@ -1,0 +1,131 @@
+﻿@model RealEstate.ViewModels.PlanningMapsIndexViewModel
+@using RealEstate.Models;
+@using RealEstate.ViewModels;
+
+@{
+    Script.Require("BootstrapCombobox");
+    Layout.Title = T("Bản đồ quy hoạch").ToString();
+}
+
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Get))
+{      
+    @Html.ValidationSummary()
+    <div class="left">
+        <fieldset class="bulk-actions">
+            <table class="filter-table">
+                <tbody>
+                    <tr>
+                        <td>
+                            @Html.DropDownListFor(m => m.Options.ProvinceId,
+                            Model.Options.Provinces.Select(s => new SelectListItem
+                            {
+                                Selected = s.Id == Model.Options.ProvinceId,
+                                Text = s.Name,
+                                Value = s.Id.ToString()
+                            }), "-- Tỉnh / Thành phố --", new { Class = "combobox" })
+                        </td>
+                        <td>
+                            @Html.DropDownListFor(m => m.Options.DistrictId,
+                            Model.Options.Districts.Select(s => new SelectListItem
+                            {
+                                Selected = s.Id == Model.Options.DistrictId,
+                                Text = s.Name,
+                                Value = s.Id.ToString()
+                            }), "-- Quận / Huyện --", new { Class = "combobox" })
+                        </td>
+                        <td>
+                            @Html.DropDownListFor(m => m.Options.WardId,
+                             Model.Options.Wards.Select(s => new SelectListItem
+                            {
+                                Selected = s.Id == Model.Options.WardId,
+                                Text = s.Name,
+                                Value = s.Id.ToString()
+                            }), "-- Phường / Xã --", new { Class = "combobox" })
+                        </td>
+                        <td>
+                            <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </fieldset>
+    </div>
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{ 
+    @Html.ValidationSummary()
+    <div class="right">
+        <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+            @Html.SelectOption(Model.Options.BulkAction, PlanningMapBulkAction.None, T("Choose action...").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, PlanningMapBulkAction.Delete, T("Delete").ToString())
+        </select>
+        <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+        <div class="manage">@Html.ActionLink(T("Add new Map").ToString(), "Create", new { returnUrl = HttpContext.Current.Request.Url }, new { @class = "button primaryAction" })</div>
+    </div>
+    <fieldset>
+
+        <table class="items">
+            <thead>
+                <tr>
+                    <th scope="col"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.PlanningMaps)" /></th>
+                    <th scope="col">@T("Province")</th>
+                    <th scope="col">@T("District")</th>
+                    <th scope="col">@T("Ward")</th>
+                    <th scope="col">@T("Width")</th>
+                    <th scope="col">@T("Height")</th>
+                    <th scope="col">@T("MinZoom")</th>
+                    <th scope="col">@T("MaxZoom")</th>
+                    <th scope="col">@T("Ratio")</th>
+                    <th scope="col">@T("IsEnabled")</th>
+                    <th scope="col">@T("Actions")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.PlanningMaps)
+            { 
+            <tr>
+                <td>
+                    <input type="hidden" value="@Model.PlanningMaps[index].PlanningMap.Id" name="@Html.NameOf(m => m.PlanningMaps[index].PlanningMap.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.PlanningMaps[index].IsChecked)"/>
+                </td>
+                <td>
+                    @entry.PlanningMap.LocationProvincePartRecord.Name
+                </td>
+                <td>
+                    @entry.PlanningMap.LocationDistrictPartRecord.Name
+                </td>
+                <td>
+                    @entry.PlanningMap.LocationWardPartRecord.Name
+                </td>
+                <td>
+                    @entry.PlanningMap.Width
+                </td>
+                <td>
+                    @entry.PlanningMap.Height
+                </td>
+                <td>
+                    @entry.PlanningMap.MinZoom
+                </td>
+                <td>
+                    @entry.PlanningMap.MaxZoom
+                </td>
+                <td>
+                    @entry.PlanningMap.Ratio
+                </td>
+                <td>
+                    @entry.PlanningMap.IsEnabled
+                </td>
+                <td>
+                    @Html.ActionLink(T("Edit").ToString(), "Edit", new { entry.PlanningMap.Id, returnUrl = HttpContext.Current.Request.Url }) |
+                    @Html.ActionLink(T("Delete").ToString(), "Delete", new { entry.PlanningMap.Id, returnUrl = HttpContext.Current.Request.Url }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                </td>
+            </tr>
+                index++;
+            }
+        </table>
+
+        @Display(Model.Pager)
+
+    </fieldset>
+} 

@@ -1,0 +1,60 @@
+﻿@model List<RealEstate.FrontEnd.ViewModels.PropertyDisplayEntry>
+@using RealEstate.Helpers;
+
+@foreach (var entry in Model)
+{
+    var item = entry.Property;
+    <div class="media content-item-property" data-id="@item.Id">
+        <div class="pull-right content-item-property-price">
+            <div class="header-wrapper header-color-green">
+                <div class="header-center">
+                    <div class="header-left">
+                        <div class="header-left-triangle"></div>
+                    </div>
+                    <h2>@item.DisplayForPriceProposed</h2>
+                    <div class="header-right"></div>
+                </div>
+            </div>
+            <div class="content-item-property-price-info">
+                <div><strong class="text-green">Mã tin: @item.Id</strong></div>
+                <div>Cập nhật ngày @item.LastUpdatedDate.ToString("dd/MM/yyyy")</div>
+                @if (entry.UserViews > 0)
+                {
+                <div>Lượt xem: @entry.UserViews</div>
+                }
+                <a href="#@item.Id" class="linksaveproperty" rel="nofollow">Lưu tin này</a>
+            </div>
+        </div>
+        <a class="pull-left" href="@Url.Action("RealEstateDetail", "PropertySearch", new { area = "RealEstate.FrontEnd", id = item.Id, title = item.DisplayForUrl })">
+            <img alt="@item.DisplayForTitle.StripHTML()" src="@entry.DefaultImgUrl?width=120" width="120" class="img-thumbnail"/>
+        </a>
+        <div class="media-body@(item.IsAuthenticatedInfo == true? " bg-authenticated" : "")">
+            <a href="@Url.Action("RealEstateDetail", new { id = item.Id, title = item.DisplayForUrl })" title="@item.DisplayForTitle.StripHTML()"><strong>@Html.Raw(item.DisplayForTitle)</strong></a>
+            @*@if (Model.IndexOf(entry) == 0)
+            {
+                <i class="icon-silk-new"></i>
+            }*@
+            @if ((DateTime.Now - item.LastUpdatedDate).TotalDays < 1)
+            {
+                <i class="icon-silk-new"></i>
+            }
+            @if (!String.IsNullOrEmpty(item.Title))
+            {
+                <div><strong>Địa chỉ:</strong> @item.DisplayForLocationFullAddress</div>
+            }
+                
+            <div>
+                @Html.Raw(item.DisplayForAreaConstructionInfo)
+            </div>
+            <div>
+                <strong>Liên hệ:</strong>
+                @entry.DisplayForContact
+                @if (item.AdsExpirationDate < DateTime.Now)
+                { <div><strong class="text-muted">(Tin quá hạn)</strong></div>  }
+            </div>
+            <a href="@Url.Action("RealEstateDetail", new { id = item.Id, title = item.DisplayForUrl })" class="text-info"><i class="icon-silk-image"></i>Vị trí BĐS</a>
+            <a href="@Url.Action("RealEstateDetail", new { id = item.Id, title = item.DisplayForUrl })" class="text-info"><i class="icon-silk-comments"></i>Bình luận BĐS</a>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+}

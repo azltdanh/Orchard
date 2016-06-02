@@ -1,0 +1,118 @@
+﻿@model RealEstate.ViewModels.LocationApartmentBlockIndexViewModel
+@using RealEstate.Models;
+@using RealEstate.ViewModels;
+
+@{
+    Script.Require("BootstrapCombobox");
+    Script.Require("Common");
+    Layout.Title = T("Location Apartments Block").ToString();
+}
+
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Get))
+{
+    @Html.ValidationSummary()
+
+    <fieldset class="bulk-actions">
+        <table class="filter-table">
+            <thead>
+                <tr>
+                    <th>@Html.LabelFor(m => m.Options.ApartmentId, @T("Dự án / Chung cư:"))</th>
+                    <th>@Html.LabelFor(m => m.Options.Search, @T("Tên Block Chung cư:"))</th>
+                    <th>@Html.LabelFor(m => m.Options.Order, @T("Sort by:"))</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        @Html.DropDownListFor(m => m.Options.ApartmentId,
+                            Model.Options.LocationApartments.Select(s => new SelectListItem
+                            {
+                                Selected = s.Id == Model.Options.ApartmentId,
+                                Text = s.Name,
+                                Value = s.Id.ToString()
+                            }), "-- Chọn dự án --", new { Class = "combobox" })
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(m => m.Options.Search, new { @class = "text text-box" })
+                    </td>
+                    <td>
+                        <select id="filterSortby" name="@Html.NameOf(m => m.Options.Order)">
+                            @Html.SelectOption(Model.Options.Order, LocationApartmentsOrder.Name, T("Name").ToString())
+                            @Html.SelectOption(Model.Options.Order, LocationApartmentsOrder.SeqOrder, T("SeqOrder").ToString())
+                        </select>
+                    </td>
+                    <td>
+                        <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </fieldset>
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{ 
+    @Html.ValidationSummary()
+
+    <fieldset class="bulk-actions right">
+        <label for="publishActions">@T("Actions:")</label>
+        <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+            @Html.SelectOption(Model.Options.BulkAction, LocationApartmentsBulkAction.None, T("Choose action...").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, LocationApartmentsBulkAction.Delete, T("Delete").ToString())
+        </select>
+        <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+        @Html.ActionLink(T("Add new Apartment Block").ToString(), "ApartmentBlockCreate", new { returnUrl = HttpContext.Current.Request.Url }, new { @class = "button primaryAction" })
+    </fieldset>
+    
+    <fieldset>
+
+        <table class="items">
+            <thead>
+                <tr>
+                    <th scope="col"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.LocationApartmentBlocks)" /></th>
+                    <th scope="col">@T("Dự án")</th>
+                    <th scope="col">@T("Block Name")</th>
+                    <th scope="col">@T("Số tầng")</th>
+                    <th scope="col">@T("Số nhóm tầng")</th>
+                    <th scope="col">@T("Giá chuẩn")</th>
+                    <th scope="col">@T("Actions")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.LocationApartmentBlocks)
+            { 
+            <tr>
+                <td>
+                    <input type="hidden" value="@Model.LocationApartmentBlocks[index].LocationApartmentBlock.Id" name="@Html.NameOf(m => m.LocationApartmentBlocks[index].LocationApartmentBlock.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.LocationApartmentBlocks[index].IsChecked)"/>
+                </td>
+                <td>
+                    @(!String.IsNullOrEmpty(entry.LocationApartmentBlock.LocationApartment.Name) ? entry.LocationApartmentBlock.LocationApartment.Name : entry.LocationApartmentBlock.LocationApartment.ShortName)
+                </td>
+                <td>
+                    @Html.ActionLink(entry.LocationApartmentBlock.BlockName, "ApartmentBlockEdit", new { entry.LocationApartmentBlock.Id, returnUrl = HttpContext.Current.Request.Url }) 
+                </td>
+                <td>
+                    @entry.LocationApartmentBlock.FloorTotal 
+                </td>
+                <td>
+                    @entry.LocationApartmentBlock.GroupFloorInBlockTotal
+                </td>
+                <td>
+                    @entry.LocationApartmentBlock.PriceAverage
+                </td>
+                <td>
+                    @Html.ActionLink(T("Thông tin chung căn hộ").ToString(), "ApartmentBlockInfoIndex", new { blockId = entry.LocationApartmentBlock.Id, returnUrl = HttpContext.Current.Request.Url }) |
+                    @Html.ActionLink(T("Edit").ToString(), "ApartmentBlockEdit", new { entry.LocationApartmentBlock.Id, returnUrl = HttpContext.Current.Request.Url }) |
+                    @Html.ActionLink(T("Delete").ToString(), "ApartmentBlockDelete", new { entry.LocationApartmentBlock.Id, returnUrl = HttpContext.Current.Request.Url }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                </td>
+            </tr>
+                index++;
+            }
+        </table>
+
+        @Display(Model.Pager)
+
+    </fieldset>
+} 

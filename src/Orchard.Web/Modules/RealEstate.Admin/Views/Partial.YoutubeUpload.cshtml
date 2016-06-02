@@ -1,0 +1,61 @@
+﻿@{
+    Style.Require("Uploadify");
+    Script.Require("Uploadify");
+}
+
+<fieldset>
+    <input type="file" name="file_upload" id="file_upload" style="display:none;" />
+</fieldset>
+<fieldset>
+    <div class="bgupload-loading">
+        <img src="/themes/dinhgianhadat.green/styles/images/loading.gif" />
+    </div>
+</fieldset>
+
+<script type="text/javascript">
+    $(function () {
+        $('button[name="submit.Save"]').attr('disabled', 'true');
+            //var videoTitle = $('#Title').val();
+            //var videoDescription = $('#Description').val();
+            $("#file_upload").uploadify({
+                swf: '/Modules/RealEstate.Admin/Scripts/uploadify-v3.1/uploadify.swf',
+                uploader: '@Url.Action("UploadYoutube", "Home", new { area = "RealEstate.Admin" })',
+                cancelImg: '/Modules/RealEstate.Admin/Scripts/uploadify-v3.1/uploadify-cancel.png',
+                buttonText: 'Chọn Video',
+                buttonClass: 'button primaryAction',
+                width: 85,
+                height: 21,
+                multi: false,
+                //auto: false,
+                fileObjName: 'file',
+                fileSizeLimit: '200MB',
+                fileTypeDesc: 'Video Files',
+                fileTypeExts: '*.mp4;*.flv',
+                successTimeout: 3600,
+                onDialogOpen: function (file) {
+                    //if (videoDescription == '' || videoTitle == '') {
+                    //    $('#file_upload').uploadify('cancel');
+                    //}
+                    //$('#file_upload').uploadify('cancel');
+                },
+                onUploadStart: function () {
+                    $('.bgupload-loading').show();
+                    $("#file_upload").uploadify("settings", 'videoTitle', 'Hỏi về c#');
+                    $("#file_upload").uploadify("settings", 'videoKeyword', 'Hỏi về c#');
+                    $("#file_upload").uploadify("settings", 'videoDescription', 'Hỏi về c#');
+
+                },
+                formData: { videoTitle: 'Hỏi về c#', videoKeyword: 'Hỏi về c#', videoDescription: 'Hỏi về c#' },
+                onUploadSuccess: function (file, data, response) {
+                    $('.bgupload-loading').hide();
+                    var json = jQuery.parseJSON(data);
+                    if (json.status)
+                        alert('success upload');
+                    else {
+                        alert(json.message);
+                    }
+                },
+                debug: true
+            });
+    });
+</script>

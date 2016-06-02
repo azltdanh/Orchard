@@ -1,0 +1,166 @@
+﻿@model RealEstate.ViewModels.PropertyEditViewModel
+
+<!-- Thông tin nội bộ -->
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-center header-bg-green">
+                <div class="header-left header-bg-green">
+                    <div class="header-left-triangle"></div>
+                </div>
+                <h1>Thông tin nội bộ</h1>
+                <div class="header-right"></div>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="form-horizontal pull-left">
+            <!-- LastInfoFromUser -->
+            <div class="control-group">
+                <label class="control-label">@T("Nguồn:")</label>
+                <div class="controls">
+                    @Html.DropDownListFor(m => m.LastInfoFromUserId,
+                    Model.Users.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.LastInfoFromUserId,
+                        Text = s.UserName,
+                        Value = s.Id.ToString()
+                    }),
+                    new { @class = "select-box" })
+                    @Html.ValidationMessageFor(m => m.LastInfoFromUserId, "*")
+
+                    @*<label>@Html.CheckBoxFor(m => m.IsAuthenticatedInfo) @T("BĐS đã xác thực")</label>*@
+                </div>
+            </div>
+            <!-- Flag -->
+            <div class="control-group">
+                <label class="control-label">@T("Đánh dấu:")</label>
+                <div class="controls">
+                    @Html.DropDownListFor(m => m.FlagId,
+                    Model.Flags.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.FlagId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }),
+                    new { @class = "select-box" })
+                    @Html.ValidationMessageFor(m => m.FlagId, "*")
+
+                    @if (Model.TypeGroupCssClass == "gp-house")
+                    {
+                        <label>@Html.CheckBoxFor(m => m.IsExcludeFromPriceEstimation) @T("Loại khỏi định giá")</label>
+                    }
+                </div>
+            </div>
+            <!-- Status -->
+            <div class="control-group">
+                <label class="control-label">@T("Tình trạng:")</label>
+                <div class="controls">
+                    @if (Model.EnableEditStatus)
+                    {
+                        @Html.DropDownListFor(m => m.StatusCssClass,
+                        Model.Status.Select(s => new SelectListItem
+                        {
+                            Selected = s.CssClass == Model.StatusCssClass,
+                            Text = s.Name,
+                            Value = s.CssClass
+                        }),
+                        new { @class = "select-box" })
+                        @Html.ValidationMessageFor(m => m.StatusCssClass, "*")
+                        <label>@Html.CheckBoxFor(m => m.IsSoldByGroup) @T("Được bán bởi Group")</label>
+                        <div><em>@String.Format("Ngày thay đổi trạng thái gần nhất {0:dd/MM/yyyy}", Model.StatusChangedDate)</em></div>
+                    }
+                    else
+                    {
+                        @Html.HiddenFor(m => m.StatusCssClass)
+                        @Model.StatusName
+                        <div><em>@String.Format("Ngày thay đổi trạng thái gần nhất {0:dd/MM/yyyy}", Model.StatusChangedDate)</em></div>
+                    }
+                </div>
+            </div>
+
+            <!-- Note -->
+            <div class="control-group">
+                <label class="control-label">@T("Ghi chú nội bộ:")</label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.Note, new { maxlength = 250, @class = "text text-box-medium" })
+                </div>
+            </div>
+
+            <!-- ContactPhoneToDisplay -->
+            <div class="control-group">
+                <label class="control-label">@T("ĐT hiển thị:")</label>
+                <div class="controls">
+                    @if (AuthorizedFor(RealEstate.Permissions.EditContactPhoneToDisplay))
+                    {
+                        @Html.TextBoxFor(m => m.ContactPhoneToDisplay, new { maxlength = 250, @class = "text text-box-medium" })
+                    }
+                    else
+                    {
+                        @(String.IsNullOrWhiteSpace(Model.ContactPhoneToDisplay) ? "N/A" : Model.ContactPhoneToDisplay)
+                    }
+                </div>
+            </div>
+            <!-- Images -->
+            <div class="control-group">
+                <label class="control-label">@T("Hình ảnh:")</label>
+                <div class="controls">
+                    @Html.Partial("UploadImages", String.Empty) @*// String.Empty or uploadHandleUrl*@
+                </div>
+            </div>
+            <!-- Youtube Video -->
+            <div class="control-group">
+                <label class="control-label">@T("Youtube Id:")</label>
+                <div class="controls">
+                    @*<a href="#form_youtube_upload" class="inline-youtube button primaryAction">Chọn Video</a>*@
+                    @Html.TextBoxFor(r => r.YoutubeId, new { @class = "text text-box", placeholder = "Dán YoutubeId vào đây" })
+                    <label>@Html.CheckBoxFor(m => m.YoutubePublish) @T("Publish video")</label>
+                    <div>
+                        Vào <a href="https://www.youtube.com/upload" target="_blank"><strong>Youtube.com</strong></a> để upload video, <br />
+                        sau đó copy YoutubeId giống như hình bên dưới và dán(paste) vào ô trên<br />
+                        <a href="#colorbox_youtube_guide" title="Click để xem hướng dẫn copy YoutubeId trên link" class="inline-youtube_guide"><i class="icon-help ui-icon"></i> Xem hình</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="form-horizontal pull-left">
+            <div class="control-group" style="font-style:italic;">
+                <!-- VisitedCount -->
+                <div>Đã có <strong>@Model.VisitedCount</strong> khách hàng đến xem BĐS này.</div>
+                <!-- LastUpdatedUser -->
+                <div><strong>Nguồn gần nhất:</strong> @Model.LastInfoFromUser.UserName - <strong>Sửa bởi:</strong> @Model.LastUpdatedUser.UserName ngày @String.Format("{0:dd/MM/yyyy}", Model.LastUpdatedDate)</div>
+                <!-- CreatedUser -->
+                <div><strong>Nguồn đầu tiên:</strong> @Model.FirstInfoFromUser.UserName - <strong>Tạo bởi:</strong> @Model.CreatedUser.UserName ngày @String.Format("{0:dd/MM/yyyy}", Model.CreatedDate)</div>
+                <!-- UserGroup -->
+                @if (Model.UserGroup != null)
+                {
+                    <div>BĐS thuộc group <strong>@Model.UserGroup.Name</strong> @(Model.IsExternal ? " - BĐS khách đăng" : " - BĐS nội bộ")</div>
+                }
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </article>
+    <footer></footer>
+</article>
+
+<!-- Modal -->
+<div class="modal fade" id="dialogIsSoldByGroup" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">BĐS Đã giao dịch</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <h2>BĐS này do Group của bạn bán phải không?</h2>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="" value="true" data-dismiss="modal">Đúng</button>
+                <button type="button" class="" value="false" data-dismiss="modal">Không</button>
+            </div>
+        </div>
+    </div>
+</div>

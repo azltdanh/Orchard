@@ -1,0 +1,84 @@
+﻿@using RealEstate.Models;
+@using RealEstate.ViewModels;
+@model ApartmentBlockInfoIndex
+
+@{
+    Layout.Title = T(Model.ApartmentName + " - " + Model.ApartmentBlockPart.BlockName).ToString();
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{ 
+    <fieldset class="bulk-actions right">
+        @*@if (AuthorizedFor(RealEstate.Permissions.ManageAddressLocations))
+        {*@
+            <label for="publishActions">@T("Actions:")</label>
+            <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+                @*@Html.SelectOption(Model.Options.BulkAction, ApartmentBlockInfoBulkAction.None, T("Choose action...").ToString())
+                @Html.SelectOption(Model.Options.BulkAction, ApartmentBlockInfoBulkAction.Delete, T("Delete").ToString())*@
+                <option value="None">Choose action</option>
+                <option value="Delete">Delete</option>
+            </select>
+            <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+        @*}*@
+        @Html.ActionLink(T("Add new ApartmentBlock Info").ToString(), "ApartmentBlockInfoCreate", new { blockId = Model.ApartmentBlockPart.Id, returnUrl = HttpContext.Current.Request.Url }, new { @class = "button primaryAction" })
+    </fieldset>
+    
+    <fieldset>
+
+        <table class="items">
+            <thead>
+                <tr>
+                    <th scope="col"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.ApartmentBlockInfoParts)" /></th>
+                    <th scope="col">@T("Apartment Name")</th>
+                    <th scope="col">@T("Diện tích")</th>
+                    <th scope="col">@T("Diện tích thông thủy")</th>
+                    <th scope="col">@T("Số phòng ngủ")</th>
+                    <th scope="col">@T("Số phòng tấm")</th>
+                    <th scope="col">@T("Kích hoạt")</th>
+                    <th scope="col">@T("Thông tin khác")</th>
+                    <th scope="col">@T("Action")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.ApartmentBlockInfoParts)
+            { 
+                var item = entry.ApartmentBlockInfoPart;
+            <tr>
+                <td>
+                    <input type="hidden" value="@Model.ApartmentBlockInfoParts[index].ApartmentBlockInfoPart.Id" name="@Html.NameOf(m => m.ApartmentBlockInfoParts[index].ApartmentBlockInfoPart.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.ApartmentBlockInfoParts[index].IsChecked)"/>
+                </td>
+                <td>
+                    @item.ApartmentName
+                </td>
+                <td>
+                    @item.ApartmentArea
+                </td>
+                <td>
+                    @item.RealAreaUse
+                </td>
+                <td>
+                    @item.ApartmentBedrooms
+                </td>
+                <td>
+                    @item.ApartmentBathrooms
+                </td>
+                <td>
+                    @item.IsActive
+                </td>
+                <td>
+                    @item.OrtherContent
+                </td>
+                <td>
+                    @Html.ActionLink(T("Edit").ToString(), "ApartmentBlockInfoEdit", new { item.Id, returnUrl = HttpContext.Current.Request.Url }) |
+                    @Html.ActionLink(T("Delete").ToString(), "ApartmentBlockInfoDelete", new { item.Id, returnUrl = HttpContext.Current.Request.Url }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                </td>
+            </tr>
+                index++;
+            }
+        </table>
+
+        @Display(Model.Pager)
+
+    </fieldset>
+} 

@@ -1,0 +1,89 @@
+﻿@model RealEstate.ViewModels.PlanningMapIndexOptions
+@{
+    Layout.Title = "Bản đồ quy hoạch chi tiết các Quận TP. HCM";
+    SetMeta("description", "Bản đồ quy hoạch chi tiết các Quận TP. HCM");
+    SetMeta("keywords", "ban do, bản đồ, quy hoach, quy hoạch, chi tiet, chi tiết, quan 1, quận 1, quan 3, quận 3, ho chi minh, hồ chí minh, hcm ");
+
+    Style.Require("FrontEnd.ViewMap");
+    Style.Require("FrontEnd.ViewMap.IE").UseCondition("IE");
+    Script.Require("FrontEnd.ViewMap.min");
+}
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Post, new { enctype = "multipart/form-data", Class = "formvalidate" }))
+{
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="form-group col-lg-2 col-md-2 col-sm-2">
+                @Html.DropDownListFor(m => m.ProvinceId,
+                Model.Provinces.Select(s => new SelectListItem
+                {
+                    Selected = s.Id == Model.ProvinceId,
+                    Text = s.Name,
+                    Value = s.Id.ToString()
+                }), new { required = true, Class = "form-control" })
+            </div>
+            
+            <div class="form-group col-lg-3 col-md-3 col-sm-3">
+                @Html.DropDownListFor(m => m.DistrictId,
+                Model.Districts.Select(s => new SelectListItem
+                {
+                    Selected = s.Id == Model.DistrictId,
+                    Text = s.Name,
+                    Value = s.Id.ToString()
+                }), "-- Quận / Huyện --", new { required = true, Class="form-control" })
+            </div>
+
+            <div class="form-group col-lg-3 col-md-3 col-sm-3">
+                @Html.DropDownListFor(m => m.WardId,
+                Model.Wards.Select(s => new SelectListItem
+                {
+                    Selected = s.Id == Model.WardId,
+                    Text = s.Name,
+                    Value = s.Id.ToString()
+                }), "-- Phường / Xã --", new { required = true, Class="form-control" })
+            </div>
+
+            <div class="form-group col-lg-2 col-md-2 col-sm-2">
+                <button type="submit" class="btn btn-primary">Xem bản đồ quy hoạch</button>
+            </div>
+            <div class=" form-group col-lg-2 col-md-2 col-sm-2">
+                <a href="#MapGuideModal"  class="linkmapguide" data-toggle="modal" data-target="#MapGuideModal">Hướng dẫn</a>
+            </div>
+        </div>
+    </div>
+}
+<div class="block-ellipsis-1"></div>
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left"><div class="header-title-triangle"></div></div>
+                <h2 class="header-title-text" id="mapName">Bản đồ quy hoạch</h2>
+                <div class="header-title-right"></div>
+            </div>
+            <div class="header-msg">
+                <p class="text-success">&nbsp;&nbsp;Hiện chỉ hỗ trợ xem quy hoạch tại một số quận thuộc <strong>TP. HCM</strong></p>
+            </div>
+        </div>
+    </header>
+    <article style="padding:0;">
+        <!-- Planning Maps -->
+        <div id="map"></div>
+    </article>
+</article>
+
+<div class="alert alert-danger">
+    Bản đồ trên chỉ mang tính tham khảo. Quy hoạch có thể đã được thay đổi bởi cơ quan nhà nước. <br />
+    Để chắc chắn hơn các bạn nên liên hệ với cơ quan quản lý quy hoạch hoặc liên hệ trực tiếp với chúng tôi để được tư vấn thêm.
+</div>
+<div class="alert alert-info">
+    - Nhận dịch vụ cung cấp "văn bản trả lời quy hoạch" có đóng dấu của cơ quan nhà nước trong thời gian nhanh nhất.<br />
+    - Nhận dịch vụ đo vẽ nhà đất: Các loại bản vẽ hiện trạng, tách thửa mua bán, cấp đổi chủ quyền, xác định ranh giới...<br />
+    <span class="text-danger">Vui lòng liên hệ: <br/>
+        - TP.HCM: <strong>0908.198.596 Mr. Huấn</strong><br />
+        - Khánh Hòa: <strong>Cty Đo Đạc Địa Chính CÁT VIỆT - 15 Nguyễn Chánh, Tp. Nha TRang - ĐT: 0916523098 - 0982463880 A. Trọng</strong>
+    </span>
+</div>
+<div class="alert alert-success">
+    Chúng tôi đang cập nhật bản đồ quy hoạch của những khu vực còn thiếu.
+</div>
+@Html.Partial("MapGuidePartial")

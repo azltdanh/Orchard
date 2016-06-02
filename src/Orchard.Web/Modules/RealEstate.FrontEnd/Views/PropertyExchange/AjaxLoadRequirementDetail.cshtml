@@ -1,0 +1,182 @@
+﻿@model RealEstate.FrontEnd.ViewModels.CustomerDetailViewModel
+@using RealEstate.Models;
+
+@{
+    CustomerPart item = Model.Customer;
+    var groupIds = Model.Requirements.Select(a => a.Requirement.GroupId).Distinct().ToList();
+}
+
+@{bool flag = false;}
+@foreach (var r in Model.Purposes)
+{
+    if (r.IsChecked)
+    {
+        flag = true;
+        break;
+    }
+}
+@if (flag == true)
+{
+    <div>
+        <strong>Mục đích: </strong>
+        @foreach (var r in Model.Purposes)
+        {
+            if (r.IsChecked)
+            {
+                <span>@r.Purpose.Name </span>
+            }
+        }
+    </div>
+}
+@if (!string.IsNullOrEmpty(item.Note))
+{
+    <div><strong>Ghi chú: </strong><span class="color-note">@item.Note</span></div>
+}
+
+<table class="table table-condensed table-striped table-noborder">
+    <tbody>
+        @foreach (int groupId in groupIds)
+        {
+            IEnumerable<CustomerRequirementRecord> requirements = Model.Requirements.Where(a => a.Requirement.GroupId == groupId).Select(a => a.Requirement).ToList();
+            <tr>
+                <td>
+                    <div class="text-blue text-bold">
+                    @{ var PropertyExchange = Model.PropertyExchange;}
+                        @if (PropertyExchange.ExchangeType.CssClass != "exchange-parity") { 
+                            <text>@PropertyExchange.ExchangeType.Name : @string.Format("{0:#,0.##} {1}", PropertyExchange.ExchangeValues, PropertyExchange.PaymentMethod.Name)</text>
+                        }
+                        else
+                        {
+                            <text>- Đổi ngang giá</text>
+                        }
+                    </div>
+                </td>
+            </tr>
+            @*<tr>
+                <td>
+                    @if (requirements.Any(r => r.AdsTypePartRecord != null))
+                    {
+                        <span>@requirements.Where(r => r.AdsTypePartRecord != null).First().AdsTypePartRecord.ShortName </span>
+                    }
+                    @if (requirements.Any(r => r.PropertyTypeGroupPartRecord != null))
+                    {
+                        <span>@requirements.Where(r => r.PropertyTypeGroupPartRecord != null).First().PropertyTypeGroupPartRecord.Name,</span>
+                    }
+                </td>
+            </tr>*@
+            if (requirements.Any(r => r.LocationDistrictPartRecord != null))
+             {
+                 <tr>
+                     <td>
+                         <span> <strong>Khu vực:</strong> @string.Join(", ", requirements.Where(r => r.LocationDistrictPartRecord != null).Select(r => r.LocationDistrictPartRecord.Name).Distinct().ToArray())</span>
+                     </td>
+                 </tr>
+             }
+            
+            <tr>
+                <td>
+                    @if (requirements.Any(r => r.LocationStreetPartRecord != null))
+                    {
+                        <span> <strong>Đường:</strong> @string.Join(", ", requirements.Where(r => r.LocationStreetPartRecord != null).Select(r => r.LocationStreetPartRecord.Name).Distinct().ToArray()),</span>
+                    }
+                    @if (requirements.Any(r => r.LocationWardPartRecord != null))
+                    {
+                        <span> <strong>Phường / Xã:</strong> @string.Join(", ", requirements.Where(r => r.LocationWardPartRecord != null).Select(r => r.LocationWardPartRecord.Name).Distinct().ToArray()),</span>
+                    }
+
+                    @if (requirements.Any(r => r.LocationProvincePartRecord != null))
+                    {
+                        <span> @requirements.Where(r => r.LocationProvincePartRecord != null).First().LocationProvincePartRecord.Name </span>
+                    }
+                </td>
+            </tr>
+
+            if (requirements.Any(r => r.DirectionPartRecord != null))
+            {
+                <tr>
+                    <td>
+                        <span> <strong>Hướng:</strong> @string.Join(", ", requirements.Where(r => r.DirectionPartRecord != null).Select(r => r.DirectionPartRecord.Name).Distinct().ToArray()),</span>
+                    </td>
+                </tr>
+            }
+
+            if (requirements.Min(r => r.MinFloors).HasValue || requirements.Max(r => r.MaxFloors).HasValue)
+            {
+                <tr>
+                    <td>
+                        <span> <strong>Số lầu:</strong> @string.Format("{0: từ #,0.##}{1: đến #,0.##} lầu", requirements.Min(r => r.MinFloors), requirements.Max(r => r.MaxFloors)),</span>
+                    </td>
+                </tr>
+            }
+
+            if (requirements.Any(r => r.PropertyLocationPartRecord != null) || (requirements.Min(r => r.MinAlleyWidth).HasValue || requirements.Max(r => r.MaxAlleyWidth).HasValue) || (requirements.Min(r => r.MinAlleyTurns).HasValue || requirements.Max(r => r.MaxAlleyTurns).HasValue) || (requirements.Min(r => r.MinDistanceToStreet).HasValue || requirements.Max(r => r.MaxDistanceToStreet).HasValue))
+            {
+                <tr>
+                    <td>
+                        <span>
+                            <strong>Vị trí:</strong>
+                            @{
+                                List<string> strLocation = new List<string>();
+                                if (requirements.Any(r => r.PropertyLocationPartRecord != null))
+                                {
+                                    strLocation.Add(string.Join(", ", requirements.Where(r => r.PropertyLocationPartRecord != null).OrderBy(r => r.PropertyLocationPartRecord.SeqOrder).Select(r => r.PropertyLocationPartRecord.Name).Distinct().ToArray()));
+                                }
+                                if (requirements.Min(r => r.MinAlleyWidth).HasValue || requirements.Max(r => r.MaxAlleyWidth).HasValue)
+                                {
+                                    strLocation.Add(string.Format("hẻm rộng{0: từ #,0.##m}{1: đến #,0.##m}", requirements.Min(r => r.MinAlleyWidth), requirements.Max(r => r.MaxAlleyWidth)));
+                                }
+                                if (requirements.Min(r => r.MinAlleyTurns).HasValue || requirements.Max(r => r.MaxAlleyTurns).HasValue)
+                                {
+                                    strLocation.Add(string.Format("số lần rẽ{0: từ #,0.##m}{1: đến tối đa #,0.##m}", requirements.Min(r => r.MinAlleyTurns), requirements.Max(r => r.MaxAlleyTurns)));
+                                }
+                                if (requirements.Min(r => r.MinDistanceToStreet).HasValue || requirements.Max(r => r.MaxDistanceToStreet).HasValue)
+                                {
+                                    strLocation.Add(string.Format("cách đường chính{0: từ #,0.##m}{1: đến tối đa #,0.##m}", requirements.Min(r => r.MinDistanceToStreet), requirements.Max(r => r.MaxDistanceToStreet)));
+                                }
+                                    @String.Join(", ", strLocation)
+                            }
+                        </span>
+
+                    </td>
+                </tr>
+            }
+
+            if (requirements.Min(r => r.MinArea).HasValue || requirements.Max(r => r.MaxArea).HasValue || requirements.Min(r => r.MinWidth).HasValue || requirements.Max(r => r.MaxWidth).HasValue || requirements.Min(r => r.MinLength).HasValue || requirements.Max(r => r.MaxLength).HasValue)
+            {
+                <tr>
+                    <td>
+                        <span>
+                            <strong>Diện tích:</strong>
+                            @{
+                                var strArea = "";
+                                strArea += string.Format("{0: từ #,0.##m<sup>2</sup>}{1: đến #,0.##m<sup>2</sup>}", requirements.Min(r => r.MinArea), requirements.Max(r => r.MaxArea));
+                                if (requirements.Min(r => r.MinWidth).HasValue || requirements.Max(r => r.MaxWidth).HasValue)
+                                {
+                                    strArea += ((requirements.Min(r => r.MinArea).HasValue || requirements.Max(r => r.MaxArea).HasValue) ? ", " : "");
+                                    strArea += string.Format(" ngang{0: từ #,0.##m}{1: đến #,0.##m}", requirements.Min(r => r.MinWidth), requirements.Max(r => r.MaxWidth));
+                                }
+                                if (requirements.Min(r => r.MinLength).HasValue || requirements.Max(r => r.MaxLength).HasValue)
+                                {
+                                    strArea += ((requirements.Min(r => r.MinArea).HasValue || requirements.Max(r => r.MaxArea).HasValue || requirements.Min(r => r.MinWidth).HasValue || requirements.Max(r => r.MaxWidth).HasValue) ? ", " : "");
+                                    strArea += string.Format(" sâu{0: từ #,0.##m}{1: đến #,0.##m}", requirements.Min(r => r.MinLength), requirements.Max(r => r.MaxLength));
+                                }
+                                    @Html.Raw(strArea);
+                            }
+                        </span>
+
+                    </td>
+                </tr>
+            }
+
+            if (requirements.Min(r => r.MinPrice).HasValue || requirements.Max(r => r.MaxPrice).HasValue)
+            {
+                <tr>
+                    <td>
+                        <strong class="text-danger">Giá: </strong> @string.Format("{0: từ #,0.##}{1: đến #,0.##} {2:0}", requirements.Min(r => r.MinPrice), requirements.Max(r => r.MaxPrice), requirements.First().PaymentMethodPartRecord.Name)
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+

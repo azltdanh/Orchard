@@ -1,0 +1,48 @@
+﻿@{
+    Layout.Title = T("EstimateAllEnd").ToString();
+    Script.Require("jQuery").AtHead();
+	Script.Require("jQueryMigrate");
+}
+
+<script type="text/javascript">
+
+    $(function () {
+        // Messages Toggle
+        if ($('#messages .zone-messages').height() > 45) {
+            $('#messages').append('<div class="messages-toggle icon-expand"></div>')
+            $('#messages .messages-toggle').click(function () {
+                $(this).toggleClass('icon-collapse');
+                $('#messages').toggleClass('expand');
+            })
+        }
+
+        // Countdown to close window
+        window.setInterval(function () {
+            var timeCounter = $("b[id=show-time]").html();
+            var updateTime = eval(timeCounter) - eval(1);
+            $("b[id=show-time]").html(updateTime);
+
+            if (updateTime == 0) {
+
+                $('#my-timer').html('Page is closing...');
+
+                if ($.browser.webkit || ($.browser.msie && (parseInt($.browser.version, 10) > 6))) {
+                    window.open('', '_self', '');
+                    window.close();
+                } else if (($.browser.msie && $.browser.version == "6.0")) {
+                    window.opener = null;
+                    window.close();
+                } else {
+                    window.opener = null;
+                    window.close(); // attempt to close window first, show user warning message if fails
+                    alert("To avoid data corruption/loss. Please close this window immedietly.");
+                }
+
+            }
+        }, 1000);
+
+    });
+
+</script>
+
+<p id="my-timer" style="text-align:center;">Page will close with in <b id="show-time">10</b> seconds</p>

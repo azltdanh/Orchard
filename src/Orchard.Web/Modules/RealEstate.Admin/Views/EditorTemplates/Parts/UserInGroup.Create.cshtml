@@ -1,0 +1,67 @@
+﻿@model RealEstate.ViewModels.UserInGroupCreateViewModel
+@Html.HiddenFor(m => m.ReturnUrl)     
+<fieldset>
+    @Html.LabelFor(m => m.UserName, T("User Name"))
+    @Html.TextBoxFor(m => m.UserName, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.UserName, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.Email, T("Email"))
+    @Html.TextBoxFor(m => m.Email, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.Email, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.Password, T("Password"))
+    @Html.PasswordFor(m => m.Password, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.Password, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.ConfirmPassword, T("Confirm Password"))
+    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.ConfirmPassword, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.GroupId, T("Group"))
+    @Html.DropDownListFor(m => m.GroupId, Model.Groups, "-- Select --", new { })
+    @Html.ValidationMessageFor(m => m.GroupId, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.DefaultAdsTypeId, T("Loại tin rao (mặc định):"))
+    @Html.DropDownListFor(m => m.DefaultAdsTypeId,
+    Model.AdsTypes.Select(s => new SelectListItem
+    {
+        Selected = s.Id == Model.DefaultAdsTypeId,
+        Text = s.ShortName,
+        Value = s.Id.ToString()
+    }), "-- Loại tin rao --", new { @class = "select-box" })
+    @Html.ValidationMessageFor(m => m.DefaultAdsTypeId, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.DefaultTypeGroupId, T("Nhóm BĐS (mặc định):"))
+    @Html.DropDownListFor(m => m.DefaultTypeGroupId,
+    Model.TypeGroups.Select(s => new SelectListItem
+    {
+        Selected = s.Id == Model.DefaultTypeGroupId,
+        Text = s.ShortName,
+        Value = s.Id.ToString()
+    }), "-- Nhóm BĐS --", new { @class = "select-box" })
+    @Html.ValidationMessageFor(m => m.DefaultTypeGroupId, "*")
+</fieldset>
+@if (Model.Roles != null && Model.Roles.Count() > 0)
+{
+    var index = 0;
+<fieldset>
+    @foreach (var entry in Model.Roles)
+    {
+
+            @Html.Hidden("Roles[" + index + "].RoleId", entry.RoleId)
+            @Html.Hidden("Roles[" + index + "].Name", entry.Name)
+
+    <div>
+        @Html.CheckBox("Roles[" + index + "].Granted", entry.Granted)
+        <label class="forcheckbox" for="@Html.FieldIdFor(m => m.Roles[index].Granted)">@entry.Name</label>
+    </div>
+        index++;
+    }
+</fieldset>
+}

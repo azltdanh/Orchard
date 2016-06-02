@@ -1,0 +1,16 @@
+﻿@{ Layout.Title = T("Bất động sản muốn nhận").ToString();}
+
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Post, new { enctype = "multipart/form-data", Class = "formvalidate" }))
+{
+    @Html.ValidationSummary()
+    // Model is a Shape, calling Display() so that it is rendered using the most specific template for its Shape type
+    @Display(Model)
+    <div class="row margin-bottom-10 form-inline-btn">
+        <div class="col-md-6 col-xs-12">
+        </div>
+        <div class="col-md-6 col-xs-12 no-padding-right">
+            <button value="submit.Update" name="submit.Update" type="submit" id="submit.Update" class="btn btn-success pull-right">Đăng tin</button>
+        </div>
+        <div class="clear"></div>
+    </div>
+}

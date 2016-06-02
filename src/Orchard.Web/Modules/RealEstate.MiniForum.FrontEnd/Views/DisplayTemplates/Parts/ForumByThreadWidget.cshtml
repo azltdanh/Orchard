@@ -1,0 +1,136 @@
+﻿@using RealEstateForum.Service.ViewModels;
+@model ThreadForumFrontEndViewModel
+@using RealEstate.Helpers;
+@{
+    var ListTopics = Model.ListTopics;
+}
+
+@if (!string.IsNullOrEmpty(Model.ContentFromFile))
+{
+    <article class="content-item-forum-category">
+        <header>
+            <div class="header-title-icon">
+                <img class="image-symbol-page" src="@Model.ThreadInfo.DefaultImage?height=40" alt="">
+            </div>
+            <div class="header-title-link">
+                @Html.ActionLink(Model.ThreadInfo.Name, "ListPostByThread", new { Controller = "ThreadForumFrontEnd", Area = "RealEstate.MiniForum.FrontEnd", ShortName = Model.ThreadInfo.ShortName }, new { title = Model.ThreadInfo.Name })
+            </div>
+            <div class="header-msg text-right">
+                @if (WorkContext.CurrentUser != null)
+                { @*<a rel="nofollow" class="text-success text-underline" href="@Url.Action("Create", "PostForumFrontEnd", new { Area = "RealEstate.MiniForum.FrontEnd", ThreadId = Model.ThreadInfo.Id })"><i class="icon_silk_layout_add"></i>Đăng bài mới</a>*@ }
+                <div class="header-btn-trigger">
+                    <div class="arrow-up pointer" id="arrow2-@Model.ThreadInfo.Id" onclick="doExpandClub(@Model.ThreadInfo.Id, 'arrow-@Model.ThreadInfo.Id', 'arrow2-@Model.ThreadInfo.Id')"></div>
+                </div>
+            </div>
+        </header>
+        <article>
+            @Html.Raw(Model.ContentFromFile)
+        </article>
+    </article>
+}
+else
+{
+    if (Model.ThreadInfo != null)
+    {
+        <article class="content-item-forum-category">
+            <header>
+                <div class="header-title-icon">
+                    <img class="image-symbol-page" src="@Model.ThreadInfo.DefaultImage?height=40" alt="">
+                </div>
+                <div class="header-title-link">
+                    @Html.ActionLink(Model.ThreadInfo.Name, "ListPostByThread", new { Controller = "ThreadForumFrontEnd", Area = "RealEstate.MiniForum.FrontEnd", ShortName = Model.ThreadInfo.ShortName }, new { title = Model.ThreadInfo.Name })
+                </div>
+                <div class="header-msg text-right">
+                    @if (WorkContext.CurrentUser != null)
+                    { @*<a rel="nofollow" class="text-success text-underline" href="@Url.Action("Create", "PostForumFrontEnd", new { Area = "RealEstate.MiniForum.FrontEnd", ThreadId = Model.ThreadInfo.Id })"><i class="icon_silk_layout_add"></i>Đăng bài mới</a>*@ }
+                    <div class="header-btn-trigger">
+                        <div class="arrow-up pointer" id="arrow2-@Model.ThreadInfo.Id" onclick="doExpandClub(@Model.ThreadInfo.Id, 'arrow-@Model.ThreadInfo.Id', 'arrow2-@Model.ThreadInfo.Id')"></div>
+                    </div>
+                </div>
+            </header>
+            <article>
+                @if (ListTopics != null)
+                {
+                    foreach (var entry in ListTopics)
+                    {
+                        if (entry.PostCount > 0)
+                        {
+                            <div class="thread-wrapper@(ListTopics.IndexOf(entry) == 0 ? " first" : "")@(ListTopics.IndexOf(entry) == ListTopics.Count - 1 ? " last" : "")">
+                                <div class="thread-header-wrapper">
+                                    <strong>@Html.ActionLink(entry.TopicInfo.Name, "ViewTopic", new { controller = "ThreadForumFrontEnd", area = "RealEstate.MiniForum.FrontEnd", TopicId = entry.TopicInfo.Id, ShortName = entry.TopicInfo.ShortName }, new { Class = "thread-header-text" })</strong>
+                                    <span class="pull-right">@Html.ActionLink("Tất cả " + entry.PostCount + " bài viết", "ViewTopic", new { controller = "ThreadForumFrontEnd", area = "RealEstate.MiniForum.FrontEnd", TopicId = entry.TopicInfo.Id, ShortName = entry.TopicInfo.ShortName }, new { Class = "" })</span>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-7 col-md-7">
+                                        @if (entry.PostNewest != null)
+                                        {
+                                            var item = entry.PostNewest;
+                                        <div class="media thread-pinned">
+                                            <a class="pull-left" href="@Url.Action("PostDetail", "PostForumFrontEnd", new { area = "RealEstate.MiniForum.FrontEnd", Id = item.Id, title = item.DisplayForNameForUrl, ThreadShortName = Model.ThreadInfo.ShortName, TopicShortName = entry.TopicInfo.ShortName })" title="@item.Title">
+                                                <img alt="@item.Title" src="@item.DefaultImage" class="media-object img-thumnail" style="width:140px; height:100px;" />
+                                            </a>
+                                            <div class="media-body">
+                                                <div class="block-ellipsis block-ellipsis-10">
+                                                    <a href="@Url.Action("PostDetail", "PostForumFrontEnd", new { area = "RealEstate.MiniForum.FrontEnd", Id = item.Id, title = item.DisplayForNameForUrl, ThreadShortName = Model.ThreadInfo.ShortName, TopicShortName = entry.TopicInfo.ShortName })" title="@item.Title"><strong>@item.Title</strong></a>
+                                                    <br />
+                                                    @if (!string.IsNullOrWhiteSpace(item.Content))
+                                                        {
+                                                        <div>@Html.Raw(item.Content)</div>
+                                                        }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        }
+                                    </div>
+                                    <div class="col-lg-5 col-md-5">
+                                        <ul class="media-list media-list-condensed last">
+
+                                            @foreach (var item in entry.ListPostItem)
+                                            {
+
+                                                var urlUserProfile = (WorkContext.CurrentUser != null && item.UserInfo.Id == WorkContext.CurrentUser.Id) ?
+                                                                        Url.Action("MyPage", "PersonalPage", new { Area = "RealEstate.MiniForum.FrontEnd" })
+                                                                        :
+                                                                        Url.Action("FriendPage", "PersonalPage", new { Area = "RealEstate.MiniForum.FrontEnd", UserName = item.UserInfo.UserName.ToSlug(), UserId = item.UserInfo.Id });
+
+
+                                            <li class="media@(entry.ListPostItem.IndexOf(item) == 0 ? " first" : "")@(entry.ListPostItem.IndexOf(item) == entry.ListPostItem.Count - 1 ? " last" : "")"
+                                                data-toggle="popover" data-html="true" data-placement="auto" data-trigger="hover" data-content="">
+                                                <a class="pull-left" href="@urlUserProfile" title="@item.UserInfo.DisplayName">
+                                                    <img alt="@item.UserInfo.DisplayName" src="@item.UserInfo.Avatar?width=36&height=32" class="media-object img-thumbnail img-thumbnail-small" />
+                                                </a>
+                                                <div class="media-body text-ellipsis">
+                                                    @Html.ActionLink(item.Title, "PostDetail", new { controller = "PostForumFrontEnd", area = "RealEstate.MiniForum.FrontEnd", Id = item.Id, title = item.DisplayForNameForUrl, ThreadShortName = item.ThreadShortName, TopicShortName = item.TopicShortName }, new { title = item.Title })
+                                                    <br />
+                                                    <a class="text-success" href="@urlUserProfile">@item.UserInfo.DisplayName</a>
+                                                    <small class="text-muted">@String.Format("{0:dd/MM/yyyy hh:mm tt}", item.DateUpdated)</small>
+                                                    @if (item.IsPinned)
+                                                        {
+                                                        <small class="sticky-icon"></small>
+                                                        }
+                                                </div>
+                                                <div class="popover-data-content">
+                                                    <h5><strong>@item.Title</strong></h5>
+                                                    <a class="text-success" href="@urlUserProfile">@item.UserInfo.DisplayName</a>
+                                                    <small class='text-muted'>@String.Format("{0:dd/MM/yyyy hh:mm tt}", item.DateUpdated)</small>
+                                                    <div class="block-ellipsis block-ellipsis-6">
+                                                        @Html.Raw(item.Content.Normalize().Trim())
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            }
+                                        </ul>
+
+                                        <div class="text-right">
+                                            @Html.ActionLink("Xem thêm >>", "ViewTopic", new { controller = "ThreadForumFrontEnd", area = "RealEstate.MiniForum.FrontEnd", TopicId = entry.TopicInfo.Id, ShortName = entry.TopicInfo.ShortName }, new { })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                }
+            </article>
+        </article>
+    }
+}

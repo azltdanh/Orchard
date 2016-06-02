@@ -1,0 +1,16 @@
+﻿@model RealEstate.ViewModels.CoefficientLengthEditViewModel
+<fieldset>
+    @Html.LabelFor(m => m.WidthRange, T("WidthRange"))
+    @Html.TextBoxFor(m => m.WidthRange, new { @class = "text-small" })
+    @Html.ValidationMessageFor(m => m.WidthRange, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.MinLength, T("MinLength"))
+    @Html.TextBoxFor(m => m.MinLength, new { @class = "text-small" })
+    @Html.ValidationMessageFor(m => m.MinLength, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.MaxLength, T("MaxLength"))
+    @Html.TextBoxFor(m => m.MaxLength, new { @class = "text-small" })
+    @Html.ValidationMessageFor(m => m.MaxLength, "*")
+</fieldset>

@@ -1,0 +1,59 @@
+﻿@model RealEstate.ViewModels.ApartmentBlockInfoEditViewmodel
+
+<fieldset>
+    @Html.LabelFor(m => m.ApartmentName, T("Tên từng căn hộ"))
+    @Html.TextBoxFor(m => m.ApartmentName, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.ApartmentName, "*")
+    @Html.HiddenFor(r => r.ApartmentBlockId)
+</fieldset>
+<fieldset>
+    <label>Avatar</label>
+    <input type="file" name="AvatarFile" />
+</fieldset>
+<fieldset>
+    <img src="@Model.Avatar" style="border: 1px solid #ccc; padding: 2px;" />
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.ApartmentArea, T("Diện tích (m2)"))
+    @Html.TextBoxFor(m => m.ApartmentArea, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.ApartmentArea, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.RealAreaUse, T("Diện tích thông thủy(m2)"))
+    @Html.EditorFor(m => m.RealAreaUse)
+    @Html.ValidationMessageFor(m => m.RealAreaUse, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.ApartmentBedrooms, T("Số phòng ngủ"))
+    @Html.TextBoxFor(m => m.ApartmentBedrooms, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.ApartmentBedrooms, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.ApartmentBathrooms, T("Số WC"))
+    @Html.TextBoxFor(m => m.ApartmentBathrooms, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.ApartmentBathrooms, "*")
+</fieldset>
+@*<fieldset>
+    @Html.LabelFor(m => m.PriceAverage, T("Giá trung bình (triệu đồng/m2)"))
+    @Html.EditorFor(m => m.PriceAverage)
+    @Html.ValidationMessageFor(m => m.PriceAverage, "*")
+</fieldset>*@
+<fieldset>
+    @Html.LabelFor(m => m.OrtherContent, T("Nội dung khác"))
+    @Html.TextAreaFor(m => m.OrtherContent)
+    @Html.ValidationMessageFor(m => m.OrtherContent, "*")
+</fieldset>
+
+<div class="control-group">
+    <label class="control-label">@T("Hình ảnh:")</label>
+    <div class="controls">
+        @Html.Partial("UploadImages", String.Empty) @*// String.Empty or uploadHandleUrl*@
+    </div>
+</div>
+
+<!-- GalleryManager -->
+@Html.Partial("GalleryManager", new RealEstate.ViewModels.PropertyImagesViewModel { Images = Model.Files, EnableEditImages = Model.EnableEditImages })
+
+<style>
+    .control-group{padding: 10px;}
+</style>

@@ -1,0 +1,36 @@
+﻿@{
+    Layout.Title = "Chuyển trang từ dinhgianhadat.vn";
+}
+@using (Script.Foot())
+{
+    <script>
+        $(function () {
+            $('#overlay-redirect').show();
+            setTimeout(function () { window.location = '@ViewBag.Url'; }, 2000);
+        });
+    </script>
+}
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left">
+                    <div class="header-title-triangle"></div>
+                </div>
+                <h1 class="header-title-text">Thông báo</h1>
+                <div class="header-title-right"></div>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="alert alert-success last"> Đang chuyển trang. @ViewBag.Url</div>
+        <div id="overlay-redirect">
+            <div class="overlay-frame"></div>
+            <div class="overlay-content">
+                <img src="@Url.Content("~/Themes/dinhgianhadat.green/Styles/images/bigrotation2.gif")" class="img-load" alt="loading..." />
+                <div class="child-content">Đang chuyển đến địa chỉ:</div>
+                <div class="size-14 green padding">@ViewBag.Url</div>
+            </div>
+        </div>
+    </article>
+</article>

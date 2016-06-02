@@ -1,0 +1,87 @@
+﻿@model RealEstate.ViewModels.AdsPaymentHistoryFrontEndIndexViewModel
+@using RealEstate.Models
+@{
+    Layout.Title = T("Quản lý lịch sử giao dịch").ToString();
+
+    Script.Require("FrontEnd.Common");
+}
+
+
+<article class="content-item block_controlpanel">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left">
+                    <div class="header-title-triangle"></div>
+                </div>
+                <h2 class="header-title-text">Quản lý lịch sử giao dịch</h2>
+                <div class="header-title-right"></div>
+            </div>
+            <div class="header-msg text-right">
+                <a rel="nofollow" class="text-success text-underline" href="@Url.Action("Create", "Home", new { area = "RealEstate.FrontEnd" })"><i class="icon_silk_layout_add"></i>Đăng tin rao miễn phí</a>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="block-ellipsis-1"></div>
+        <!--Form Search-->
+        <article>
+            @Html.Partial("AdsPayment.Filter", Model.Options)
+        </article>
+        <!--Form Search-->
+        <div class="block-ellipsis-1"></div>
+        <strong >Tài khoản: <span class="text-error">@Model.Options.TotalAmount</span></strong>
+        <div class="block-ellipsis-1"></div>
+        <div class="table-responsive">
+            @if (Model.AdsPaymentEntry.Count > 0)
+            {
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th class="w100">Ngày</th>
+                            <th class="w220">Tiêu đề</th>
+                            <th class="w220">Ghi chú</th>
+                            <th>Số tiền</th>
+                            <th>Số dư cuối cùng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.AdsPaymentEntry)
+                        {
+                            <tr>
+                                <td>@Convert.ToDateTime(item.AdsPaymentHistory.DateTrading).ToString("dd/MM/yyyy hh:mm:ss")</td>
+                                <td>@(item.PropertyPartEntry != null ? item.PropertyPartEntry.Id + " - " + item.PropertyPartEntry.DisplayForTitle : "Nạp tiền")</td>
+                                <td>
+                                    @item.AdsPaymentHistory.Note<br />
+                                    @if(item.AdsPaymentHistory.PostingDates != 0)
+                                    {
+                                        <text>
+                                        Từ ngày @Convert.ToDateTime(item.AdsPaymentHistory.DateTrading).ToString("dd/MM/yyyy")
+                                        đến @Convert.ToDateTime(item.AdsPaymentHistory.DateTrading.Value.AddDays(item.AdsPaymentHistory.PostingDates)).ToString("dd/MM/yyyy")
+                                        </text>
+                                    }
+                                </td>
+                                <td>
+                                    @item.AmountVND @(item.AdsPaymentHistory.PostingDates != 0 ? " /" + item.AdsPaymentHistory.PostingDates + " ngày " : "")
+                                </td>
+                                <td class="text-error">@item.EndBlanceVND</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <table class="table table-bordered table-hover">
+                    <tr>
+                        <td>
+                            <div class="alert alert-warning"> Không tìm thấy kết quả nào!</div>
+                        </td>
+                    </tr>
+                </table>
+            }
+            <div>@Display(Model.Pager)</div>
+        </div>
+    </article>
+
+</article>

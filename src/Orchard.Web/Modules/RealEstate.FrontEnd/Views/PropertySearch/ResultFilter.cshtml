@@ -1,0 +1,84 @@
+﻿@model RealEstate.ViewModels.PropertyDisplayIndexViewModel
+@{
+    if (!string.IsNullOrEmpty(Model.Options.MetaTitle))
+    {
+        Layout.Title = Html.Raw(Model.Options.MetaTitle);
+        SetMeta("description", Model.Options.MetaDescription);
+        SetMeta("keywords", Model.Options.MetaKeywords);
+    }
+    else
+    {
+        Layout.Title = Model.Options.TitleArticle;
+    }
+}
+<!-- BĐS mới đang -->
+<article class="content-item block_filter scroll-filter">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left">
+                    <div class="header-title-triangle"></div>
+                </div>
+                <h2 class="header-title-text">@Model.Options.TitleArticle <span class="text-danger">(@Model.TotalCount)</span></h2>
+                <div class="header-title-right"></div>
+            </div>
+            <div class="header-msg text-ellipsis">
+                @if (Model.TotalCount > 0)
+                {
+                    <h1 class="header-msg-text" title="@Model.DisplayForDescription">@Model.DisplayForDescription</h1>
+                }
+                else
+                {
+                    <strong>Không tìm thấy bất động sản nào.</strong>
+                }
+            </div>
+        </div>
+    </header>
+    <article class="content-filter">
+        <div id="ViewResultFilter" class="lst-result-filter">
+            <div class="pager-top"></div>
+            @Html.Partial("ListPropertiesDeal", Model.Properties)
+            <div class="pager-bottom">
+                @Display(Model.Pager)
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </article>
+    <footer>
+    </footer>
+</article>
+<input type="hidden" value="@Model.Options.TypeGroupCssClass" id="tab-control-filter" />
+@if (Model.Options.AlleyTurnsRange.ToString() != "" && Model.Options.AlleyTurnsRange.ToString() != "All" &&
+    Model.Options.AlleyTurnsRange.ToString() != "AllWalk" &&
+    (Model.Options.MinPriceProposed.HasValue || Model.Options.MaxPriceProposed.HasValue) && Model.Options.TypeGroupCssClass == "gp-house")
+{
+    @Html.Partial("ViewFrontProperty", Model.Options)
+}
+@using (Script.Foot())
+{
+    if (!string.IsNullOrEmpty(Model.Options.MetaTitle))
+    {
+        <script>
+            $(document).ready(function() {
+                $('.marquee-title').replaceWith('<h2 class="marquee-title page-title text-ellipsis  pull-left col-lg-7 col-sm-7 col-md-7 col-xs-7">' + "@(Model.Options.MetaTitle)" + '</h2>');
+                //scroll
+            });
+        </script>
+    }
+    if (Model.Options.TitleArticle == "Tin mới đăng")
+    {
+        <script>
+            if ($('.scroll-properties').length > 0) {
+                $('html, body').animate({ scrollTop: ($('.scroll-properties').offset().top - 50) }, 1000);
+            }
+        </script>
+    }
+    else
+    {
+        <script>
+            if ($('.scroll-filter').length > 0) {
+                $('html, body').animate({ scrollTop: ($('.scroll-filter').offset().top - 50) }, 1000);
+            }
+        </script>
+    }
+}

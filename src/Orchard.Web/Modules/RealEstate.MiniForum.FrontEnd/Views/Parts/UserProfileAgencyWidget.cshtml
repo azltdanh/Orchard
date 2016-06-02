@@ -1,0 +1,19 @@
+﻿@{
+    var AdsTypeCssClass = Request.QueryString.Get("AdsTypeCssClass");
+    var ProvinceId = Request.QueryString.Get("ProvinceId");
+    var DistrictIds = Request.QueryString.Get("DistrictIds");
+}
+<div class="ajax-content ajax-paging" data-url="@Url.Action("AjaxGetUserAgencies", "UserUpdateProfile", new { area = "RealEstate.MiniForum.FrontEnd", AdsTypeCssClass = AdsTypeCssClass, ProvinceId = ProvinceId, DistrictIds = DistrictIds })">
+    @Html.Partial("Loading")
+</div>
+<div class="more-agency">
+    <a class="text-success" href="/danh-sach-moi-gioi" rel="nofollow">
+        Xem thêm >>
+    </a>
+</div>
+<div class="list-agency-contact">
+    <strong>
+        Đăng ký làm môi giới<br />
+        Liên hệ: <span class="organe">0912.14.16.17</span>
+    </strong>
+</div>

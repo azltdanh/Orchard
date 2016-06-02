@@ -1,0 +1,10 @@
+﻿@{
+    Dictionary<string, string> Metas = (Dictionary<string, string>)ViewBag.Metas;
+
+    if (Metas != null && !string.IsNullOrEmpty(Metas["Title"]))
+    {
+        SetMeta("keywords", Metas["Keywords"]);
+        SetMeta("Description", Metas["Description"]);
+        Layout.Title = Metas["Title"];
+    }
+}

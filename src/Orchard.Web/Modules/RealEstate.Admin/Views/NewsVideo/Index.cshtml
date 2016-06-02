@@ -1,0 +1,62 @@
+﻿@model RealEstate.ViewModels.NewsVideoIndexViewModel
+
+@{
+    Script.Require("Common");
+    Layout.Title = T("Quản lý Video tin tức").ToString();
+}
+
+@using (Html.BeginFormAntiForgeryPost())
+{
+    <div class="right">
+        <div class="manage">@Html.ActionLink(T("Thêm mới video").ToString(), "Create", new { returnUrl = HttpContext.Current.Request.Url }, new { @class = "button primaryAction" })</div>
+    </div>
+    <fieldset>
+        <table class="items fixed-table float-header">
+            <thead>
+                <tr>
+                    <th scope="col" class="w20 align-center"><input class="selectAll" type="checkbox" value="@Html.NameOf(m => m.NewsVideos)" /></th>
+                    <th scope="col" class="w130">@T("Tiêu đề")</th>
+                    <th scope="col" class="w240">@("Mô tả")</th>
+                    <th scope="col" >@T("Video")</th>
+                    <th scope="col" class="w130">@T("Action")</th>
+                </tr>
+            </thead>
+            @{var index = 0;}
+            @foreach (var entry in Model.NewsVideos)
+            {
+                var item = entry.NewsVideoPart;
+                <tr>
+                    <td>
+                        <input type="hidden" value="@Model.NewsVideos[index].NewsVideoPart.Id" name="@Html.NameOf(m => m.NewsVideos[index].NewsVideoPart.Id)" />
+                        <input type="checkbox" value="true" name="@Html.NameOf(m => m.NewsVideos[index].IsChecked)" />
+                    </td>
+                    <td>
+                        @item.Title
+                    </td>
+                    <td>
+                        @item.Description
+                    </td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.YoutubeId))
+                        {
+                            <iframe title="YouTube video player" width="350" height="350" src="http://www.youtube.com/embed/@item.YoutubeId" frameborder="0" allowfullscreen></iframe>
+                        }
+                    </td>
+                    <td>
+                        @Html.ActionLink(T("Edit").ToString(), "Edit", new { item.Id }) |
+                        @Html.ActionLink(T("Delete").ToString(), "Delete", new { item.Id }, new { itemprop = "RemoveUrl UnsafeUrl" })
+                    </td>
+                </tr>
+                index++;
+            }
+        </table>
+
+        @Display(Model.Pager)
+
+    </fieldset>
+}
+<style>
+    td {
+        vertical-align: middle;
+    }
+</style>

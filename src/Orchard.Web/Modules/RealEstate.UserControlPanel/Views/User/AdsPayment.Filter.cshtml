@@ -1,0 +1,54 @@
+﻿@model RealEstate.ViewModels.AdsPaymentFrontEndOptions
+@using RealEstate.ViewModels
+@{
+    Style.Require("jQueryUI_Orchard");
+    Script.Require("jQueryUI_DatePicker");
+}
+
+@using (Html.BeginFormAntiForgeryPost(null, FormMethod.Get))
+{
+    @Html.ValidationSummary()
+
+    <fieldset>
+        <table class="filter-table">
+            <tbody>
+                <tr>
+                    <td class="filter-label"><label class="control-label">Loại giao dịch</label></td>
+                    <td class="filter-label"><label class="control-label">Từ ngày</label></td>
+                    <td class="filter-label"><label class="control-label">Đến ngày</label></td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.DropDownListFor(m => m.TypeVipCssClass,
+                        Model.ListAdsPaymentConfig.Select(s => new SelectListItem
+                        {
+                            Selected = s.CssClass == Model.TypeVipCssClass,
+                            Text = s.Name,
+                            Value = s.CssClass.ToString()
+                        }), T("-- Tất cả --").ToString(), new { @class = "form-control" })
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(m => m.StartDateTrading, new { @class = "form-control date-box" })
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(m => m.EndDateTrading, new { @class = "form-control date-box" })
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-default" >@T("Tìm kiếm")</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </fieldset>
+}
+<script>
+    $(function () {
+        // Load DatePicker
+        $(".date-box").datepicker({
+            dateFormat: "dd/mm/yy", changeMonth: true,
+            changeYear: true,
+            numberOfMonths: 1,
+        });
+    });
+</script>

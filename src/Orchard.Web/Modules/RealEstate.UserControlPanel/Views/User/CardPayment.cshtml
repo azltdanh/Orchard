@@ -1,0 +1,129 @@
+﻿@model RealEstate.ViewModels.PaymentCardCreate
+@using RealEstate.Models
+@{
+    Layout.Title = T("Nạp thẻ cào tại dinhgianhadat.vn").ToString();
+
+    Script.Require("FrontEnd.Common");
+    int UserId = WorkContext.CurrentUser.Id;
+}
+
+
+<article class="content-item block_controlpanel">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left">
+                    <div class="header-title-triangle"></div>
+                </div>
+                <h2 class="header-title-text">Nạp tiền bằng thẻ cào</h2>
+                <div class="header-title-right"></div>
+            </div>
+            <div class="header-msg text-right">
+                <a rel="nofollow" class="text-success text-underline" href="@Url.Action("Create", "Home", new { area = "RealEstate.FrontEnd" })"><i class="icon_silk_layout_add"></i>Đăng tin rao miễn phí</a>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div id="formFilter" class="form-horizontal">
+            @using (Html.BeginFormAntiForgeryPost())
+            {
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="alert alert-info">
+                                <span class="text-error"><i class="icon_silk_ads_hot"></i> Khuyến mãi @Model.GetPromotion % tất cả giá trị thẻ cào.</span>
+                        </div>
+                        @Html.ValidationSummary()
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8 col-md-8 col-sm-8">
+                        <div class="form-group">
+                            <label class="control-label col-lg-4 col-md-4 col-sm-4">Nhà mạng:</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8">
+                                <select id="Provider" name="@Html.NameOf(m => m.Provider)" class="form-control">
+                                    <option value="mobifone">MobiFone</option>
+                                    <option value="vinaphone">Vinaphone</option>
+                                    <option value="viettel">Viettel</option>
+                                    <option value="gate">Gate</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8 col-md-8 col-sm-8">
+                        <div class="form-group">
+                            <label class="control-label col-lg-4 col-md-4 col-sm-4" for="Code">Mã thẻ:</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8">
+                                @Html.TextBoxFor(m => m.Code, new { @class = "form-control input-md", placeholder = "Mã thẻ", required = "" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8 col-md-8 col-sm-8">
+                        <div class="form-group">
+                            <label class="control-label col-lg-4 col-md-4 col-sm-4" for="Serial">Số serial:</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8">
+                                @Html.TextBoxFor(m => m.Serial, new { @class = "form-control input-md", placeholder = "Số serial", required = "" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8 col-md-8 col-sm-8">
+                        <div class="form-group">
+                            <label class="control-label col-lg-4 col-md-4 col-sm-4" for="Note">Ghi chú:</label>
+                            <div class="col-lg-8 col-md-8 col-sm-8">
+                                @Html.TextAreaFor(m => m.Note, new { @class = "form-control", placeholder = "Ví dụ: Gửi tiền đăng tin vip" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8 col-md-8 col-sm-8">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="submit"></label>
+                            <div class="col-md-4">
+                                <button id="submit" name="submit" class="btn btn-primary">Nạp thẻ</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </article>
+</article>
+
+<article class="content-item block_controlpanel">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left">
+                    <div class="header-title-triangle"></div>
+                </div>
+                <h2 class="header-title-text">Nạp tiền bằng tin nhắn</h2>
+                <div class="header-title-right"></div>
+            </div>
+            <div class="header-msg text-right">
+                <a rel="nofollow" class="text-success text-underline" href="@Url.Action("Create", "Home", new { area = "RealEstate.FrontEnd" })"><i class="icon_silk_layout_add"></i>Đăng tin rao miễn phí</a>
+            </div>
+        </div>
+    </header>
+    <article>
+        <div class="form-group">
+            <div class="alert alert-success none-margin-bottom">
+                <h4 class="text-black">
+                    - Mã khách hàng của bạn là: <strong class="text-error">"@UserId"</strong>:<br />
+                    - Nhắn tin với cú Pháp: <strong class="text-error">DGND @UserId </strong> (gửi <strong class="text-error">8798</strong>) - 15.000/tin nhắn
+                </h4>
+            </div>
+            <div class="alert alert-warning none-margin-bottom">
+                <h4 class="text-black">
+                    - Chuyển khoản ngân hàng: TK: <strong class="text-error">54510049</strong> - Lê Đình Dũng - Ngân Hàng ACB chi nhánh Lê Ngô Cát, Q3, Tp. HCM.<br />
+                    - Khuyến mãi 30% khi thanh toán qua tài khoản ngân hàng
+                </h4>
+            </div>
+        </div>
+    </article>
+</article>

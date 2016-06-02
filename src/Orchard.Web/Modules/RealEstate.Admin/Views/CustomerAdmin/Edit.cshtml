@@ -1,0 +1,24 @@
+@{ Layout.Title = T("Edit Customer").ToString(); }
+
+@using (Html.BeginFormAntiForgeryPost()) { 
+    @Html.ValidationSummary() 
+    // Model is a Shape, calling Display() so that it is rendered using the most specific template for its Shape type
+    @Display(Model)
+ } 
+ 
+<script type="text/javascript">
+    $(function () {
+        // #revisions
+        $('a[href="#revisions"]').on('shown.bs.tab', function () {   // When tab is displayed...
+            $('#revisions').load($('#revisions .lazy-loading-url').attr('href'));
+        });
+        // #customers
+        $('a[href="#visited"]').on('shown.bs.tab', function () {   // When tab is displayed...
+            $('#visited').load($('#visited .lazy-loading-url').attr('href'));
+        });
+        // #customers
+        $('a[href="#calledby"]').on('shown.bs.tab', function () {   // When tab is displayed...
+            $('#calledby').load($('#calledby .lazy-loading-url').attr('href'));
+        });
+    });
+</script>

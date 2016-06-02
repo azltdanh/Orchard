@@ -1,0 +1,116 @@
+﻿@*@model RealEstate.FrontEnd.ViewModels.CommentsIndexViewModel
+@using RealEstate.FrontEnd.ViewModels;
+@using Orchard.Comments.Models;
+@using Orchard.Mvc.Html;
+@using Orchard.Utility.Extensions;
+@using RealEstate.Helpers;
+@{
+    Style.Require("Admin");
+    Script.Require("ShapesBase");
+
+    Layout.Title = T("Comments").ToString();
+}
+
+<!-- Navigation -->
+
+<ul class="nav nav-tabs" id="tabsGroupActivities">
+    <!-- Property -->
+    <li><a href="@Url.Action("Edit", "PropertyAdmin", new { area = "RealEstate.Admin", id = Url.RequestContext.RouteData.Values["id"] })" data-toggle="tab">Property</a></li>
+    <!-- Comments -->
+    <li class="active"><a href="#comments">Comments</a></li>
+</ul>
+
+<div class="tab-content">
+    <!-- Property -->
+    <div class="tab-pane" id="property">
+
+    </div>
+    <!-- Comments -->
+    <div class="tab-pane active" id="comments">
+@using(Html.BeginFormAntiForgeryPost()) { 
+    @Html.ValidationSummary()
+    <div class="manage">@Html.ActionLink(T("Add new Comment").ToString(), "Create", new { id = Url.RequestContext.RouteData.Values["id"] , returnUrl = ViewContext.RequestContext.HttpContext.Request.ToUrlString()}, new { @class = "button primaryAction" })</div>
+    <fieldset class="bulk-actions">
+        <label for="publishActions">@T("Actions:")</label>
+        <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+            @Html.SelectOption(Model.Options.BulkAction, CommentIndexBulkAction.None, T("Choose action...").ToString())\
+            @Html.SelectOption(Model.Options.BulkAction, CommentIndexBulkAction.Delete, T("Delete").ToString())
+        </select>
+        <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+    </fieldset>
+    <fieldset class="bulk-actions">
+        <label for="filterResults">@T("Filter:")</label>
+        @Html.TextBoxFor(m => m.Options.Search, new { @class = "text" }) 
+        <button type="submit" name="submit.Filter" value="@T("Filter")">@T("Filter")</button>
+    </fieldset>
+    <fieldset>
+        <table class="items" summary="@T("This is a table of the comments in your application")">
+            <colgroup>
+                <col id="Col1" />
+                <col id="Col2" />
+                <col id="Col3" />
+                <col id="Col4" />
+                <col id="Col5" />
+                <col id="Col6" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th scope="col">&nbsp;&darr;</th>
+                    <th scope="col">@T("Status")</th>
+                    <th scope="col">@T("Author")</th>
+                    <th scope="col">@T("Comment")</th>
+                    <th scope="col">@T("Actions")</th>
+                </tr>
+            </thead>
+            @{var commentIndex = 0;}
+            @foreach (var commentEntry in Model.Comments) {
+                var commentClass = "";
+                if ( commentEntry.Comment.UserName == "") {
+                    commentClass = "anonymous";
+                }
+                <tr itemscope="itemscope" itemid="@Model.Comments[commentIndex].Comment.Id" itemtype="http://orchardproject.net/data/Comment" class="@commentClass">
+                    <td>
+                        <input type="hidden" value="@Model.Comments[commentIndex].Comment.Id" name="@Html.NameOf(m => m.Comments[commentIndex].Comment.Id)"/>
+                        <input type="checkbox" value="true" name="@Html.NameOf(m => m.Comments[commentIndex].IsChecked)"/>
+                    </td>
+                    <td>
+                        @if (commentEntry.Comment.Status == CommentStatus.Spam) { @T("Spam") } 
+                        else if (commentEntry.Comment.Status == CommentStatus.Pending) { @T("Pending") } 
+                        else { @T("Approved") }
+                    </td>
+                    <td>
+                    <div>@commentEntry.Comment.Author</div>
+                        @if (HasText(commentEntry.Comment.UserName) && commentEntry.Comment.Author != commentEntry.Comment.UserName) {
+                            <div class="authenticated-commenter-id">@commentEntry.Comment.UserName</div>
+                        }
+                    </td>
+                    <td>
+                        @if (commentEntry.Comment.CommentText != null) {
+                            if (commentEntry.Comment.CommentText.Length <= 500)
+                            {
+                                @Html.Raw(commentEntry.Comment.CommentText)
+                            }
+                            else
+                            {
+                                @Html.Raw(commentEntry.Comment.CommentText.Substring(0, 500))
+                            }
+                        }
+                        else {
+                            @T("[Empty]")
+                        }
+                    </td>
+                    <td>
+                        <div>
+                            <a href="@Url.Action("Edit", new {commentEntry.Comment.Id, returnUrl = ViewContext.RequestContext.HttpContext.Request.ToUrlString()})" title="@T("Edit")">@T("Edit")</a>@T(" | ")
+                            <a href="@Url.Action("Delete", new {commentEntry.Comment.Id, returnUrl = ViewContext.RequestContext.HttpContext.Request.ToUrlString()})" itemprop="RemoveUrl UnsafeUrl">@T("Delete")</a>
+                        </div>
+                    </td>
+                </tr>
+                commentIndex = commentIndex + 1;
+            } 
+        </table>
+        @Display(Model.Pager)
+    </fieldset>
+}         
+    </div>
+</div>*@

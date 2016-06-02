@@ -1,0 +1,36 @@
+﻿@{
+    var adsTypeId = Request.QueryString.Get("AdsTypeId");
+    var typeGroupId = Request.QueryString.Get("TypeGroupId");
+}
+<div id="ViewBreadcrumb"></div>
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        $(document).ready(function() {
+            if (!isNaN($("#property_id").text()) && $("#property_id").text() != "") {
+                var url = '@Url.Action("AjaxBreadcrumb", "PropertySearch", new {area = "RealEstate.FrontEnd"})?propertyId=' + $("#property_id").text();
+                $('#ViewBreadcrumb').load(url);
+            } else {
+                if ("@adsTypeId" != "") {
+                    $.ajax({
+                        type: "post",
+                        dataType: "",
+                        url: "ajax/RealEstate.FrontEnd/PropertySearch/AjaxBreadcrumbAdsType",
+                        data: {
+                            adsTypeId: "@adsTypeId",
+                            typeGroupId: "@typeGroupId",
+                            __RequestVerificationToken: antiForgeryToken
+                        },
+                        success: function(response) {
+                            if (response.TypeGroupName != null) {
+                                $("#ViewBreadcrumb").append("<ul class='breadcrumb'><li><a href='@Url.Action("ResultFilter", "PropertySearch", new {area = "RealEstate.FrontEnd", AdsTypeId = adsTypeId, TypeGroupId = typeGroupId})'>" + response.AdsTypeName + " " + response.TypeGroupName + "</a></li></ul>");
+                            }
+                        },
+                        error: function(request, status, error) {
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+}

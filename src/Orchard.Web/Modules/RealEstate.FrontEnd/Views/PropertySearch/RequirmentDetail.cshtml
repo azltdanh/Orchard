@@ -1,0 +1,100 @@
+﻿@model RealEstate.FrontEnd.ViewModels.CustomerDetailViewModel
+@using RealEstate.Models;
+@{
+    CustomerPart item = Model.Customer;
+    Layout.Title = "Thông tin chi tiết yêu cầu";
+}
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left">
+                    <div class="header-title-triangle"></div>
+                </div>
+                <h2 class="header-title-text">Thông tin chi tiết yêu cầu</h2>
+                <div class="header-title-right"></div>
+            </div>
+            <div class="header-msg">
+            </div>
+        </div>
+    </header>
+    <article>
+        @{bool flag = false;}
+        @foreach (var r in Model.Purposes)
+        {
+            if (r.IsChecked)
+            {
+                flag = true;
+                break;
+            }
+        }
+        @if (flag == true)
+        { 
+            <div><strong>Mục đích: </strong>
+            @foreach (var r in Model.Purposes)
+            {
+                if (r.IsChecked)
+                { 
+                    <span>@r.Purpose.Name </span> 
+                }
+            }
+        </div>
+        }
+        @if (!string.IsNullOrEmpty(item.Note))
+        {
+            <div><strong>Ghi chú: </strong><span class="color-note">@item.Note</span></div> 
+        }
+        
+        @Html.Partial("CustomerRequirements", Model.Requirements)
+
+        <span><strong class="text-danger">Liên hệ:</strong> @item.ContactName </span>
+        @if (item.ContactPhone != null)
+        {
+            <span>@item.ContactPhone </span> 
+        }
+        @if (item.ContactAddress != null)
+        {
+            <span>@item.ContactAddress </span>
+        }
+        @if (item.ContactEmail != null)
+        {
+            <span>@item.ContactEmail </span> 
+        }
+        
+        <div>Ngày yêu cầu: @String.Format("{0:dd/MM/yyyy}", item.LastUpdatedDate.ToLocalTime())</div>
+         @if (Model.DisplayPhone.Count > 0)
+         {
+            <span>Tìm những yêu cầu cùng đăng bởi số điện thoại này: </span>
+             for (int i = 0; i < Model.DisplayPhone.Count; i++)
+             {
+                 if (i == Model.DisplayPhone.Count - 1)
+                 {
+                        <a href="@Url.Action("ResultFilter", "PropertySearch", new { area = "RealEstate.FrontEnd" })?flagRequirment=true&SearchPhone=@Model.DisplayPhone[i]">@Model.DisplayPhone[i]</a> 
+                 }
+                 else
+                 {
+                        <a href="@Url.Action("ResultFilter", "PropertySearch", new { area = "RealEstate.FrontEnd" })?flagRequirment=true&SearchPhone=@Model.DisplayPhone[i]">@Model.DisplayPhone[i]</a><span> - </span> 
+                 }
+             }
+         }
+    </article>
+</article>
+
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-title">
+                <div class="header-title-left">
+                    <div class="header-title-triangle"></div>
+                </div>
+                <h2 class="header-title-text">Những khách hàng có yêu cầu tương tự</h2>
+                <div class="header-title-right"></div>
+            </div>
+            <div class="header-msg">
+            </div>
+        </div>
+    </header>
+    <article class="ajax-content ajax-paging" data-url="@Url.Action("AjaxLoadTheSameCustomer", "PropertySearch", new { area = "RealEstate.FrontEnd", item.Id })">
+        @Html.Partial("Loading")
+    </article>
+</article>

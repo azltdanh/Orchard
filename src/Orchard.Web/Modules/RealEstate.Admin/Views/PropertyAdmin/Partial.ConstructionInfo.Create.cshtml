@@ -1,0 +1,265 @@
+﻿@model RealEstate.ViewModels.PropertyCreateViewModel
+@using RealEstate.ViewModels;
+
+@if (Model.TypeGroupCssClass == "gp-house")
+{
+    <!-- Thông tin xây dựng -->
+    <article class="content-item" id="tblConstruction">
+        <header>
+            <div class="header-wrapper">
+                <div class="header-center header-bg-green">
+                    <div class="header-left header-bg-green">
+                        <div class="header-left-triangle"></div>
+                    </div>
+                    <h1>Thông tin xây dựng</h1>
+                    <div class="header-right"></div>
+                </div>
+                <div class="header-msg">
+                    <p class="text-success">Các mục có dấu (<span class="text-error">*</span>) là bắt buộc nhập</p>
+                </div>
+            </div>
+        </header>
+        <article>
+            <div class="form-horizontal pull-left">
+                <!-- AreaConstruction -->
+                <div class="control-group">
+                    <label class="control-label">@T("Diện tích đất xây dựng:")</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.AreaConstruction, new { @class = "text number-box-ext" }) m<sup>2</sup>
+                    </div>
+                </div>
+                <!-- AreaConstructionFloor -->
+                <div class="control-group">
+                    <label class="control-label">@T("Dện tích sàn xây dựng:")</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.AreaConstructionFloor, new { @class = "text number-box-ext" }) m<sup>2</sup>
+                    </div>
+                </div>
+                
+                <!-- FloorsCount -->
+                <div class="control-group">
+                    <label class="control-label">@T("Số lầu:")</label>
+                    <div class="controls">
+                        <select id="@Html.NameOf(m => m.FloorsCount)" name="@Html.NameOf(m => m.FloorsCount)" class="select-box">
+                            @Html.SelectOption(Model.FloorsCount, 0, T("Trệt").ToString())
+                            @Html.SelectOption(Model.FloorsCount, 1, T("1 lầu").ToString())
+                            @Html.SelectOption(Model.FloorsCount, 2, T("2 lầu").ToString())
+                            @Html.SelectOption(Model.FloorsCount, 3, T("3 lầu").ToString())
+                            @Html.SelectOption(Model.FloorsCount, 4, T("4 lầu").ToString())
+                            @Html.SelectOption(Model.FloorsCount, 5, T("5 lầu").ToString())
+                            @Html.SelectOption(Model.FloorsCount, 6, T("6 lầu").ToString())
+                            @Html.SelectOption(Model.FloorsCount, 7, T("7 lầu").ToString())
+                            @Html.SelectOption(Model.FloorsCount, 8, T("8 lầu").ToString())
+                            @Html.SelectOption(Model.FloorsCount, 9, T("9 lầu").ToString())
+                            @Html.SelectOption(Model.FloorsCount, 10, T("10 lầu").ToString())
+                            @Html.SelectOption(Model.FloorsCount, -1, T("> 10 lầu").ToString())
+                        </select>
+                    </div>
+                </div>
+                <!-- Floors -->
+                <div class="control-group">
+                    <label class="control-label">@T("Số lầu chính xác:")</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.Floors, new { @class = "text number-box-ext" })
+                    </div>
+                </div>
+                <!-- Bedrooms -->
+                <div class="control-group">
+                    <label class="control-label">@T("Số phòng ngủ:")</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.Bedrooms, new { @class = "text number-box-ext" })
+                    </div>
+                </div>
+                <!-- Bathrooms -->
+                <div class="control-group">
+                    <label class="control-label">@T("Số phòng vệ sinh:")</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.Bathrooms, new { @class = "text number-box-ext" })
+                    </div>
+                </div>
+                <!-- TypeConstruction -->
+                <div class="control-group">
+                    <label class="control-label">@T("Loại công trình xây dựng:")</label>
+                    <div class="controls">
+                        @Html.DropDownListFor(m => m.TypeConstructionId,
+                    Model.TypeConstructions.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.TypeConstructionId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }),
+                    "-- Vui lòng chọn --", new { @class = "select-box" })
+                        @Html.ValidationMessageFor(m => m.TypeConstructionId, "*")
+                    </div>
+                </div>
+                <!-- Interior -->
+                <div class="control-group">
+                    <label class="control-label">@T("Chọn mức độ đầu tư xây dựng:")</label>
+                    <div class="controls">
+                        @Html.DropDownListFor(m => m.InteriorId,
+                    Model.Interiors.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.InteriorId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }),
+                    "-- Vui lòng chọn --", new { @class = "select-box" })
+                        @Html.ValidationMessageFor(m => m.InteriorId, "*")
+                    </div>
+                </div>
+                <!-- RemainingValue -->
+                <div class="control-group">
+                    <label class="control-label">@T("Chất lượng nhà còn lại:")</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.RemainingValue, new { @class = "text number-box-ext" }) %
+                    </div>
+                </div>
+            </div>
+            <div class="form-horizontal pull-left">
+                <ul style="padding-left:40px;">
+                    <li><label>@Html.CheckBoxFor(m => m.HaveBasement) @T("Có tầng hầm")</label></li>
+                    <li><label>@Html.CheckBoxFor(m => m.HaveMezzanine) @T("Có lửng")</label></li>
+                    <li><label>@Html.CheckBoxFor(m => m.HaveTerrace) @T("Có sân thượng")</label></li>
+                    <li><label>@Html.CheckBoxFor(m => m.HaveGarage) @T("Có gara ô tô")</label></li>
+                    <li><label>@Html.CheckBoxFor(m => m.HaveElevator) @T("Có thang máy")</label></li>
+                    <li><label>@Html.CheckBoxFor(m => m.HaveSwimmingPool) @T("Có hồ bơi")</label></li>
+                </ul>
+            </div>
+            <div class="clearfix"></div>
+        </article>
+        <footer></footer>
+    </article>
+}
+@if (Model.TypeGroupCssClass == "gp-apartment")
+{
+    <!-- Thông tin căn hộ -->
+    <article class="content-item">
+        <header>
+            <div class="header-wrapper">
+                <div class="header-center header-bg-green">
+                    <div class="header-left header-bg-green">
+                        <div class="header-left-triangle"></div>
+                    </div>
+                    <h1>Thông tin căn hộ</h1>
+                    <div class="header-right"></div>
+                </div>
+                <div class="header-msg">
+                    <p class="text-success">Các mục có dấu (<span class="text-error">*</span>) là bắt buộc nhập</p>
+                </div>
+            </div>
+        </header>
+        <article>
+            <div class="form-horizontal pull-left">
+                <!-- AreaUsable -->
+                <div class="control-group">
+                    <label class="control-label"><span class="text-error">*</span> @T("Diện tích căn hộ:")</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.AreaUsable, new { @class = "text number-box-ext" }) m<sup>2</sup>
+                        @Html.ValidationMessageFor(m => m.AreaUsable, "*")
+                    </div>
+                </div>
+                <!-- Bedrooms -->
+                <div class="control-group">
+                    <label class="control-label">@T("Số phòng ngủ:")</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.Bedrooms, new { @class = "text number-box-ext" })
+                    </div>
+                </div>
+                <!-- Bathrooms -->
+                <div class="control-group">
+                    <label class="control-label">@T("Số phòng vệ sinh:")</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.Bathrooms, new { @class = "text number-box-ext" })
+                    </div>
+                </div>
+                <!-- Balconies -->
+                <div class="control-group">
+                    <label class="control-label">@T("Mấy ban công (mấy view):")</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.Balconies, new { @class = "text number-box-ext" })
+                    </div>
+                </div>
+                <!-- Interior -->
+                <div class="control-group">
+                    <label class="control-label">@T("Chọn mức độ đầu tư xây dựng:")</label>
+                    <div class="controls">
+                        @Html.DropDownListFor(m => m.InteriorId,
+                    Model.Interiors.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.InteriorId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }),
+                    "-- Vui lòng chọn --", new { @class = "select-box" })
+                        @Html.ValidationMessageFor(m => m.InteriorId, "*")
+                    </div>
+                </div>
+                <!-- RemainingValue -->
+                <div class="control-group">
+                    <label class="control-label">@T("Chất lượng nhà còn lại:")</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.RemainingValue, new { @class = "text number-box-ext" }) %
+                    </div>
+                </div>
+                <!-- Direction -->
+                <div class="control-group">
+                    <label class="control-label">@T("Hướng:")</label>
+                    <div class="controls">
+                        @Html.DropDownListFor(m => m.DirectionId,
+                    Model.Directions.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.DirectionId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }),
+                    "-- Vui lòng chọn --", new { @class = "select-box" })
+                        @Html.ValidationMessageFor(m => m.DirectionId, "*")
+                    </div>
+                </div>
+                <!-- LegalStatus -->
+                <div class="control-group">
+                    <label class="control-label">@T("Giấy tờ pháp lý:")</label>
+                    <div class="controls">
+                        @Html.DropDownListFor(m => m.LegalStatusId,
+                    Model.LegalStatus.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.LegalStatusId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }),
+                    "-- Vui lòng chọn --", new { @class = "select-box" })
+                        @Html.ValidationMessageFor(m => m.LegalStatusId, "*")
+                    </div>
+                </div>
+            </div>
+            <div class="form-horizontal pull-left">
+                <ul style="padding-left:40px;">
+                    @{
+    var rIndex = 0;
+                    }
+                    @foreach (var r in Model.ApartmentInteriorAdvantages)
+                    {
+                        <li>
+                            <input type="hidden" value="@r.Advantage.Id"
+                                   name="@Html.FieldNameFor(m => m.ApartmentInteriorAdvantages[rIndex].Advantage.Id)" />
+                            <label for="@Html.FieldNameFor(m => m.ApartmentInteriorAdvantages[rIndex].IsChecked)">
+                                <input type="checkbox" value="true" class="@r.Advantage.CssClass"
+                                       name="@Html.FieldNameFor(m => m.ApartmentInteriorAdvantages[rIndex].IsChecked)"
+                                       id="@Html.FieldNameFor(m => m.ApartmentInteriorAdvantages[rIndex].IsChecked)"
+                                       @if (r.IsChecked) { <text> checked="checked" </text> } />
+                                @string.Format("{0} {1}", r.Advantage.Name, String.Format("({0:+0;-0;}%)", r.Advantage.AddedValue))
+                            </label>
+                            @{rIndex++;}
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="clearfix"></div>
+        </article>
+        <footer></footer>
+    </article>
+}
+@if (Model.TypeGroupCssClass == "gp-land")
+{
+
+}

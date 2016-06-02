@@ -1,0 +1,86 @@
+﻿@model RealEstate.ViewModels.VideoManageEditViewModel
+       
+
+<fieldset>
+    <input type="checkbox" value="false" name="btnYoutube" id="btnYoutube"> Chọn nhập YoutubeId đã có
+    <div class="uploadYoutube">
+        <input type="file" name="YoutubeFile" id="YoutubeFile" />
+        <div class="controls">
+            <p>Dung lượng tối đa là <strong>200 MB</strong> - Thời gian tối đa của clip là <strong>15 phút</strong></p>
+        </div>
+    </div>
+    <div class="existYoutube" style="display:none">
+        <div class="control-group">
+            <label class="control-label">@T("Youtube Id:")</label>
+            <div class="controls">
+                @Html.TextBoxFor(r => r.ExistYoutubeId, new { @class = "text text-box", placeholder = "Dán YoutubeId vào đây" })
+                <div>
+                    Vào <a href="https://www.youtube.com/upload" target="_blank"><strong>Youtube.com</strong></a> để upload video, <br />
+                    sau đó copy YoutubeId giống như hình bên dưới và dán(paste) vào ô trên<br />
+                </div>
+                <div style="padding: 10px; background: #fff;">
+                    <img style="height:100px;" src="/Modules/RealEstate.Admin/Styles/images/youtubeid.jpg" alt="youtubeId" />
+                </div>
+            </div>
+        </div>
+    </div>
+</fieldset>
+<script>
+    $(function () {
+        $('#btnYoutube').change(function () {
+            if ($(this).is(':checked')) {
+                $('.uploadYoutube').css('display', 'none');
+                $('.existYoutube').css('display', 'block');
+            } else {
+                $('.uploadYoutube').css('display', 'block');
+                $('.existYoutube').css('display', 'none');
+            }
+        });
+    });
+</script>
+
+<fieldset>
+    <label class="control-label">@T("Thể loại video:")</label>
+    <div class="controls">
+        @Html.DropDownListFor(m => m.VideoTypeId,
+                    Model.VideoTypes.Select(s => new SelectListItem
+                    {
+                        Selected = s.Id == Model.VideoTypeId,
+                        Text = s.Name,
+                        Value = s.Id.ToString()
+                    }), new { })
+        @Html.ValidationMessageFor(m => m.VideoTypeId, "*")
+    </div>
+</fieldset>    
+<fieldset>
+    @Html.LabelFor(m => m.Title, T("Title"))
+    @Html.TextBoxFor(m => m.Title, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.Title, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.Keyword, T("Keyword"))
+    @Html.TextBoxFor(m => m.Keyword, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.Keyword, "*")
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.Description, T("Description"))
+    @Html.TextAreaFor(m => m.Description, new { })
+    @Html.ValidationMessageFor(m => m.Description, "*")
+</fieldset>
+<fieldset>
+    <label for="Enable">@Html.CheckBoxFor(r => r.Enable) Enable</label>
+</fieldset>
+<fieldset>
+    <label for="Publish">@Html.CheckBoxFor(r => r.Publish) Video tin tức</label>
+</fieldset>
+<fieldset>
+    <input type="file" name="ImageFile" id="ImageFile" />
+    <div class="controls">
+        <p><strong>Cần chọn ảnh đại diện cho Video</strong></p>
+    </div>
+</fieldset>
+<fieldset>
+    @Html.LabelFor(m => m.SeqOrder, T("SeqOrder"))
+    @Html.TextBoxFor(m => m.SeqOrder, new { @class = "textMedium" })
+    @Html.ValidationMessageFor(m => m.SeqOrder, "*")
+</fieldset>

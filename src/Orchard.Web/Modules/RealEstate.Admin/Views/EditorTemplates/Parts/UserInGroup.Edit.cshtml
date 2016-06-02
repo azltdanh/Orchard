@@ -1,0 +1,29 @@
+﻿@model RealEstate.ViewModels.UserInGroupEditViewModel
+
+@Html.HiddenFor(m => m.ReturnUrl)     
+
+<div class="tab-content">
+    <div class="tab-pane active" id="profile">
+        <fieldset>
+            @Html.LabelFor(m => m.UserName, T("User Name"))
+            @Html.TextBoxFor(m => m.UserName, new { @class = "textMedium" })
+            @Html.ValidationMessageFor(m => m.UserName, "*")
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.Email, T("Email"))
+            @Html.TextBoxFor(m => m.Email, new { @class = "textMedium" })
+            @Html.ValidationMessageFor(m => m.Email, "*")
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.Password, T("Password"))
+            @Html.TextBoxFor(m => m.Password, new { @class = "textMedium" })
+            @Html.ValidationMessageFor(m => m.Password, "*")
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.GroupId, T("Group"))
+            @Html.DropDownListFor(m => m.GroupId, Model.Groups, "-- Select --", new { })
+            @Html.ValidationMessageFor(m => m.GroupId, "*")
+        </fieldset>
+    </div>
+    
+</div>

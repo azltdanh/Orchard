@@ -1,0 +1,79 @@
+﻿@using RealEstateForum.Service.ViewModels
+@model PostForumFrontEnDetailViewModel
+@using RealEstate.Helpers;
+@{
+    string url = Request.Url.AbsoluteUri;
+
+    if (!String.IsNullOrEmpty(Model.PostDetail.Title))
+    {
+        Layout.Title = Model.PostDetail.Title + " - " + Model.PostDetail.Id;
+    }
+}
+@using (Script.Foot())
+{
+    //Script.Require("Mini.js.functionFrontEnd");
+    Script.Require("realEstate.MiniForum.FrontEnd");
+    Script.Require("realEstate.miniforum.media");
+
+    //Script.Require("common.pagecomment");
+}
+@using (Script.Head())
+{
+    <link rel="canonical" href="@("http://dinhgianhadat.vn" + ViewBag.LinkDetail)" />
+}
+
+@Html.Raw(Model.ContentFromFile)
+
+<article>
+    <h3 class="text-primary after-tags">Bình luận</h3>
+    @if (!Model.PostDetail.IsPinned)
+    {
+        if (WorkContext.CurrentUser == null)
+        {
+            <span>Mời bạn <a href="/thanh-vien/dang-nhap?returnUrl=@HttpContext.Current.Request.Url">Đăng nhập</a> hoặc <a href="/thanh-vien/dang-ky">Đăng ký</a> để tham gia bình luận</span>
+        }
+        else
+        {
+            <form action="/" role="form">
+                <div class="form-group">
+                    <div id="areatinymce_Content" class="collapse">
+                        @Html.TextArea("Text", "", 3, 50,
+                                                new Dictionary<string, object> {
+		                                        {"class", "html tinymce form-control"},
+		                                        {"data-mediapicker-uploadpath",WorkContext.CurrentUser.UserName},
+		                                        {"data-mediapicker-title","Thêm ảnh vào bài viết"},
+                                                {"style", "width:100%;"},
+                                                {"id","areaContent"}
+                                        })
+                        <a rel="nofollow" data-toggle="modal" onclick="UploadImgMedia()" href="#UploadMediaModalId">
+                            <img alt="" src="/Modules/TinyMce/Scripts/plugins/mediapicker/img/picture_add.png" width="16" />
+                            Chèn ảnh
+                        </a>
+                        <a rel="nofollow" data-toggle="modal" onclick="FileAttachmentMedia()" href="#UploadMediaModalId">
+                            <img alt="" src="/Modules/RealEstateForum.FrontEnd/Styles/Images/attachment.png" width="16" />
+                            File đính kèm
+                        </a>
+                    </div>
+                    <textarea class="form-control" rows="3" placeholder="Viết vào đây những gì bạn nghĩ!" id="areatinymceContent"></textarea>
+                </div>
+                <div class="block-ellipsis-1"></div>
+                <div class="form-group" id="btn_post_function">
+                    <input type="button" class="btn btn-warning" value="Đăng" id="btnCommentFeed" />
+                    <input type="hidden" id="ParentCommentId" value="0" />
+                </div>
+                <input type="hidden" id="foldernameUpload" value="@WorkContext.CurrentUser.UserName" />
+            </form>
+        }
+    }
+    <hr />
+    @*<div id="listCommentNewsPage" data-url="@Url.Action("AjaxGetPostPageDetail", "Home", new { area = "RealEstateForum.FrontEnd", pageId = Model.PageForum.Id, userForPage = Model.UserSelectPart.Id })" data-current-page="1" data-total-pages="@ViewBag.So_Trang">
+            @Html.Action("AjaxGetPostPageDetail", "Home", new { area = "RealEstateForum.FrontEnd", pageId = Model.PageForum.Id, userForPage = Model.UserSelectPart.Id, page = 0 })
+        </div>*@
+    <div class="row">
+        <div class="col-md-12 ajax-content ajax-paging-forum" id="lstIdComment" data-url="/ajax/miniforum/AjaxLoadComment?PostId=@Model.PostDetail.Id">
+            @Html.Partial("Loading")
+        </div>
+    </div>
+</article>
+
+@Html.Partial("form.attachment.partial")

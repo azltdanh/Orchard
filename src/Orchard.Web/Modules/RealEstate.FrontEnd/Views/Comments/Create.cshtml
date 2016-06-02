@@ -1,0 +1,183 @@
+﻿@model RealEstate.FrontEnd.ViewModels.CommentsIndexViewModel
+@using RealEstate.FrontEnd.ViewModels;
+@using Orchard.Comments.Models;
+@using Orchard.Mvc.Html;
+@using Orchard.Utility.Extensions;
+@using RealEstate.Helpers;
+
+@{ 
+    Style.Require("Admin");
+    Script.Require("ShapesBase");
+    Script.Require("TinyMce");
+    Script.Require("OrchardTinyMce");
+    Script.Require("ShapesBase");
+    Layout.Title = T("Edit Comment").ToString();
+    var contextExists = TempData["CreateCommentContext.Name"] != null;
+    var name = Convert.ToString(TempData["CreateCommentContext.Name"]);
+    var commentText = Convert.ToString(TempData["CreateCommentContext.CommentText"]);
+    var email = Convert.ToString(TempData["CreateCommentContext.Email"]);
+    var siteName = Convert.ToString(TempData["CreateCommentContext.SiteName"]);
+}
+
+@using (Html.BeginForm("Create", "Comments", new { area = "RealEstate.FrontEnd" }, FormMethod.Post, new { @class = "comment-form" }))
+{ 
+    @Html.ValidationSummary() 
+    if (WorkContext.CurrentUser == null) {
+
+    <fieldset class="who">
+        <legend id="add-comment">@T("Add a Comment")</legend> 
+    <ol>
+        <li>
+            <label for="Name">@T("Name")</label>
+            <input id="Name" class="text" name="Name" type="text" value="@(contextExists ? name : String.Empty)" />
+        </li>
+        <li>
+            <label for="Email">@T("Email")</label>
+            <input id="Email" class="text" name="Email" type="text" value="@(contextExists ? email : String.Empty)"/>
+        </li>
+        <li>
+            <label for="SiteName">@T("Url")</label>
+            <input id="SiteName" class="text" name="SiteName" type="text" value="@(contextExists ? siteName : String.Empty)"/>
+        </li>
+     </ol>
+    </fieldset>
+    } else {
+        @Html.Hidden("Name", WorkContext.CurrentUser.UserName ?? "")
+        @Html.Hidden("Email", WorkContext.CurrentUser.Email ?? "")
+    }
+
+    <h2 id="commenter">@if (WorkContext.CurrentUser != null) { @T("Hi, {0}!", Convert.ToString(Html.ItemDisplayText(WorkContext.CurrentUser)))}</h2>
+    <fieldset class="what">
+    <ol>
+        <li>
+            <label for="comment-text">@T("Comment")</label>
+            <textarea id="comment-text" rows="10" cols="30" name="CommentText" maxlength="500" class="html tinymce">@(contextExists ? commentText : String.Empty)</textarea>
+            @*@Html.TextArea("CommentText", (string)Model.CommentText, 10, 10, new Dictionary<string, object> {
+	        {"class", "html tinymce"}})*@
+        </li>
+        <li>
+            <button class="primaryAction btncomment" type="submit">@T("Submit Comment")</button>
+            @Html.Hidden("CommentedOn", Model.Property_Id) 
+            @Html.Hidden("ReturnUrl", Request.QueryString.Get("returnUrl"))
+            @Html.Hidden("Url", Request.QueryString.Get("returnUrl"))
+            @Html.AntiForgeryTokenOrchard() 
+        </li>
+    </ol>
+    </fieldset>
+    <fieldset>
+        <table class="items" summary="@T("This is a table of the comments in your application")">
+            <colgroup>
+                <col id="Col1" />
+                <col id="Col2" />
+                <col id="Col3" />
+                <col id="Col4" />
+                <col id="Col5" />
+                <col id="Col6" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th scope="col">@T("Author")</th>
+                    <th scope="col">@T("Comment")</th>
+                    <th scope="col">@T("Actions")</th>
+                </tr>
+            </thead>
+            <tbody id="tbody_comment">
+                @{var commentIndex = 0;}
+                @foreach (var commentEntry in Model.Comments) {
+                    var commentClass = "";
+                    if ( commentEntry.Comment.UserName == "") {
+                        commentClass = "anonymous";
+                    }
+                    <tr itemscope="itemscope" itemid="@Model.Comments[commentIndex].Comment.Id" itemtype="http://orchardproject.net/data/Comment" class="@commentClass">
+                        <td>
+                        <div>@commentEntry.Comment.Author</div>
+                            @if (HasText(commentEntry.Comment.UserName) && commentEntry.Comment.Author != commentEntry.Comment.UserName) {
+                                <div class="authenticated-commenter-id">@commentEntry.Comment.UserName</div>
+                            }
+                        </td>
+                        <td>
+                            @if (commentEntry.Comment.CommentText != null) {
+                                if (commentEntry.Comment.CommentText.Length <= 500)
+                                {
+                                    @Html.Raw(commentEntry.Comment.CommentText)
+                                }
+                                else
+                                {
+                                    @Html.Raw(commentEntry.Comment.CommentText.Substring(0, 500))
+                                }
+                            }
+                            else {
+                                @T("[Empty]")
+                            }
+                        </td>
+                        <td>
+                            <div>
+                                <a href="javascript:;" class="del_comment">@T("Delete")</a>
+                            </div>
+                        </td>
+                    </tr>
+                    commentIndex = commentIndex + 1;
+                } 
+            </tbody>
+        </table>
+        @Display(Model.Pager)
+    </fieldset>
+} 
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".btncomment").click(function() {
+                $.ajax({
+                    type: "post",
+                    url: "@Url.Action("AddComment", "PropertySearch", new {area = "RealEstate.FrontEnd"})",
+                    data: {
+                        name: $("#Name").val(),
+                        commentText: tinyMCE.get('  ').getContent(),
+                        email: $("#Email").val(),
+                        commentedOn: $("#CommentedOn").val(),
+                        __RequestVerificationToken: antiForgeryToken
+                    },
+                    success: function(results) {
+                        if (results.success) {
+                            var html = "";
+                            html = html + "<tr class='' itemtype='http://orchardproject.net/data/Comment' itemid='" + results.Id + "' itemscope='itemscope'>";
+                            html = html + "<td><div>" + results.Name + "</div></td>";
+                            html = html + "<td><p>" + results.CommentText + "</p></td>";
+                            html = html + "<td><div><a href='javascript:;' class='del_comment'>Delete</a></div></td>";
+                            html = html + "</tr>";
+                            $("#tbody_comment").prepend(html);
+                            $("#comment-text").val("");
+                        }
+                    },
+                    error: function(request, status, error) {
+                        alert('Có lỗi xảy ra');
+                    }
+                });
+                return false;
+            });
+
+            $(".del_comment").click(function() {
+                var div = $(this).closest('tr');
+                if (confirm("Bạn có muốn xoá bình luận này không?")) {
+                    $.ajax({
+                        type: "post",
+                        url: "@Url.Action("DeleteComment", "PropertySearch", new {area = "RealEstate.FrontEnd"})",
+                        data: {
+                            Id: div.attr("itemid"),
+                            __RequestVerificationToken: antiForgeryToken
+                        },
+                        success: function(results) {
+                            if (results.success) {
+                                div.fadeOut().remove();
+                            }
+                        },
+                        error: function(request, status, error) {
+                            alert('Có lỗi xảy ra');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

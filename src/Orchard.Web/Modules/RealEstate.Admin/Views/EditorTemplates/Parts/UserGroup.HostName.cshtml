@@ -1,0 +1,11 @@
+﻿@model RealEstate.ViewModels.UserGroupEditViewModel
+@{
+    Script.Require("selectboxes");
+    Script.Require("Cookie");
+    Script.Require("Common").AtFoot();
+}
+
+<div class="spacer"></div>
+<!-- Summary -->
+
+@Html.ActionLink("Back", "Activities", new { Area = "RealEstate.Admin", Controller = "UserGroupAdmin", Id = Model.Group.Id }, new { @class = "button" })       
