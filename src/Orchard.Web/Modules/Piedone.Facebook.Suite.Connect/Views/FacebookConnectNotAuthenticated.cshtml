@@ -1,0 +1,18 @@
+﻿@{
+    var returnUrl = Url.Action("Connect", "Connect", new { Area = "Piedone.Facebook.Suite.Connect", ReturnUrl = (Request.QueryString["ReturnUrl"] ?? Request.RawUrl) });
+}
+
+<a href="#" id="facebook-connect-link" class="quick-logon-link facebook-icon" title="Đăng nhập bằng tài khoản facebook">
+    <span class="fbdg_connect">@T("Đăng nhập bằng facebook")</span>
+</a>
+
+@*<div class="facebook_widget"> piedone-facebook-suite-connect connect-link
+    <a href="#" id="facebook-connect-link" class="piedone-facebook-suite-connect connect-link">
+            @T(" Đăng nhập bằng tài khoản facebook")
+    </a>
+</div>*@
+<script type="text/javascript">
+    $(document).on("facebook:ready", function () {
+        $.facebookConnect.initializeLogin("@Url.Encode(returnUrl)", "@Model.Permissions", "@Url.Action("SaveSession", "Connect", new { Area = "Piedone.Facebook.Suite.Connect" })", "@Html.AntiForgeryTokenValueOrchard()");
+    });
+</script>

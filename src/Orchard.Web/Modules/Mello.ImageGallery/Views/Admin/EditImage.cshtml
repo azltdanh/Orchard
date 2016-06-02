@@ -1,0 +1,83 @@
+﻿@model Mello.ImageGallery.ViewModels.ImageEditViewModel
+@using Mello.ImageGallery.Extensions           
+
+@{ Style.Require("ImageGalleryAdmin");
+    Style.Require("jQueryUI_Orchard");
+    Script.Require("jQueryUI");
+ }
+
+<script type="text/javascript">
+    //<![CDATA[
+    $(function () {
+        $(".date-box").datepicker({ dateFormat: "dd/mm/yy" });
+    });
+    //]]>
+</script> 
+
+@{ Layout.Title = T("Edit Image - {0}", Model.Image.Name).ToString(); }
+
+<div class="sections clearBoth">
+    <div class="primary">
+        <div>
+            <img alt="@Model.Image.Caption" src="@Model.Image.PublicUrl" class="previewImage"/>
+        </div>
+
+        @* todo: make these real (including markup) *@
+        <div>
+        @* <label>@T("Dimensions: <span>500 x 375 pixels</span>")</label> *@
+
+        <label>@T("Size: <span>{0}</span>", Model.Image.Size)</label>
+               
+        <label>@T("Added on <span>{0}</span>", Model.Image.LastUpdated)</label>
+        </div>
+
+        <div>
+            <label for="embedPath">@T("Embed:")</label>
+            <input id="embedPath" class="textLarge" name="embedPath" type="text" readonly="readonly" value="&lt;img src=&quot;@Model.Image.PublicUrl&quot /&gt;" />
+            <span class="hint">@T("Copy this html to add this image to your site.")</span>
+        </div>
+
+        @using (Html.BeginFormAntiForgeryPost())
+        {
+            @Html.ValidationSummary()   
+    
+            <fieldset>
+                <label for="Title">@T("Title")</label>
+                @Html.TextBoxFor(o => o.Image.Title, new { Class = "textLarge" })
+                            
+                <label for="Caption">@T("Description")</label>
+                @Html.TextBoxFor(o => o.Image.Caption, new { Class = "textLarge" })
+
+                @* added *@
+                <label for="href">@T("href")</label>
+                @Html.TextBoxFor(o => o.Image.href, new { Class = "textLarge" })
+
+                <br /><br />
+                @Html.CheckBoxFor(o => o.Image.Blank)
+                <label style="display:inline-block" title="Cho mở tab mới" for="Image_Blank">@T("_Blank")</label>
+
+                <br /><br />
+                <label for="DateBegin">@T("Ngày bắt đầu")</label>
+                @Html.TextBoxFor(o => o.Image.DateBegin, new { Class = "textLarge date-box" })
+
+                <label for="DateEnd">@T("Ngày hết hạn")</label>
+                @Html.TextBoxFor(o => o.Image.DateEnd, new { Class = "textLarge date-box" })
+                <br /><br />
+                @Html.CheckBoxFor(o => o.Image.Enable)
+                <label style="display:inline-block" title="Kích hoạt hình ảnh này" for="Image_Enable">@T("Kích hoạt ngày hết hạn")</label>
+                
+                <br /><br />
+                @Html.CheckBoxFor(o => o.Image.IsPublish)
+                <label style="display:inline-block" title="Cho hiện hình ảnh này" for="Image_IsPublish">@T("IsPublish")</label>
+
+                @Html.HiddenFor(o => o.ImageGalleryName)
+                @Html.HiddenFor(o => o.Image.Name)
+            </fieldset>            
+            <fieldset>
+                <button class="primaryAction" type="submit" name="submit.Save" value="@T("Save")">@T("Save")</button>
+                @*<button type="submit" name="submit.DeleteImage" value="@T("Delete")">@T("Delete")</button>*@
+                @Html.ActionLink("Back", "Images", new { imageGalleryName = Model.ImageGalleryName }, new { Class = "button"})
+            </fieldset>        
+        }
+    </div>
+</div>

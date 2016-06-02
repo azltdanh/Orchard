@@ -1,0 +1,38 @@
+﻿@{
+    Script.Require("common.connectfacebook");
+    
+    var returnUrl = Url.Action("Connect", "Connect", new { Area = "Piedone.Facebook.Suite.Connect", ReturnUrl = Model.ReturnUrl });
+}
+<a href="#myModalConnect" role="button" class="btnPopupConnect" data-toggle="modal"></a>
+
+<!-- Modal -->
+<div class="modal fade" id="myModalConnect" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3 id="myModalLabel" class="modal-title facebook-login-popup-title">Nhấn vào "Kết nối" dưới đây để bình luận và đăng bài viết lên facebook!</h3>
+        </div>
+        <div class="modal-body">
+            <div class="facebook-login-popup-content">
+                <a href="javascript:;" id="facebook-connect-link" class="piedone-facebook-suite-connect connect-link" title="Kết nối với tài khoản facebook của bạn!">
+                        <span class="fbdg_connect"> @T("Kết nối")</span>
+                </a>
+                <a href="javascript:;" class="link-cancel" onclick="closePopup()" title="Từ chối kết nối với facebook" data-dismiss="modal" aria-hidden="true">
+                    <span class="fbs-cancel" >@T("Từ chối")</span>
+                </a>
+            </div>
+            <div class="fb-like-box" data-href="https://www.facebook.com/dinhgianhadat" data-width="292" data-height="292" data-show-faces="true" data-stream="false" data-show-border="true" data-header="false"></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Đóng lại</button>
+        </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(document).on("facebook:ready", function () {
+    $.facebookConnect.initializeLogin("@Url.Encode(returnUrl)", "@Model.Permissions", "@Url.Action("SaveSession", "Connect", new { Area = "Piedone.Facebook.Suite.Connect" })", "@Html.AntiForgeryTokenValueOrchard()");
+});
+</script>

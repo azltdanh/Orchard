@@ -1,0 +1,5 @@
+﻿<Placement>
+    <Place Parts_UserMessage_DeleteButton="Sidebar:25"/>
+  <Place Parts_UserMessage_UserMessagePart="Content:1"/>
+  <Place Parts_UserMessagePart="Content:1"/>
+</Placement>

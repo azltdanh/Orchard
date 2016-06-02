@@ -1,0 +1,20 @@
+﻿<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-center">
+                <div class="header-left">
+                    <div class="header-left-triangle"></div>
+                </div>
+                    <h1>@Html.TitleForPage(T("Soạn tin mới").ToString())</h1>
+                <div class="header-right"></div>
+            </div>
+        </div>
+    </header>
+    <article>
+        @using (Html.BeginFormAntiForgeryPost())
+        {
+            @Html.ValidationSummary()
+                @Display(Model)
+        }
+    </article>
+</article>

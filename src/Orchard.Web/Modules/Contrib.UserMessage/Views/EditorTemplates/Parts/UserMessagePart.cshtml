@@ -1,0 +1,34 @@
+﻿@model Contrib.UserMessage.Models.UserMessagePart
+
+@*<fieldset>
+    @Html.LabelFor(userMessage => userMessage.SentTo, T("Send To"))
+    @Html.TextBoxFor(userMessage => userMessage.SentTo, new { @class = "text textMedium" })
+</fieldset>
+<fieldset>
+    @Html.LabelFor(userMessage => userMessage.Title, T("Title"))
+    @Html.TextBoxFor(userMessage => userMessage.Title, new { @class = "text textMedium" })
+</fieldset>*@
+
+<div class="form-horizontal">
+    <div class="control-group">
+        <label class="control-label">@T("Gửi đến:")</label>
+        <div class="controls form-inline">
+            @Html.TextBoxFor(userMessage => userMessage.SentTo, new { @class = "text textMedium span6" })
+            @Html.ValidationMessageFor(userMessage => userMessage.SentTo)
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">@T("Tiêu đề:")</label>
+        <div class="controls form-inline">
+            @Html.TextBoxFor(userMessage => userMessage.Title, new { @class = "text textMedium span6" })
+            @Html.ValidationMessageFor(userMessage => userMessage.Title)
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">@T("Nội dung:")</label>
+        <div class="controls form-inline">
+            @Html.TextAreaFor(userMessage => userMessage.Message, 10, 40, new { @class = "text textMedium span6" })
+            @Html.ValidationMessageFor(userMessage => userMessage.Message)
+        </div>
+    </div>
+</div>        

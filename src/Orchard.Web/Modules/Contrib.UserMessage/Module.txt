@@ -1,0 +1,13 @@
+Name: UserMessage
+AntiForgery: enabled
+Author: The Orchard Team
+Website: http://orchardproject.net
+Version: 0.9
+OrchardVersion: 1.0
+Description: The Contact User module provides the ability for users to send message to each other.
+Features:
+    Contrib.UserMessage:
+        Description: Enables users to send message to each other.
+        Name: Contrib.UserMessage
+        Category: Social
+        Dependencies: Orchard.Users

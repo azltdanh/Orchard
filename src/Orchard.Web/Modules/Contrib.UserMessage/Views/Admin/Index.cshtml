@@ -1,0 +1,44 @@
+﻿@using Contrib.UserMessage.Models;
+
+<h1>@Html.TitleForPage(T("Received Messages").ToString())</h1>
+
+@using (Html.BeginFormAntiForgeryPost()) { 
+    @Html.ValidationSummary()
+    <div class="manage">@Html.ActionLink(T("Send new message").ToString(), "Send", new { }, new { @class = "button primaryAction" })</div>
+
+    <fieldset>
+        <table class="items">
+            <colgroup>
+                <col id="SentFrom" />
+                <col id="Title" />
+                <col id="ReceivedDate" />
+                <col id="Edit" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th scope="col">@T("Sent From")</th>
+                    <th scope="col">@T("Title")</th>
+                    <th scope="col">@T("Received Date")</th>
+                    <th scope="col">@T("") </th>
+                </tr>
+            </thead>
+            @foreach (UserMessagePart userMessagePart in Model) {
+            <tr>
+                <td>
+                    @userMessagePart.SentFrom
+                </td>
+                <td>
+                    @userMessagePart.Title
+                </td>
+                <td>
+                    @userMessagePart.SentDateTime.ToLocalTime()
+                </td>
+                <td>
+                    @Html.ActionLink(T("Remove").ToString(), "DeleteReceived", new { userMessagePart.Id }) |
+                    @Html.ActionLink(T("View").ToString(), "Details", new { userMessagePart.Id })
+                </td>
+            </tr>
+            }
+        </table>
+    </fieldset>
+}

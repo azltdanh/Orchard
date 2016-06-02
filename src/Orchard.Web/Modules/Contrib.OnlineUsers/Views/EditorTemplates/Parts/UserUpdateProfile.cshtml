@@ -1,0 +1,114 @@
+﻿@model Contrib.OnlineUsers.Models.UserUpdateProfilePart
+
+<h1>@Html.TitleForPage(T("Test User OnlineUsers").ToString())</h1><hr />
+
+<div class="tab-content">
+    <div class="tab-pane active" id="home">
+        <fieldset>
+            @Html.LabelFor(m => m.Avatar, T("Avatar"))
+            <input type="file" name="Avatars_FileUpload" id="Avatars_FileUpload">
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.FirstName, T("FirstName"))
+            @Html.TextBoxFor(m => m.FirstName, new { @class = "textMedium" })
+            @Html.ValidationMessageFor(m => m.FirstName, "*")
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.LastName, T("LastName"))
+            @Html.TextBoxFor(m => m.LastName, new { @class = "textMedium" })
+            @Html.ValidationMessageFor(m => m.LastName, "*")
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.DisplayName, T("DisplayName"))
+            @Html.TextBoxFor(m => m.DisplayName, new { @class = "textMedium" })
+            @Html.ValidationMessageFor(m => m.DisplayName, "*")
+        </fieldset>
+        <fieldset>
+            <select name="@Html.FieldNameFor(m => m.Gender)" size="1">
+                @foreach (var item in Enum.GetValues(typeof(Contrib.OnlineUsers.Models.Gender)))
+                {
+                    var name = Enum.GetName(typeof(Contrib.OnlineUsers.Models.Gender), item);
+                    <option value="@item" @if (Convert.ToInt32(Model.Gender) == Convert.ToInt32(item)) { <text> selected="selected" </text>    }>@T(name)</option>
+                }
+            </select>
+            @Html.ValidationMessageFor(model => model.Gender)
+        </fieldset>
+
+        <fieldset>
+            @Html.LabelFor(m => m.DateOfBirth, T("DateOfBirth"))
+            @Html.TextBoxFor(m => m.DateOfBirth, String.Format("{0:dd/MM/yyyy}", Model.DateOfBirth), new { Class = "date-box" })
+            @Html.ValidationMessageFor(model => model.DateOfBirth)
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.Address, T("Address"))
+            @Html.TextBoxFor(m => m.Address, new { @class = "textMedium" })
+            @Html.ValidationMessageFor(m => m.Address, "*")
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.Phone, T("Phone"))
+            @Html.TextBoxFor(m => m.Phone, new { @class = "textMedium" })
+            @Html.ValidationMessageFor(m => m.Phone, "*")
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.Email, T("Email"))
+            @Html.TextBoxFor(m => m.Email, new { @class = "textMedium" })
+            @Html.ValidationMessageFor(m => m.Email, "*")
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.Job, T("Job"))
+            @Html.TextBoxFor(m => m.Job, new { @class = "textMedium" })
+            @Html.ValidationMessageFor(m => m.Job, "*")
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.Level, T("Level"))
+            @Html.TextBoxFor(m => m.Level, new { @class = "textMedium" })
+            @Html.ValidationMessageFor(m => m.Level, "*")
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.Website, T("Website"))
+            @Html.TextBoxFor(m => m.Website, new { @class = "textMedium" })
+            @Html.ValidationMessageFor(m => m.Website, "*")
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.Note, T("Note"))
+            @Html.TextArea("Note", (string)Model.Note, 5, 5, new { @class = "html tinymce" })
+            @Html.ValidationMessageFor(m => m.Note, "*")
+        </fieldset>
+        <fieldset>
+            @Html.LabelFor(m => m.IsSignature, T("IsSignature"))
+            @Html.EditorFor(m => m.IsSignature, new { @class = "textMedium" })
+        </fieldset>
+        <fieldset>
+            <select id="@Html.NameOf(m => m.PublishPhone)" name="UserOnlineUsersPart.IsPhone" class="form-control">
+                @Html.SelectOption(Model.PublishPhone, Contrib.OnlineUsers.Models.Published.Publish, T("Công khai").ToString())
+                @Html.SelectOption(Model.PublishPhone, Contrib.OnlineUsers.Models.Published.OnlyFriends, T("Chỉ bạn bè").ToString())
+                @Html.SelectOption(Model.PublishPhone, Contrib.OnlineUsers.Models.Published.UnPublish, T("Không công khai").ToString())
+            </select>
+            @Html.ValidationMessageFor(model => model.PublishPhone)
+        </fieldset>
+        <fieldset>
+            <select id="@Html.NameOf(m => m.PublishAddress)" name="UserOnlineUsersPart.IsAddress" class="form-control">
+                @Html.SelectOption(Model.PublishAddress, Contrib.OnlineUsers.Models.Published.Publish, T("Công khai").ToString())
+                @Html.SelectOption(Model.PublishAddress, Contrib.OnlineUsers.Models.Published.OnlyFriends, T("Chỉ bạn bè").ToString())
+                @Html.SelectOption(Model.PublishAddress, Contrib.OnlineUsers.Models.Published.UnPublish, T("Không công khai").ToString())
+            </select>
+            @Html.ValidationMessageFor(model => model.PublishAddress)
+        </fieldset>
+        <fieldset>
+            <select id="@Html.NameOf(m => m.PublishJob)" name="UserOnlineUsersPart.IsJob" class="form-control">
+                @Html.SelectOption(Model.PublishJob, Contrib.OnlineUsers.Models.Published.Publish, T("Công khai").ToString())
+                @Html.SelectOption(Model.PublishJob, Contrib.OnlineUsers.Models.Published.OnlyFriends, T("Chỉ bạn bè").ToString())
+                @Html.SelectOption(Model.PublishJob, Contrib.OnlineUsers.Models.Published.UnPublish, T("Không công khai").ToString())
+            </select>
+            @Html.ValidationMessageFor(model => model.PublishJob)
+        </fieldset>
+        <fieldset>
+            <select id="@Html.NameOf(m => m.PublishLevel)" name="UserOnlineUsersPart.IsJob" class="form-control">
+                @Html.SelectOption(Model.PublishLevel, Contrib.OnlineUsers.Models.Published.Publish, T("Công khai").ToString())
+                @Html.SelectOption(Model.PublishLevel, Contrib.OnlineUsers.Models.Published.OnlyFriends, T("Chỉ bạn bè").ToString())
+                @Html.SelectOption(Model.PublishLevel, Contrib.OnlineUsers.Models.Published.UnPublish, T("Không công khai").ToString())
+            </select>
+            @Html.ValidationMessageFor(model => model.PublishLevel)
+        </fieldset>
+    </div>
+</div>

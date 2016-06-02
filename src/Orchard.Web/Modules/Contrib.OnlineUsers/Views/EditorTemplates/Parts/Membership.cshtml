@@ -1,0 +1,11 @@
+﻿@model Contrib.OnlineUsers.Models.MembershipPart
+          
+<h1>@Html.TitleForPage(T("Membership").ToString())</h1><hr />  
+     
+    <div class="editor-label">
+        @Html.LabelFor(m => m.LastActive, T("Last Active"))
+    </div>
+    <div class="editor-field">
+        @Html.TextBoxFor(m => m.LastActive)
+        @Html.ValidationMessageFor(m => m.LastActive)
+    </div>

@@ -1,0 +1,25 @@
+﻿@using Orchard.Utility.Extensions;
+@using Orchard.Mvc.Html;
+@using Orchard.Mvc.Extensions;
+@using System.Linq;
+@using RM.QuickLogOn.Providers
+
+@{
+    var providers = Model.Providers as IEnumerable<IQuickLogOnProvider>;
+}
+@if (WorkContext.CurrentUser == null)
+{
+    if (providers != null && providers.Any())
+    {
+        foreach (var p in providers)
+        { 
+            <a href="@(p.GetLogOnUrl(WorkContext, Request.QueryString["ReturnUrl"] ?? Request.RawUrl))" title="@p.Description" class="quick-logon-link google-icon" id="redirec-login">
+                <span>@p.Name</span> 
+            </a>
+        }
+    }
+    else
+    {
+        <div>No QuickLogOn providers enabled. Please goto Dashboard and enable at least one.</div>
+    }
+}

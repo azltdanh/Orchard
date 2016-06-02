@@ -1,0 +1,13 @@
+﻿Name: Contrib.OnlineUsers
+AntiForgery: enabled
+Author: azltdanh
+Website: http://orchardonlineusers.codeplex.com
+Version: 1.0
+OrchardVersion: 1.0
+Description: Track online users by last active time.
+Features:
+    Contrib.OnlineUsers:
+		Name: Contrib.OnlineUsers
+        Description: Track user online by last active time.
+		Category: Statistics
+        Dependencies: Orchard.Users, Contrib.Voting

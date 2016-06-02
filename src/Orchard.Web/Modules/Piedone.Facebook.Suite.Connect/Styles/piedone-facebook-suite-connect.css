@@ -1,0 +1,93 @@
+﻿.piedone-facebook-suite-connect.connect-link,
+.piedone-facebook-suite-connect.sign-out-to-connect-with-facebook-link,
+.piedone-facebook-suite-connect.facebook-logout-link, .facebook-login-popup
+{
+    background: url("images/icon-facebook.png") no-repeat;
+    display: inline-block;
+    outline: none;
+    padding: 0 0 0 32px;
+    height: 30px;
+    line-height: 32px;
+    margin-left: 105px;
+}
+
+.registration-chooser
+{
+    margin-bottom: 3em;
+}
+
+    .registration-chooser .button
+    {
+        display: block;
+        margin-bottom: 1em !important;
+        padding: 0.5em !important;
+    }
+
+/* User profile
+***************************************************************/
+.piedone-facebook-suite-connect.current-user-profile
+{
+    margin: 0 0 10px 0;
+}
+
+    .piedone-facebook-suite-connect.current-user-profile-picture
+    {
+        display: block;
+        margin: 0 auto 10px auto;
+    }
+
+    .piedone-facebook-suite-connect.current-user-name
+    {
+        display: block;
+        text-align: center;
+    }
+/* Add by kenji nguyen
+************************************************************ */
+.fbdg_connect
+{
+    margin-left: -2px; font-weight: bold; color:#FFFFFF;padding: 0.4em 10px;background: #3C5A98; border: 1px solid #24479E; border-left: none; -webkit-padding-after: 6px;-webkit-padding-before: 6px;
+}
+.fbdg_connect:hover {
+    text-decoration:underline;
+}
+.fbs-cancel
+{
+    margin-left: -5px; font-weight: bold; color:#FFFFFF;padding: 0.4em 10px;background: #F75F20; border: 1px solid #F75F20; border-left: none; -webkit-padding-after: 6px;-webkit-padding-before: 6px;
+}
+.fbs-cancel:hover {
+    text-decoration:underline;
+}
+
+/*update 30/05/2013*/
+.popup-facebook {
+    width:500px; height:400px; display:none;
+}
+.facebook-login-popup-title {
+    margin: 20px 10px 10px 5px; color: green; width: 98%; font-size: 16px; text-align:justify;
+}
+.facebook-login-popup-content {
+    margin: 25px 2px 10px 20px;
+}
+.facebook-login-popup {
+    margin-left: 40px;
+}
+.fb-like-box {
+    margin: 10px 10px 10px 100px;
+}
+.link-cancel {
+    background: url("images/icon-delete.png") no-repeat;
+    display: inline-block;
+    outline: none;
+    padding: 0 0 0 32px;
+    height: 30px;
+    line-height: 32px;
+    margin-left: 30px;
+}
+a.btnClose {
+    padding-right: 32px;
+    background: url(images/close-popup.png) no-repeat scroll 0 0 transparent ;
+    vertical-align: text-top;
+    display: inline-block;
+    height: 32px;
+    float:right;
+}

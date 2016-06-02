@@ -1,0 +1,75 @@
+﻿@using Contrib.UserMessage.Models;
+
+<article class="content-item">
+    <header>
+        <div class="header-wrapper">
+            <div class="header-center">
+                <div class="header-left">
+                    <div class="header-left-triangle"></div>
+                </div>
+                    <h1>@Html.TitleForPage(T("Tin nhắn đã nhận").ToString())</h1>
+                <div class="header-right"></div>
+            </div>
+        </div>
+    </header>
+    <article>
+        @using (Html.BeginFormAntiForgeryPost()) { 
+            @Html.ValidationSummary()
+            <div class="manage">@Html.ActionLink(T("Soạn tin mới").ToString(), "Send", new { }, new { @class = "button primaryAction btn btn-primary" })</div>
+            <div class="spacer"></div>
+            <fieldset>
+                <table class="items list-messages">
+                    <colgroup>
+                        <col id="Select" class="col-01" />
+                        <col id="SentFrom" class="col-02" />
+                        <col id="Title" class="col-03" />
+                        <col id="ReceivedDate" class="col-04" />
+                        <col id="Action" class="col-05" />
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    @foreach (UserMessagePart userMessagePart in Model) {
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="checkbox" />
+                        </td>
+                        <td>
+                            @userMessagePart.SentFrom
+                        </td>
+                        <td>
+                            @if(userMessagePart.ReceiverRead != true)
+                            {
+                                <strong>@userMessagePart.Title</strong>
+                            }
+                            else
+                            {
+                                @userMessagePart.Title
+                            }
+                            <span class="muted">- @userMessagePart.Message</span>
+                        </td>
+                        <td>
+                            @userMessagePart.SentDateTime.ToLocalTime()
+                        </td>
+                        <td style="display:none">
+                            @Html.ActionLink(T("Remove").ToString(), "DeleteReceived", new { userMessagePart.Id }) |
+                            @Html.ActionLink(T("View").ToString(), "Details", new { userMessagePart.Id })
+                        </td>
+                    </tr>
+                    }
+                </table>
+                <script type="text/javascript">
+                    $('table.list-messages tbody tr').click(function () {
+                        $(this).children('td:last').children('a:contains(View)')[0].click();
+                    });
+                </script>
+            </fieldset>
+        }
+    </article>
+</article>

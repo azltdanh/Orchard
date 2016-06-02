@@ -1,0 +1,135 @@
+﻿@model Mello.ImageGallery.ViewModels.ImageGalleryImagesViewModel
+@using Mello.ImageGallery.Extensions
+
+@{ Style.Require("ImageGalleryAdmin");
+ Script.Require("jQueryUISortable");
+ Script.Include("Admin/Images.js");
+}
+
+@{ Layout.Title = T("Manage Image Gallery").ToString();
+ string relationship = "";
+}
+
+<div class="clearBoth"></div>
+
+@using (Html.BeginFormAntiForgeryPost())
+{
+    <div class="manage">
+        @Html.ActionLink(T("Add images").ToString(), "AddImages", new { imageGalleryName = Model.ImageGalleryName }, new { @class = "button primaryAction" })
+        @if ((bool) ViewBag.IsManageImageGallery)
+        {
+            @Html.ActionLink(T("Image Gallery Properties").ToString(), "EditProperties", new {imageGalleryName = Model.ImageGalleryName}, new {@class = "button"});
+        }
+    </div>
+
+    <h2>@Model.ImageGalleryName</h2>
+
+    <input type="hidden" id="imageGalleryName" name="imageGalleryName" value="@Model.ImageGalleryName" />
+
+    <fieldset>
+        <table id="images" class="items" summary="@T("This is a table of the images of your image gallery.")">
+            <thead>
+                <tr>
+                    <th>
+                        &nbsp;↓
+                    </th>
+                    <th>
+                        @T("Name")
+                    </th>
+                    <th>
+                        @T("Author")
+                    </th>
+                    <th>
+                        @T("Last Updated")
+                    </th>
+                    <th>
+                        @T("Size")
+                    </th>
+                    <th>
+                        @T("Title")
+                    </th>
+                    <th>
+                        @T("Enable")
+                    </th>
+                    <th>
+                        @T("Blank")
+                    </th>
+                    <th>
+                        @T("Date End")
+                    </th>
+                    <th>
+                        @T("Is Publish")
+                    </th>
+                    <th>
+                        Time
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @if (Model.Images != null)
+                {
+                    foreach (var image in Model.Images)
+                    {
+                        <tr>
+                            <td class="sort">
+                                <img src='@Href("~/Modules/Mello.ImageGallery/Content/Images/grip.png")' alt="grip" />
+                            </td>
+                            <td class="name">
+                                @Html.ActionLink(@image.Name, "EditImage", new { imageGalleryName = @Model.ImageGalleryName, imageName = @image.Name })
+                            </td>
+                            <td>
+                                @image.User @image.Type
+                            </td>
+                            <td>
+                                @image.LastUpdated
+                            </td>
+                            <td>
+                                @image.Size.ToFriendlySizeString()
+                            </td>
+                            <td>
+                                @image.Title
+                            </td>
+                            <td>
+                                @image.Enable
+                            </td>
+                            <td>
+                                @image.Blank
+                            </td>
+                            <td>
+                                @image.DateEnd
+                            </td>
+                            <td>
+                                @image.IsPublish
+                            </td>
+                            <td>
+                                @{if (image.DateEnd != null)
+                                {
+                                    int ts = 0;@*(Convert.ToDateTime(image.DateEnd) - DateTime.Now).Days;*@
+
+                                    if (ts < 0)
+                                    {
+                                        relationship = "expired";
+                                    }
+                                    else if (ts == 0)
+                                    {
+                                        relationship = "a day left";
+                                    }
+                                    else
+                                    {
+                                        relationship = ts + " days left";
+                                    }
+                                }
+                                }
+                                <span style="color: red">@relationship</span>
+                            </td>
+
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </fieldset>
+
+    @Html.ActionLink("Back", "Index", null, new { Class = "button" })
+}

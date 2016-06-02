@@ -1,0 +1,50 @@
+﻿@using Mello.ImageGallery.Helpers
+@using System.Web.Mvc.Html
+@{ 
+    Style.Require("ImageGallery");
+    //Script.Require("jquery.sitelink");
+ }
+@model Mello.ImageGallery.ViewModels.ImageGalleryViewModel
+
+<div class="body-sitelink hidden-xs" style="text-align:center !important;">
+    @{int results1;}
+            @foreach (var image in Model.Images)
+            {
+                <div class="item-modal">
+                    @if (image.Enable)
+                    {
+                        results1 = (Convert.ToDateTime(image.DateEnd) - DateTime.Now).Days;
+                        if (results1 >= 0)
+                        {
+                            if (image.Blank)
+                            {
+                                    <a href="@image.href" target="_blank">
+                                        @Html.ImageWithThumbnailSizeSiteLink(image)
+                                    </a>
+                            }
+                            else
+                            {
+                                    <a href="@image.href">
+                                        @Html.ImageWithThumbnailSizeSiteLink(image)
+                                    </a>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (image.Blank)
+                        {
+                                    <a href="@image.href" target="_blank">
+                                        @Html.ImageWithThumbnailSizeSiteLink(image)
+                                    </a>
+                        }
+                        else
+                        {
+                                    <a href="@image.href">
+                                        @Html.ImageWithThumbnailSizeSiteLink(image)
+                                    </a>
+                        }
+                    }
+                </div>
+            }
+</div>

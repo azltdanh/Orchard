@@ -1,0 +1,25 @@
+﻿@using Piedone.Facebook.Suite.Models
+
+<div class="facebook_widget_title">
+    Liên kết với tài khoản facebook của bạn
+</div>
+<div class="facebook_widget">
+    <div class="piedone-facebook-suite-connect current-user-profile">
+        <a href="@Model.AuthenticatedFacebookUser.Link">
+            <img src="@(((IFacebookUser)Model.AuthenticatedFacebookUser).GetPictureLink())" class="piedone-facebook-suite-connect current-user-profile-picture" alt="@T("{0}'s profile picture", Model.AuthenticatedFacebookUser.Name)" />
+        </a><strong class="piedone-facebook-suite-connect current-user-name">
+            @Model.AuthenticatedFacebookUser.Name
+        </strong>
+    </div>
+@if (Model.IsAuthenticatedWithFacebookConnect)
+{
+    <a href="" id="facebook-logout-link" class="piedone-facebook-suite-connect facebook-logout-link">
+        <span class="fbdg_connect">@T("Thoát facebook")</span>
+    </a>
+    <script type="text/javascript">
+    $(document).on("facebook:ready", function () {
+        $.facebookConnect.initializeLogout("@Url.Encode(Model.ReturnUrl)", "@Url.Action("DestroySession", "Connect", new { Area = "Piedone.Facebook.Suite.Connect" })", "@Html.AntiForgeryTokenValueOrchard()");
+    });
+    </script>
+}
+</div>

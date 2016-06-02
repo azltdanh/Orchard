@@ -1,0 +1,79 @@
+﻿@model Mello.ImageGallery.ViewModels.ImageEditViewModel
+         
+@{ Style.Require("ImageGalleryAdmin");
+    Style.Require("jQueryUI_Orchard");
+    Script.Require("jQueryUI");
+    //uploadify
+    Script.Require("jquery.uploadify");
+    Style.Require("uploadifyCSS");
+ }
+<script type="text/javascript">
+
+    //<![CDATA[
+    $(function () {
+        $(".date-box").datepicker({ dateFormat: "dd/mm/yy" });
+
+        //uploadify
+        $("#file_upload_post").uploadify({
+            swf: '/Modules/RealEstateForum.FrontEnd/Scripts/uploadify/uploadify.swf',
+            uploader: '@Url.Action("UploadMediaFlash", "Home", new { area = "RealEstateForum.FrontEnd" })',
+            cancelImg: '/Modules/RealEstateForum.FrontEnd/Scripts/uploadify/uploadify-cancel.png',
+            buttonText: 'Chọn hình',
+            buttonClass: 'button btn-success',
+            width: 85,
+            multi: false,
+            height: 21,
+            fileObjName: 'file',
+            fileSizeLimit: '10MB',
+            fileTypeDesc: 'Flash Files',
+            fileTypeExts: '*.swf',
+            formData: { __RequestVerificationToken: antiForgeryToken, folderName: $("#galleryname").val() },
+            onUploadSuccess: function (file, data, response) {
+                var json = jQuery.parseJSON(data);
+                $("#Image_Name").val(json.name);
+            },
+            debug: false
+        });
+    });
+    //]]>
+</script> 
+@{ Layout.Title = T("Flash Create - {0}", Model.ImageGalleryName).ToString(); }
+
+<div class="sections clearBoth">
+    <div class="primary">
+        <input type="hidden" id="galleryname" value="@Model.ImageGalleryName" />
+        @using (Html.BeginFormAntiForgeryPost())
+        {
+            @Html.ValidationSummary()   
+    
+            <fieldset>
+                <label for="Name">@T("Name")</label>
+                <input type="file" name="Name" id="file_upload_post" />
+                @Html.HiddenFor(o => o.Image.Name)
+                <label for="Title">@T("Title")</label>
+                @Html.TextBoxFor(o => o.Image.Title, new { Class = "textLarge" })
+                            
+                <label for="Caption">@T("Description")</label>
+                @Html.TextBoxFor(o => o.Image.Caption, new { Class = "textLarge" })
+
+                @* added *@
+                <label for="href">@T("href")</label>
+                @Html.TextBoxFor(o => o.Image.href, new { Class = "textLarge" })
+
+                <label for="DateBegin">@T("DateBegin")</label>
+                @Html.TextBoxFor(o => o.Image.DateBegin, new { Class = "textLarge date-box" })
+
+                <label for="DateEnd">@T("DateEnd")</label>
+                @Html.TextBoxFor(o => o.Image.DateEnd, new { Class = "textLarge date-box" })
+
+                @Html.HiddenFor(o => o.ImageGalleryName)
+                @Html.HiddenFor(o => o.Image.Name)
+            </fieldset>            
+            <fieldset>
+                <button class="primaryAction" type="submit" name="submit.Save" value="@T("Save")">@T("Save")</button>
+                @*<button type="submit" name="submit.DeleteImage" value="@T("Delete")">@T("Delete")</button>*@
+                @Html.ActionLink("Back", "Images", new { imageGalleryName = Model.ImageGalleryName }, new { Class = "button"})
+            </fieldset>        
+        }
+    </div>
+</div>

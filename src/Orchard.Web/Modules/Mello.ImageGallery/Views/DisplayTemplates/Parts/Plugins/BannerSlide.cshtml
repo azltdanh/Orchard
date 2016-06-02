@@ -1,0 +1,62 @@
+﻿@using Mello.ImageGallery.Helpers
+@using System.Web.Mvc.Html
+@{
+    Style.Require("ImageGallery");
+
+}
+
+@model Mello.ImageGallery.ViewModels.ImageGalleryViewModel
+
+<div class="hidden-xs hidden-sm hidden-md slide-top">
+    @{int results;}
+    @foreach (var image in Model.Images)
+    {
+        string link = "";
+        if (!string.IsNullOrEmpty(image.href))
+        {
+            //onclick = "Redirect('" + image.href + "')";
+            link = "linktag=" + image.href;
+        }
+        string ext = image.PublicUrl.Split('.').Last();
+        if (image.Enable)
+        {
+            results = (Convert.ToDateTime(image.DateEnd) - DateTime.Now).Days;
+            if (results >= 0)
+            {
+                if (ext == "swf")
+                {
+                    <object width="@image.Thumbnail.Width" height="@image.Thumbnail.Height" data="@image.PublicUrl" type="application/x-shockwave-flash">
+                        <param name="menu" value="true">
+                        <param name="scale" value="noscale">
+                        <param name="flashvars" value="@link">
+                        <param name="wmode" value="opaque">
+                    </object>
+                }
+                else
+                {
+                    <a href="@(!string.IsNullOrEmpty(image.href) ? image.href : "#")" @(image.Blank ? "target=\"_blank\"" : "") title="@image.Title">
+                        @Html.ImageWithThumbnailSize(image)
+                    </a>
+                }
+            }
+        }
+        else
+        {
+            if (ext == "swf")
+            {
+                <object width="@image.Thumbnail.Width" height="@image.Thumbnail.Height" data="@image.PublicUrl" type="application/x-shockwave-flash">
+                    <param name="menu" value="true">
+                    <param name="scale" value="noscale">
+                    <param name="flashvars" value="@link">
+                    <param name="wmode" value="opaque">
+                </object>
+            }
+            else
+            {
+                <a href="@(!string.IsNullOrEmpty(image.href) ? image.href : "#")" @(image.Blank ? "target=\"_blank\"" : "") title="@image.Title">
+                    @Html.ImageWithThumbnailSize(image)
+                </a>
+            }
+        }
+    }
+</div>

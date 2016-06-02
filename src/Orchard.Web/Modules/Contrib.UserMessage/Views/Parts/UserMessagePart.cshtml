@@ -1,0 +1,28 @@
+﻿@using Contrib.UserMessage.Models;
+
+@{
+    Style.Require("UserMessage");
+    var msg = Model.UserMessage;
+}
+
+<h1>@msg.Title</h1>
+
+<div class="accordion" id="msg-details">
+    @while (msg != null)
+    {
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#msg-details" href="#msg-details-@msg.Id">
+                <strong>@msg.SentFrom</strong>
+                <span class="pull-right">@msg.SentDateTime</span>
+            </a>
+        </div>
+        <div id="msg-details-@msg.Id" class="accordion-body collapse in">
+            <div class="accordion-inner">
+                @msg.Message
+            </div>
+        </div>
+    </div>
+        {msg = msg.PreviousMessage;}
+    }
+</div>

@@ -1,0 +1,39 @@
+﻿@using Mello.ImageGallery.Helpers
+@using System.Web.Mvc.Html
+@{ 
+    Style.Require("ImageGallery");
+ }
+@model Mello.ImageGallery.ViewModels.ImageGalleryViewModel
+
+<div class="noneslide hidden-xs">
+        @{int results;}
+        @foreach (var image in Model.Images)
+        {
+            if(image.Enable){
+                results = (Convert.ToDateTime(image.DateEnd) - DateTime.Now).Days;
+                    if(results >= 0){
+                        if(image.Blank){
+                            <a href="@image.href" target="_blank">
+                                @Html.ImageWithThumbnailSize(image)
+                            </a>
+                        }else{
+                            <a href="@image.href">
+                                @Html.ImageWithThumbnailSize(image)
+                            </a>
+                        }
+                    }
+            }
+            else
+            {
+                if(image.Blank){
+                    <a href="@image.href" target="_blank">
+                        @Html.ImageWithThumbnailSize(image)
+                    </a>
+                }else{
+                    <a href="@image.href">
+                        @Html.ImageWithThumbnailSize(image)
+                    </a>
+                }
+            }
+        }
+</div>
